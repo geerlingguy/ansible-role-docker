@@ -1,0 +1,20 @@
+---
+- name: Ensure depdencies are installed.
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Add Docker apt key.
+  apt_key:
+    url: https://apt.dockerproject.org/gpg
+    id: 58118E89F3A912897C070ADBF76221572C52609D
+    state: present
+
+- name: Add Docker repository.
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    state: present
+    update_cache: yes

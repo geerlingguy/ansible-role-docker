@@ -1,0 +1,13 @@
+---
+# - name: Add Docker GPG key.
+#   rpm_key:
+#     key: https://apt.dockerproject.org/gpg
+#     state: present
+
+- name: Add Docker repository.
+  yum_repository:
+    name: docker
+    description: Docker repository.
+    baseurl: https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo
+    gpgkey: https://apt.dockerproject.org/gpg
+    gpgcheck: yes
