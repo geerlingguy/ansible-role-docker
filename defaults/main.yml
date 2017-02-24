@@ -3,3 +3,6 @@ docker_package: "docker-engine"
 
 # Used only for Debian/Ubuntu. Add 'testing' if you don't want stable.
 docker_apt_repository: "deb https://apt.dockerproject.org/repo {{ ansible_distribution|lower }}-{{ ansible_distribution_release }} main"
+
+# Used only for RedHat/CentOS.
+docker_yum_repo_version: 'main' # 'testing', 'beta', 'nightly'

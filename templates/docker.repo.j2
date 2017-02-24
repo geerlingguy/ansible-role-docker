@@ -1,0 +1,6 @@
+[docker-{{ docker_yum_repo_version }}]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/{{ docker_yum_repo_version }}/{{ ansible_distribution|lower }}/{{ ansible_distribution_version.split(".")[0]|int }}/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
