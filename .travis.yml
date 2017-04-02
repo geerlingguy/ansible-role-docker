@@ -19,7 +19,7 @@ script:
   - ${PWD}/tests/test.sh
 
   # Test whether Docker is running correctly (Dockerception!).
-  - docker exec --tty "$(cat ${container_id})" docker run hello-world
+  - docker exec --tty ${container_id} docker run hello-world
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
