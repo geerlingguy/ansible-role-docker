@@ -3,7 +3,7 @@ docker_package: "docker-engine"
 
 # Docker Compose options.
 docker_install_compose: true
-docker_compose_version: "1.11.2"
+docker_compose_version: "1.13.0"
 
 # Used only for Debian/Ubuntu. Add 'testing' if you don't want stable.
 docker_apt_repository: "deb https://apt.dockerproject.org/repo {{ ansible_distribution|lower }}-{{ ansible_distribution_release }} main"
