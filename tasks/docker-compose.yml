@@ -7,7 +7,7 @@
 
 - name: Delete existing docker-compose version if it's different.
   file:
-    path: /usr/local/bin/docker-compose
+    path: "{{ docker_compose_path }}"
     state: absent
   when: >
     docker_compose_current_version.stdout is defined
@@ -16,5 +16,5 @@
 - name: Install Docker Compose (if configured).
   get_url:
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
-    dest: /usr/local/bin/docker-compose
+    dest: "{{ docker_compose_path }}"
     mode: 0755
