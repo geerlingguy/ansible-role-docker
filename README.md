@@ -18,6 +18,7 @@ The Docker package to install.
 
     docker_install_compose: true
     docker_compose_version: "1.11.2"
+    docker_compose_path: /usr/local/bin/docker-compose
 
 Docker Compose installation options.
 
