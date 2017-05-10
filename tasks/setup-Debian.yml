@@ -1,4 +1,12 @@
 ---
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name: '{{ item }}'
+    state: absent
+  with_items:
+    - docker
+    - docker-engine
+
 - name: Ensure depdencies are installed.
   apt:
     name: "{{ item }}"
@@ -9,8 +17,8 @@
 
 - name: Add Docker apt key.
   apt_key:
-    url: https://apt.dockerproject.org/gpg
-    id: 58118E89F3A912897C070ADBF76221572C52609D
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
     state: present
 
 - name: Add Docker repository.
