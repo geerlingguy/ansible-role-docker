@@ -1,7 +1,8 @@
 ---
 - include: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
-
+- templates: src=docker.j2 dest=/etc/yum.repos.d/docker.repo
+  when: ansible_os_family == 'RedHat'
 - include: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
