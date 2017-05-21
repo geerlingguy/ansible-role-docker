@@ -14,5 +14,8 @@
     state: started
     enabled: yes
 
+- name: Ensure docker Python package is available
+  pip: name=docker state=present
+
 - include: docker-compose.yml
   when: docker_install_compose
