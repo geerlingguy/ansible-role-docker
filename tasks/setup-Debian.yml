@@ -23,8 +23,10 @@
   register: add_repository_key
   ignore_errors: true
 
-- name: Alternative | Add Docker apt key.
+- name: Add Docker apt key (alternative for older systems without SNI).
   shell: "curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+  args:
+    warn: no
   when: add_repository_key|failed
 
 - name: Add Docker repository.
