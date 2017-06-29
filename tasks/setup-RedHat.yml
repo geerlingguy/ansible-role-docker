@@ -6,7 +6,6 @@
   with_items:
     - docker
     - docker-common
-    - docker-selinux
     - docker-engine
 
 - name: Add Docker GPG key.
