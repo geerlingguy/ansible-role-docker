@@ -39,17 +39,17 @@ Docker Compose installation options.
 
 Many users of this role wish to also use Ansible to then _build_ Docker images and manage Docker containers on the server where Docker is installed. In this case, you can easily add in the `docker` Python library using the `geerlingguy.pip` role:
 
-    ```yaml
-    - hosts: all
-    
-      vars:
-        pip_install_packages:
-          - name: docker
-    
-      roles:
-        - geerlingguy.pip
-        - geerlingguy.docker
-    ```
+```yaml
+- hosts: all
+
+  vars:
+    pip_install_packages:
+      - name: docker
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
+```
 
 ## Dependencies
 
@@ -57,11 +57,11 @@ None.
 
 ## Example Playbook
 
-    ```yaml
-    - hosts: all
-      roles:
-        - geerlingguy.docker
-    ```
+```yaml
+- hosts: all
+  roles:
+    - geerlingguy.docker
+```
 
 ## License
 
