@@ -26,7 +26,7 @@ The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterpri
 Docker Compose installation options.
 
     docker_apt_release_channel: stable
-    docker_apt_repository: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+    docker_apt_repository: "deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `edge` if you want to use the Edge release.
 
