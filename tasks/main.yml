@@ -1,9 +1,6 @@
 ---
-- include: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
-
-- include: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+- name: OS specific setup
+  include: include: "setup-{{ ansible_os_family }}.yml"
 
 - name: Install Docker.
   package: name={{ docker_package }} state={{ docker_package_state }}
