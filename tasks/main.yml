@@ -1,6 +1,6 @@
 ---
 - name: OS specific setup
-  include: include: "setup-{{ ansible_os_family }}.yml"
+  include: "setup-{{ ansible_os_family }}.yml"
   when: docker_install
 
 - name: Install Docker.
