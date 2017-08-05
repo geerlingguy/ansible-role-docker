@@ -6,6 +6,7 @@
   with_items:
     - docker
     - docker-engine
+    - docker.io
 
 - name: Ensure depdencies are installed.
   apt:
