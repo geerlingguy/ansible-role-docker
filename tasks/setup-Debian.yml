@@ -38,3 +38,17 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: yes
+
+- name: Check if /etc/updatedb.conf exists
+  stat:
+    path: /etc/updatedb.conf
+  register: updatedb_conf_exists
+
+- name: Ensure updatedb does not index /var/lib/docker
+  lineinfile:
+    dest: /etc/updatedb.conf
+    state: present
+    backrefs: yes
+    regexp: '^PRUNEPATHS="(|.* )(/var/lib/docker)?(| .*)"$'
+    line: 'PRUNEPATHS="\1/var/lib/docker\3"'
+  when: updatedb_conf_exists.stat.exists
