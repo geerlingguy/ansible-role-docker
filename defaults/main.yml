@@ -9,6 +9,11 @@ docker_install_compose: true
 docker_compose_version: "1.13.0"
 docker_compose_path: /usr/local/bin/docker-compose
 
+# Docker Daemon Configuration Options.
+docker_daemon_dns_resolvers:
+  - "8.8.8.8"
+  - "8.8.4.4"
+
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
 docker_apt_release_channel: stable
 docker_apt_repository: "deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
