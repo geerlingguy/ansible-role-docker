@@ -8,6 +8,14 @@
 - name: Install Docker.
   package: name={{ docker_package }} state={{ docker_package_state }}
 
+- name: Ensure Docker directory exists.
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
 - name: Ensure Docker configuration is present.
   template:
     src: etc/docker/daemon.json.j2
