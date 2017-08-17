@@ -6,6 +6,7 @@
   with_items:
     - docker
     - docker-engine
+    - docker.io
 
 - name: Ensure depdencies are installed.
   apt:
@@ -14,6 +15,18 @@
   with_items:
     - apt-transport-https
     - ca-certificates
+
+# Fix for https://github.com/docker/docker/issues/23347
+- name: Install dmsetup for Ubuntu 16.04
+  apt:
+    pkg: dmsetup
+    state: present
+  register: dmsetup_result
+  when: ansible_distribution_version|version_compare('16.04', '=')
+
+- name: Run dmsetup for Ubuntu 16.04
+  command: dmsetup mknodes
+  when: dmsetup_result.changed
 
 - name: Add Docker apt key.
   apt_key:
