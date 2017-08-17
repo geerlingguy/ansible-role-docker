@@ -15,6 +15,20 @@
     - apt-transport-https
     - ca-certificates
 
+- name: Get Kernel release
+  command: uname -r
+  register: docker_kernel_release
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_release == "trusty"
+  
+- name: Ensure Trusty packages are installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "linux-image-extra-{{ docker_kernel_release }}"
+    - linux-image-extra-virtual
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_release == "trusty"
+
 - name: Add Docker apt key.
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
