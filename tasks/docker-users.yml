@@ -1,0 +1,6 @@
+---
+- name: Add users to docker group
+  user:
+    name: "{{ item }}"
+    group: docker
+  with_items: "{{ docker_users }}"
