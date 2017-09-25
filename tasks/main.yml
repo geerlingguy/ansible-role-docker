@@ -1,8 +1,8 @@
 ---
-- include: setup-RedHat.yml
+- include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-- include: setup-Debian.yml
+- include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
 - name: Install Docker.
@@ -14,8 +14,8 @@
     state: started
     enabled: yes
 
-- include: docker-compose.yml
+- include_tasks: docker-compose.yml
   when: docker_install_compose
 
-- include: docker-users.yml
+- include_tasks: docker-users.yml
   when: docker_users
