@@ -7,7 +7,7 @@
     - docker
     - docker-engine
 
-- name: Ensure depdencies are installed.
+- name: Ensure dependencies are installed.
   apt:
     name: "{{ item }}"
     state: present
