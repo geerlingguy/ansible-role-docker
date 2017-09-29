@@ -8,6 +8,14 @@
 - name: Install Docker.
   package: name={{ docker_package }} state={{ docker_package_state }}
 
+- name: Configure docker daemon
+  copy:
+    content: "{{ docker_daemon_config|to_nice_json }}"
+    dest: /etc/docker/daemon.json
+    mode: 0600
+  when: docker_configure_daemon
+  notify: restart docker
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker

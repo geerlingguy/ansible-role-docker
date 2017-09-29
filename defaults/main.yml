@@ -17,3 +17,20 @@ docker_apt_repository: "deb https://download.docker.com/linux/{{ ansible_distrib
 docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo
 docker_yum_repo_enable_edge: 0
 docker_yum_repo_enable_test: 0
+
+# Conditonally control docker daemon restart
+docker_restart: false
+
+# Used only for devicemapper configuration for RedHat/CentOS
+# docker_devicemapper_raw_device: /dev/sdb
+
+docker_configure_daemon: false
+docker_daemon_config:
+  storage-driver: "devicemapper"
+  storage-opts:
+    - "dm.directlvm_device={{ docker_devicemapper_raw_device|mandatory }}"
+    - "dm.thinp_percent=95"
+    - "dm.thinp_metapercent=1"
+    - "dm.thinp_autoextend_threshold=80"
+    - "dm.thinp_autoextend_percent=20"
+    - "dm.directlvm_device_force=false"
