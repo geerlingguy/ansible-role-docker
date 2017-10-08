@@ -14,5 +14,12 @@
     state: started
     enabled: yes
 
+- name: Add default user to the docker group
+  user:
+    name: admin
+    groups: docker
+    append: yes
+  when: ansible_os_family == 'Debian'
+
 - include: docker-compose.yml
   when: docker_install_compose
