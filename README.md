@@ -20,7 +20,7 @@ Available variables are listed below, along with default values (see `defaults/m
 The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). You can also specify a specific version of Docker to install using a format like `docker-{{ docker_edition }}-<VERSION>`. And you can control whether the package is installed, uninstalled, or at the latest version by setting `docker_package_state` to `present`, `absent`, or `latest`, respectively.
 
     docker_install_compose: true
-    docker_compose_version: "1.15.0"
+    docker_compose_version: "1.16.1"
     docker_compose_path: /usr/local/bin/docker-compose
 
 Docker Compose installation options.
