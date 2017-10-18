@@ -36,11 +36,11 @@ Docker Compose installation options.
 
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
 
-Set the docker_users variable to allow those users to run docker (these users are added to the docker group)
-
     docker_users:
-      - Guy
-      - James
+      - user1
+      - user2
+
+Set the docker_users variable to allow those users to run docker (these users are added to the docker group)
 
 ## Use with Ansible (and `docker` Python library)
 

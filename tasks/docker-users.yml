@@ -1,5 +1,5 @@
 ---
-- name: Add users to docker group
+- name: Ensure docker users are added to the docker group.
   user:
     name: "{{ item }}"
     group: docker

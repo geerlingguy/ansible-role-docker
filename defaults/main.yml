@@ -18,5 +18,5 @@ docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_e
 docker_yum_repo_enable_edge: 0
 docker_yum_repo_enable_test: 0
 
-# Docker users
+# A list of users who will be added to the docker group.
 docker_users: []
