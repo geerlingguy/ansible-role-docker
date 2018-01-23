@@ -8,6 +8,22 @@
 - name: Install Docker.
   package: name={{ docker_package }} state={{ docker_package_state }}
 
+- name: Docker | Configure Proxy - Ubuntu systemd
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+  blockinfile:
+    path: /lib/systemd/system/docker.service
+    insertafter: '^\[Service\]$'
+    content: |
+      Environment="HTTP_PROXY={{ docker_http_proxy }}"
+      Environment="HTTPS_PROXY={{ docker_http_proxy }}"
+      Environment="NO_PROXY={{ docker_no_proxy }}"
+
+- name: Docker | Log into DockerHub
+  docker_login:
+    username: "{{ docker_hub_username }}"
+    password: "{{ docker_hub_password }}"
+    email: "{{ docker_hub_email }}"
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
