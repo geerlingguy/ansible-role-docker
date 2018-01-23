@@ -34,6 +34,17 @@ Docker Compose installation options.
     docker_yum_repo_enable_edge: 0
     docker_yum_repo_enable_test: 0
 
+(Tested only on Ubuntu >16.04) Configure docker beyond proxy
+
+    docker_http_proxy: http://proxy.example.com:8080/ #the trailing slash is very important
+    docker_no_proxy: localhost
+
+Login into docker hub
+
+    docker_hub_username: mine
+    docker_hub_password: ciao
+    docker_hub_email: nobody@example.com
+
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
 
 ## Use with Ansible (and `docker` Python library)
