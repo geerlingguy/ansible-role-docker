@@ -8,7 +8,7 @@
 - name: Install Docker.
   package: name={{ docker_package }} state={{ docker_package_state }}
 
-- name: Docker | postinstall-Debian.yml
+- include_tasks: postinstall-Debian.yml
   when: ansible_os_family == 'Debian'
 
 - name: Ensure Docker is started and enabled at boot.
