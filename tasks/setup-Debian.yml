@@ -38,3 +38,27 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: yes
+
+- name: Docker | Configure Proxy - Ubuntu systemd
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+  blockinfile:
+    path: /lib/systemd/system/docker.service
+    insertafter: '^\[Service\]$'
+    content: |
+      Environment="HTTP_PROXY={{ docker_http_proxy }}"
+      Environment="HTTPS_PROXY={{ docker_http_proxy }}"
+      Environment="NO_PROXY={{ docker_no_proxy }}"
+
+- name: Docker | Reload configuration
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no
+    daemon_reload: yes
+    state: restarted
+
+- name: Docker | Log into DockerHub
+  docker_login:
+    username: "{{ docker_hub_username }}"
+    password: "{{ docker_hub_password }}"
+    email: "{{ docker_hub_email }}"
