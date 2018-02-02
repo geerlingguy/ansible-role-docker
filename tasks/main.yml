@@ -12,7 +12,7 @@
     group: root
     mode: 0700
   when: docker_daemon_config
-  
+
 - name: Configure docker daemon
   copy:
     content: "{{ docker_daemon_config|to_nice_json }}"
@@ -27,5 +27,5 @@
     state: started
     enabled: yes
 
-- include: docker-compose.yml
+- import_tasks: docker-compose.yml
   when: docker_install_compose
