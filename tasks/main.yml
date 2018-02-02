@@ -1,13 +1,18 @@
 ---
-- include: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
-
-- include: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+- include_tasks: "setup-{{ ansible_os_family }}.yml"
 
 - name: Install Docker.
   package: name={{ docker_package }} state={{ docker_package_state }}
 
+- name: Create /etc/docker
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+  when: docker_daemon_config
+  
 - name: Configure docker daemon
   copy:
     content: "{{ docker_daemon_config|to_nice_json }}"
