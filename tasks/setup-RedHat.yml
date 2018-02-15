@@ -34,3 +34,8 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Configure default docker storage-driver for RedHat.
+  set_fact:
+    docker_daemon_opts: "{{docker_daemon_opts|combine( {'storage-driver': '{{ docker_redhat_storage_driver }}' } )}}"
+  when: "'storage-driver' not in docker_daemon_opts"
