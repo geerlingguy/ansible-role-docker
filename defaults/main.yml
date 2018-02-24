@@ -28,7 +28,7 @@ docker_configure_daemon: false
 docker_daemon_config:
   storage-driver: "devicemapper"
   storage-opts:
-    - "dm.directlvm_device={{ docker_devicemapper_raw_device|mandatory }}"
+    - "dm.directlvm_device={{ docker_devicemapper_raw_device|default(omit) }}"
     - "dm.thinp_percent=95"
     - "dm.thinp_metapercent=1"
     - "dm.thinp_autoextend_threshold=80"
