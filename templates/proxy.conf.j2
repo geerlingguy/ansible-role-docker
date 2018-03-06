@@ -1,0 +1,8 @@
+# Proxy Config.
+## should docker daemon use a proxy for outbound connections?
+docker_proxy_enabled: false
+## list of env variables we should set (comment out the ones you don't need)
+docker_proxy_env:
+  - "HTTP_PROXY=http://proxy.example.com:80/"
+  - "HTTPS_PROXY=https://proxy.example.com:443/"
+  - "NO_PROXY=localhost,127.0.0.1,hub.example.com"

@@ -1,3 +1,10 @@
 ---
 - name: restart docker
   service: name=docker state=restarted
+
+- name: reload systemd docker
+  # systemd module not available before ansible version 2.2
+  #systemd: daemon_reload=yes name=docker
+  # work around - use command
+  command: systemctl daemon-reload
+  notify: restart docker
