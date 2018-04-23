@@ -5,6 +5,9 @@ docker_package: "docker-{{ docker_edition }}"
 docker_package_state: present
 docker_restart_on_package_change: True
 
+# Add Docker repo
+docker_add_repository: true
+
 # Docker Compose options.
 docker_install_compose: True
 docker_compose_version: "1.21.1"

@@ -15,26 +15,28 @@
     - apt-transport-https
     - ca-certificates
 
-- name: Add Docker apt key.
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
-    state: present
-  register: add_repository_key
-  ignore_errors: "{{ docker_apt_ignore_key_error }}"
+- block:
+   - name: Add Docker apt key.
+     apt_key:
+       url: https://download.docker.com/linux/ubuntu/gpg
+       id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+       state: present
+     register: add_repository_key
+     ignore_errors: "{{ docker_apt_ignore_key_error }}"
 
-- name: Ensure curl is present (on older systems without SNI).
-  package: name=curl state=present
-  when: add_repository_key is failed
+   - name: Ensure curl is present (on older systems without SNI).
+     package: name=curl state=present
+     when: add_repository_key is failed
 
-- name: Add Docker apt key (alternative for older systems without SNI).
-  shell: "curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
-  args:
-    warn: no
-  when: add_repository_key is failed
+   - name: Add Docker apt key (alternative for older systems without SNI).
+     shell: "curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+     args:
+       warn: no
+     when: add_repository_key is failed
 
-- name: Add Docker repository.
-  apt_repository:
-    repo: "{{ docker_apt_repository }}"
-    state: present
-    update_cache: yes
+   - name: Add Docker repository.
+     apt_repository:
+       repo: "{{ docker_apt_repository }}"
+       state: present
+       update_cache: yes
+  when: docker_add_repository
