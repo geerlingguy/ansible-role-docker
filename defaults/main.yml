@@ -3,9 +3,10 @@
 docker_edition: 'ce'
 docker_package: "docker-{{ docker_edition }}"
 docker_package_state: present
+docker_restart_on_package_change: True
 
 # Docker Compose options.
-docker_install_compose: true
+docker_install_compose: True
 docker_compose_version: "1.21.1"
 docker_compose_path: /usr/local/bin/docker-compose
 
