@@ -22,7 +22,6 @@ galaxy_info:
     versions:
     - trusty
     - xenial
-    - bionic
   galaxy_tags:
     - web
     - system
