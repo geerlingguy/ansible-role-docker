@@ -29,8 +29,8 @@ Whether to restart the Docker daemon after the Docker package is installed or up
 
 Docker Compose installation options.
 
-    docker_apt_arch: amd64
     docker_apt_release_channel: stable
+    docker_apt_arch: amd64
     docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     docker_apt_ignore_key_error: True
 
