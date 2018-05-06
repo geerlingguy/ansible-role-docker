@@ -46,7 +46,7 @@ Docker Compose installation options.
       - user1
       - user2
 
-Set the docker_users variable to allow those users to run docker (these users are added to the docker group)
+A list of system users to be added to the `docker` group (so they can use Docker on the server).
 
 ## Use with Ansible (and `docker` Python library)
 
