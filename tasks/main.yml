@@ -23,3 +23,6 @@
 
 - include_tasks: docker-compose.yml
   when: docker_install_compose
+
+- include: docker-users.yml
+  when: docker_users
