@@ -38,3 +38,4 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: yes
+    filename: "{{ docker_apt_source_list_filename }}"
