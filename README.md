@@ -23,6 +23,12 @@ The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterpri
 
 Whether to restart the Docker daemon after the Docker package is installed or updated. If this is set to `True`, this role will flush all handlers (run any of the handlers that have been notified by this and any other role up to this point in the play). The default setting helps avoid firewall clashes with Docker rules (e.g. when using custom `iptables` rules or the `geerlingguy.firewall` Ansible role).
 
+    docker_service_state: started
+    docker_service_enabled: yes
+    docker_restart_handler_state: restarted
+
+Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
+
     docker_install_compose: True
     docker_compose_version: "1.21.2"
     docker_compose_path: /usr/local/bin/docker-compose
