@@ -25,4 +25,4 @@
   when: docker_install_compose
 
 - include_tasks: docker-users.yml
-  when: docker_users
+  when: docker_users is defined
