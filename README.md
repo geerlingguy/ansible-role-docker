@@ -54,6 +54,15 @@ Docker Compose installation options.
 
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
 
+    docker_init_swarm: False
+    docker_swarm_role: 'manager'
+    docker_swarm_advertise_address: ''
+    docker_swarm_advertise_port: ''
+
+
+Docker Swarm cluster options, set init swarm to true to initialize a manager node. Set docker_swarm_role to worker in the invetory vars to provision a worker node. Customize the advertise address and port to your needs, defaults to ansible_ipv4 var for address and 2377 for port.
+
+
 ## Use with Ansible (and `docker` Python library)
 
 Many users of this role wish to also use Ansible to then _build_ Docker images and manage Docker containers on the server where Docker is installed. In this case, you can easily add in the `docker` Python library using the `geerlingguy.pip` role:
