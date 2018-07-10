@@ -33,5 +33,5 @@ docker_users: []
 docker_init_swarm: False
 docker_swarm_role: 'manager'
 docker_swarm_advertise_address: ''
-docker_swarm_advertise_port: 2377
+docker_swarm_advertise_port: ''
 
