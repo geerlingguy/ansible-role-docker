@@ -3,13 +3,11 @@
   name: "Initialize swarm manager"
   command: >
     docker swarm init --advertise-addr {{ docker_swarm_advertise_address | default(ansible_default_ipv4.address) }}:{{ docker_swarm_advertise_port | default(2377) }}
-  when: docker_swarm_role == 'manager'
   failed_when: False
 
   name: "Get join token from manager"
   command: >
     docker swarm join-token manager --quiet
-  when: docker_swarm_role == 'manager'
   run_once: True
   changed_when: False
   register: swarm_join_token
