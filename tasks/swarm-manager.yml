@@ -1,0 +1,15 @@
+---
+-
+  name: "Initialize swarm manager"
+  command: >
+    docker swarm init --advertise-addr {{ swarm_advertise_ip }}:{{ swarm_advertise_port }}
+  when: docker_swarm_role == 'manager'
+  failed_when: False
+
+  name: "Get join token from manager"
+  command: >
+    docker swarm join-token manager --quiet
+  when: docker_swarm_role == 'manager'
+  run_once: True
+  changed_when: False
+  register: swarm_join_token

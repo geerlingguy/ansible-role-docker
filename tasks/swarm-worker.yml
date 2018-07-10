@@ -1,0 +1,5 @@
+---
+- name: "Join worker to manager"
+  command: >
+    docker swarm join --token {{ swarm_join_token.stdout }} {{ swarm_advertise_ip }}:{{ swarm_advertise_port }}
+  when: docker_swarm_role == 'worker'
