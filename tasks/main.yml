@@ -20,9 +20,3 @@
 
 - include_tasks: docker-users.yml
   when: docker_users
-
-- name: Install Docker.
-  package:
-    name: "{{ docker_package d}}"
-    state: "{{ docker_package_state }}"
-  notify: restart docker
