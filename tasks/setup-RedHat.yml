@@ -34,3 +34,10 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Install Docker.
+  package:
+    name: "{{ docker_package }}"
+    state: "{{ docker_package_state }}"
+    allow_downgrade: "{{ docker_package_allow_downgrade }}"
+  notify: restart docker
