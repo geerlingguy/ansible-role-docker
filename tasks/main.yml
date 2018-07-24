@@ -9,6 +9,7 @@
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
+    allow_downgrade: "{{ docker_package_allow_downgrade }}"
   notify: restart docker
 
 - name: Ensure Docker is started and enabled at boot.
