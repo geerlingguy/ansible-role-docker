@@ -37,7 +37,7 @@
 
 - name: Install Docker.
   package:
-    name: "{{ docker_package d}}"
+    name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
     allow_downgrade: "{{ docker_package_allow_downgrade }}"
   notify: restart docker
