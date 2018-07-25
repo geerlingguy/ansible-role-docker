@@ -9,11 +9,10 @@
 
 - name: Ensure dependencies are installed.
   apt:
-    name: "{{ item }}"
+    name:
+      - apt-transport-https
+      - ca-certificates
     state: present
-  with_items:
-    - apt-transport-https
-    - ca-certificates
 
 - name: Add Docker apt key.
   apt_key:
