@@ -26,7 +26,7 @@ The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterpri
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
 
     docker_install_compose: True
-    docker_compose_version: "1.21.2"
+    docker_compose_version: "1.22.0"
     docker_compose_path: /usr/local/bin/docker-compose
 
 Docker Compose installation options.
