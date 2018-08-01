@@ -1,0 +1,4 @@
+---
+- name: "Join worker to manager"
+  command: >
+    docker swarm join --token {{ swarm_join_token.stdout }} {{ docker_swarm_advertise_address | default(ansible_default_ipv4.address) }}:{{ docker_swarm_advertise_port | default(2377) }}

@@ -25,3 +25,9 @@
 
 - include_tasks: docker-users.yml
   when: docker_users
+
+- include_tasks: swarm-manager.yml
+  when: docker_init_swarm and docker_swarm_role == 'manager'
+
+- include_tasks: swarm-worker.yml
+  when: docker_init_swarm and docker_swarm_role == 'worker'

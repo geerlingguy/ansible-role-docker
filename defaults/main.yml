@@ -27,3 +27,10 @@ docker_yum_repo_enable_test: 0
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+# Swarm variables
+docker_init_swarm: False
+docker_swarm_role: 'manager'
+docker_swarm_advertise_address: ''
+docker_swarm_advertise_port: ''
+
