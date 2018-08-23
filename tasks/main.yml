@@ -35,7 +35,7 @@
   when: (
       docker_remote_access is defined
     ) and (
-     ( docker_remote_access == "True" )
+     ( docker_remote_access )
     )
 
 
