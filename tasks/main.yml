@@ -19,6 +19,7 @@
           ExecStart=
           ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375
       register: docker_override
+
     - name: reload docker daemon
       systemd:
         daemon_reload: yes
@@ -31,7 +32,11 @@
         daemon_reload: yes
       when: docker_override is changed
 
-  when: docker_remote_access is defined and docker_remote_access is true
+  when: (
+      docker_remote_access is defined
+    ) and (
+     ( docker_remote_access == "True" )
+    )
 
 
 - name: Ensure Docker is started and enabled at boot.
