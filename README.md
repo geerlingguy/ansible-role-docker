@@ -46,6 +46,20 @@ Docker Compose installation options.
 
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
 
+    docker_yum_repo_extra: rhel-7-server-extras-rpms
+
+(Used only for RedHat/CentOS.) Enable the extras RHEL repository. This ensures access to the `container-selinux` package which is required by docker.
+The repository can differ per your architecture, operating system/distribution and cloud provider, so review the options in this step before running:
+
+- `rhel-7-server-extras-rpms` - For all architectures except IBM Power
+- `rhui-REGION-rhel-server-extras` - For AWS (where REGION is a literal, and does not represent the region your machine is running in)
+- `rhui-rhel-7-server-rhui-extras-rpms` - For Azure
+- `ol7_addons` - For Oracle Linux
+
+> __NOTE__ Also you can specify another repository depending your operating system, architecture, preference, or something else.
+
+Alternately, obtain that package manually from Red Hat. There is no way to publicly browse this repository.
+
     docker_users:
       - user1
       - user2

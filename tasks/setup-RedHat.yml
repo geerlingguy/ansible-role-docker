@@ -34,3 +34,20 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Configure Extra repo
+  block:
+    - name: Get the extra repo file
+      shell: grep '\[{{ docker_yum_repo_extra }}\]' /etc/yum.repos.d/*.repo | awk -F ":" '{print $1}'
+      register: extra_repo_file
+      check_mode: no
+      changed_when: no
+
+    - name: Enable the extras RHEL repository. This ensures access to the container-selinux package.
+      ini_file:
+        dest: '/etc/yum.repos.d/{{ extra_repo_file.stdout }}'
+        section: '{{ docker_yum_repo_extra }}'
+        option: enabled
+        value: 1
+      when: extra_repo_file.stderr != ""
+  when: docker_yum_repo_extra is defined
