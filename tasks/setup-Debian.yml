@@ -7,13 +7,12 @@
     - docker
     - docker-engine
 
-- name: Ensure depdencies are installed.
+- name: Ensure dependencies are installed.
   apt:
-    name: "{{ item }}"
+    name:
+      - apt-transport-https
+      - ca-certificates
     state: present
-  with_items:
-    - apt-transport-https
-    - ca-certificates
 
 - name: Add Docker apt key.
   apt_key:
@@ -21,17 +20,17 @@
     id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
     state: present
   register: add_repository_key
-  ignore_errors: true
+  ignore_errors: "{{ docker_apt_ignore_key_error }}"
 
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
-  when: add_repository_key|failed
+  when: add_repository_key is failed
 
 - name: Add Docker apt key (alternative for older systems without SNI).
   shell: "curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
   args:
     warn: no
-  when: add_repository_key|failed
+  when: add_repository_key is failed
 
 - name: Add Docker repository.
   apt_repository:
