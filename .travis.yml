@@ -11,8 +11,10 @@ env:
     - MOLECULE_DISTRO: ubuntu1804
     - MOLECULE_DISTRO: ubuntu1604
     - MOLECULE_DISTRO: ubuntu1404
+      MOLECULE_DOCKER_COMMAND: /sbin/init
     - MOLECULE_DISTRO: debian9
     - MOLECULE_DISTRO: fedora27
+      MOLECULE_DOCKER_COMMAND: /usr/lib/systemd/systemd
 
 install:
   # Install test dependencies.
