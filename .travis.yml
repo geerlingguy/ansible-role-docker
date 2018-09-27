@@ -1,28 +1,32 @@
 ---
+language: python
 services: docker
 
 env:
-  - distro: centos7
-  - distro: ubuntu1804
-  - distro: ubuntu1604
-  - distro: ubuntu1404
-  - distro: debian9
-  - distro: fedora27
+  global:
+    - ROLE_NAME: docker
+  matrix:
+    - MOLECULE_DISTRO: centos7
+      MOLECULE_DOCKER_COMMAND: /usr/lib/systemd/systemd
+    - MOLECULE_DISTRO: ubuntu1804
+    - MOLECULE_DISTRO: ubuntu1604
+    - MOLECULE_DISTRO: ubuntu1404
+    - MOLECULE_DISTRO: debian9
+    - MOLECULE_DISTRO: fedora27
+
+install:
+  # Install test dependencies.
+  - pip install molecule docker
+
+before_script:
+  # Use actual Ansible Galaxy role name for the project directory.
+  - cd ../
+  - mv ansible-role-$ROLE_NAME geerlingguy.$ROLE_NAME
+  - cd geerlingguy.$ROLE_NAME
 
 script:
-  # Configure test script so we can run extra tests after playbook is run.
-  - export container_id=$(date +%s)
-  - export cleanup=false
-
-  # Download test shim.
-  - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/raw/
-  - chmod +x ${PWD}/tests/test.sh
-
   # Run tests.
-  - ${PWD}/tests/test.sh
-
-  # Test whether Docker is running correctly (Dockerception!).
-  - docker exec --tty ${container_id} docker run hello-world
+  - molecule test
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
