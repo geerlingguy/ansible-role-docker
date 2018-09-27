@@ -13,8 +13,8 @@ env:
     - MOLECULE_DISTRO: ubuntu1404
       MOLECULE_DOCKER_COMMAND: /sbin/init
     - MOLECULE_DISTRO: debian9
-    - MOLECULE_DISTRO: fedora27
-      MOLECULE_DOCKER_COMMAND: /usr/lib/systemd/systemd
+    # - MOLECULE_DISTRO: fedora27
+    #   MOLECULE_DOCKER_COMMAND: /usr/lib/systemd/systemd
 
 install:
   # Install test dependencies.
