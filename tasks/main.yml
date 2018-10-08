@@ -17,6 +17,18 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
 
+- name: Ensure /etc/docker/ directory exists.
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Configure docker daemon options.
+  copy:
+    content: "{{ docker_daemon_options | to_nice_json }}"
+    dest: /etc/docker/daemon.json
+    mode: 0644
+  notify: restart docker
+
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
 
