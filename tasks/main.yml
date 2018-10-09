@@ -22,7 +22,7 @@
     path: /etc/docker
     state: directory
 
-- name: Configure docker daemon options.
+- name: Configure Docker daemon options.
   copy:
     content: "{{ docker_daemon_options | to_nice_json }}"
     dest: /etc/docker/daemon.json
