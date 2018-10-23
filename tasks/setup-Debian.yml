@@ -1,11 +1,10 @@
 ---
 - name: Ensure old versions of Docker are not installed.
   package:
-    name: '{{ item }}'
+    name:
+      - docker
+      - docker-engine
     state: absent
-  with_items:
-    - docker
-    - docker-engine
 
 - name: Ensure dependencies are installed.
   apt:
