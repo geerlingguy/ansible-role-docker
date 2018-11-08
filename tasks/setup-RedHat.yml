@@ -36,11 +36,11 @@
 
 - name: get docker-version from yum
   shell: yum list docker-{{ docker_edition }} --showduplicates  | grep -P '{{ docker_version }}.{{ docker_edition }}[^\s]*' -o
-  register: apt_docker_version_register
+  register: yum_docker_version_register
   when: docker_version != ""
   changed_when: false
 
 - name: set fact for docker version
   set_fact:
-    docker_package_version: "-{{ apt_docker_version_register.stdout_lines[0] }}"
-  when: apt_docker_version_register.rc == 0
+    docker_package_version: "-{{ yum_docker_version_register.stdout_lines[0] }}"
+  when: yum_docker_version_register is not skipped and yum_docker_version_register.rc == 0
