@@ -16,6 +16,7 @@ Available variables are listed below, along with default values (see `defaults/m
     docker_edition: 'ce'
     docker_package: "docker-{{ docker_edition }}"
     docker_package_state: present
+    docker_version: "" # like "18.06.0", docker_package_state must be "present", empty means latest
 
 The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). You can also specify a specific version of Docker to install using the distribution-specific format: Red Hat/CentOS: `docker-{{ docker_edition }}-<VERSION>`; Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>`.
 

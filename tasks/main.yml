@@ -7,7 +7,7 @@
 
 - name: Install Docker.
   package:
-    name: "{{ docker_package }}"
+    name: "{{ docker_package }}{{ docker_package_version | default('') }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
 
