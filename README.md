@@ -80,6 +80,22 @@ None.
     - geerlingguy.docker
 ```
 
+## Example Playbook with proxy
+
+```yaml
+- hosts: all
+  roles:
+    - geerlingguy.docker
+  vars_files: myvars.yaml
+```
+myvars.yaml:
+```yaml
+proxy_env:
+  http_proxy: http://proxy-squid:3128
+  https_proxy: http://proxy-squid:3128
+  no_proxy: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+```
+
 ## License
 
 MIT / BSD
