@@ -10,6 +10,8 @@
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
+  become: yes
+  environment: "{{ proxy_env }}"
 
 # TODO: Remove this shim once 18.09.1 or later is released.
 - import_tasks: docker-1809-shim.yml
@@ -20,6 +22,7 @@
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+  become: yes
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
