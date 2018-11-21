@@ -12,7 +12,7 @@
     key: https://download.docker.com/linux/centos/gpg
     state: present
   become: true
-  environment: "{{ proxy_env }}"
+  environment: "{{ proxy_env|default('') }}"
 
 - name: Add Docker repository.
   get_url:
@@ -22,7 +22,7 @@
     group: root
     mode: 0644
   become: true
-  environment: "{{ proxy_env }}"
+  environment: "{{ proxy_env|default('') }}"
 
 - name: Configure Docker Edge repo.
   ini_file:

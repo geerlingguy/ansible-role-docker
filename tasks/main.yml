@@ -11,7 +11,7 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
   become: true
-  environment: "{{ proxy_env }}"
+  environment: "{{ proxy_env|default('') }}"
 
 # TODO: Remove this shim once 18.09.1 or later is released.
 - import_tasks: docker-1809-shim.yml

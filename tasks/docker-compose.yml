@@ -19,4 +19,4 @@
     dest: "{{ docker_compose_path }}"
     mode: 0755
   become: true
-  environment: "{{ proxy_env }}"
+  environment: "{{ proxy_env|default('') }}"
