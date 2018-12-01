@@ -37,6 +37,7 @@ Docker Compose installation options.
     docker_apt_arch: amd64
     docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     docker_apt_ignore_key_error: True
+    docker_apt_filename: 
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `edge` if you want to use the Edge release.
 
