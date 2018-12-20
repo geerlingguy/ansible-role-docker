@@ -52,6 +52,14 @@ Docker Compose installation options.
 
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
 
+    docker_certificate_authorities:
+      - name: example.com
+        file: 'files/ca.crt'
+      - name: another.example.com
+        url: 'https://some.url.example.com/certificates/ca.crt'
+
+A list of [Certificate Authorities](https://docs.docker.com/engine/security/certificates/) to add during the install.
+
 ## Use with Ansible (and `docker` Python library)
 
 Many users of this role wish to also use Ansible to then _build_ Docker images and manage Docker containers on the server where Docker is installed. In this case, you can easily add in the `docker` Python library using the `geerlingguy.pip` role:

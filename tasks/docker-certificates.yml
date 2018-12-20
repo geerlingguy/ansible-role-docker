@@ -1,0 +1,22 @@
+---
+- name: Create folder for certificates
+  file:
+    path: /etc/docker/certs.d/{{item.name}}
+    state: directory
+  with_items: '{{docker_certificate_authorities}}'
+
+- name: Install certificate from url
+  get_url:
+    url: '{{item.url}}'
+    dest: /etc/docker/certs.d/{{item.name}}
+  with_items: '{{docker_certificate_authorities}}'
+  when: item.url is defined
+  notify: restart docker
+
+- name: Install certificate from file
+  copy:
+    src: '{{item.file}}'
+    dest: /etc/docker/certs.d/{{item.name}}/
+  with_items: '{{docker_certificate_authorities}}'
+  when: item.file is defined
+  notify: restart docker

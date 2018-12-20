@@ -1,0 +1,7 @@
+---
+- name: Configure docker daemon.json file
+  template:
+    src: '{{ docker_daemon_options | to_nice_json }}'
+    dest: /etc/docker/daemon.json
+    mode: 0644
+  notify: restart docker

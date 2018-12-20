@@ -11,6 +11,12 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- import_tasks: docker-daemon-json.yml
+  when: docker_daemon_options
+
+- import_tasks: docker-certificates.yml
+  when: docker_certificate_authorities
+
 # TODO: Remove this shim once 18.09.1 or later is released.
 - import_tasks: docker-1809-shim.yml
   when: ansible_service_mgr == 'systemd'
