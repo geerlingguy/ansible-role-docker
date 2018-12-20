@@ -41,14 +41,12 @@
   when: docker_version != ""
   changed_when: false
 
-
-- debug: var=yum_docker_version_register
-- debug: msg='{{docker_version}}.{{ docker_edition }}'
+- name: save docker_version temporary for when state
+  set_fact:
+    tmp_docker_version: "{{docker_version}}.{{ docker_edition }}"
 
 - name: Set fact for docker version
   set_fact:
     docker_package_version: "-{{ item.version }}-{{ item.release}}"
   with_items: "{{yum_docker_version_register.results}}"
-  when: yum_docker_version_register is not skipped and yum_docker_version_register.failed == false and item.version == '{{docker_version}}.{{ docker_edition }}'
-
-- debug: var=docker_package_version
+  when: yum_docker_version_register is not skipped and yum_docker_version_register.failed == false and item.version == tmp_docker_version
