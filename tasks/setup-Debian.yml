@@ -37,13 +37,13 @@
     state: present
     update_cache: true
 
-- name: get docker-version from apt
+- name: Get docker-version from apt
   shell: apt-cache madison docker-{{ docker_edition }} | grep -P '{{ docker_version }}~{{ docker_edition }}~[^\s]*' -o
   register: apt_docker_version_register
   when: docker_version != ""
   changed_when: false
 
-- name: set fact for docker version
+- name: Set fact for docker version
   set_fact:
     docker_package_version: "={{ apt_docker_version_register.stdout_lines[0] }}"
   when: apt_docker_version_register is not skipped and apt_docker_version_register.rc == 0
