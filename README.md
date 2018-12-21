@@ -52,6 +52,14 @@ Docker Compose installation options.
 
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
 
+    docker_daemon_options:
+    log-driver: "json-file"
+    log-opts:
+        max-size: "10m"
+        max-file: "10"
+
+Docker daemon [configuration options](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file) which will be used to create the `daemon.json` file.
+
     docker_certificate_authorities:
       - name: example.com
         file: 'files/ca.crt'
