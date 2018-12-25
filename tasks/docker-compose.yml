@@ -1,6 +1,6 @@
 ---
 - name: Check current docker-compose version.
-  command: docker-compose --version
+  command: "{{ docker_compose_path }} --version"
   register: docker_compose_current_version
   changed_when: false
   failed_when: false
