@@ -1,0 +1,42 @@
+---
+- name: Check current docker-app version.
+  command: docker-app --version
+  register: docker_app_current_version
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Delete existing docker-app version if it's different.
+  file:
+    path: "{{ docker_app_path }}"
+    state: absent
+  when: >
+    docker_app_current_version.stdout is defined
+    and docker_app_version not in docker_app_current_version.stdout
+
+- name: Download Docker app (if configured).
+  unarchive:
+    src: https://github.com/docker/app/releases/download/{{ docker_app_version }}/docker-app-linux.tar.gz
+    dest: "/tmp"
+    remote_src: yes
+  when: >
+    docker_app_current_version.stdout is defined
+    and docker_app_version not in docker_app_current_version.stdout
+    or not docker_app_current_version.stdout is defined
+
+- name: Install Docker app (if configured).
+  copy:
+    src: /tmp/docker-app-linux
+    dest: "{{ docker_app_path }}"
+    remote_src: yes
+    mode: 0755
+  when: >
+    docker_app_current_version.stdout is defined
+    and docker_app_version not in docker_app_current_version.stdout
+    or not docker_app_current_version.stdout is defined
+
+- name: Install Docker app completion
+  shell: "docker-app completion >> {{ docker_app_completion_path }}"
+  args:
+    creates: "{{ docker_app_completion_path }}"
+

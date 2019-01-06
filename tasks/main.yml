@@ -27,5 +27,8 @@
 - include_tasks: docker-compose.yml
   when: docker_install_compose
 
+- include_tasks: docker-app.yml
+  when: docker_install_app
+
 - include_tasks: docker-users.yml
   when: docker_users
