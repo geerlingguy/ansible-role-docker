@@ -5,7 +5,17 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
+- name: Install Docker on CentOS/Redhat
+  when: ansible_os_family == 'RedHat'
+  yum:
+    name:
+      - "docker-ce-selinux-{{ docker_package_version }}"
+      - "{{ docker_package }}-{{ docker_package_version }}"
+    conf_file: "{{ docker_yum_config }}"
+    state: "{{ docker_package_state }}"
+
 - name: Install Docker.
+  when: ansible_os_family == 'Debian'
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"

@@ -33,3 +33,10 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Setup yum-docker.conf
+  ini_file:
+    dest: "{{ docker_yum_config }}"
+    section: 'main'
+    option: obsoletes
+    value: '0'
