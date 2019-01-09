@@ -18,7 +18,7 @@
   unarchive:
     src: https://github.com/docker/app/releases/download/{{ docker_app_version }}/docker-app-linux.tar.gz
     dest: "/tmp"
-    remote_src: yes
+    remote_src: "yes"
   when: >
     docker_app_current_version.stdout is defined
     and docker_app_version not in docker_app_current_version.stdout
@@ -28,7 +28,7 @@
   copy:
     src: /tmp/docker-app-linux
     dest: "{{ docker_app_path }}"
-    remote_src: yes
+    remote_src: "yes"
     mode: 0755
   when: >
     docker_app_current_version.stdout is defined
