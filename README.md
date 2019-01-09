@@ -28,10 +28,18 @@ You can control whether the package is installed, uninstalled, or at the latest 
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
 
     docker_install_compose: true
-    docker_compose_version: "1.22.0"
+    docker_compose_version: "1.23.2"
     docker_compose_path: /usr/local/bin/docker-compose
+    docker_compose_completion_path: /etc/bash_completion.d/docker-compose
 
 Docker Compose installation options.
+
+    docker_install_app: true
+    docker_app_version: "v0.6.0"
+    docker_app_path: /usr/local/bin/docker-app
+    docker_app_completion_path: /etc/bash_completion.d/docker-app
+
+Docker App installation options.
 
     docker_apt_release_channel: stable
     docker_apt_arch: amd64
