@@ -36,6 +36,6 @@
     or not docker_app_current_version.stdout is defined
 
 - name: Install Docker app completion
-  shell: "docker-app completion >> {{ docker_app_completion_path }}"
+  shell: "{{ docker_app_path }} completion >> {{ docker_app_completion_path }}"
   args:
     creates: "{{ docker_app_completion_path }}"
