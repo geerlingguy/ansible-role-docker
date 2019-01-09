@@ -32,4 +32,3 @@
     url: https://raw.githubusercontent.com/docker/compose/{{ docker_compose_version }}/contrib/completion/bash/docker-compose
     dest: "{{ docker_compose_completion_path }}"
     mode: 0644
-

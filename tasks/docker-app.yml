@@ -39,4 +39,3 @@
   shell: "docker-app completion >> {{ docker_app_completion_path }}"
   args:
     creates: "{{ docker_app_completion_path }}"
-
