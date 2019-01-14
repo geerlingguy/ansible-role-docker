@@ -2,8 +2,10 @@
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
 docker_edition: 'ce'
 docker_package: "docker-{{ docker_edition }}"
-docker_package_archlinux: "docker" # we use the default installation like described in https://wiki.archlinux.org/index.php/docker#Installation
 docker_package_state: present
+
+# we use the default installation like described in https://wiki.archlinux.org/index.php/docker#Installation
+docker_package_archlinux: "docker"
 
 # Service options.
 docker_service_state: started
