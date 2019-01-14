@@ -1,0 +1,22 @@
+---
+- name: add docker.service.d/override.conf override
+  copy:
+    dest: /etc/systemd/system/docker.service.d/startup_options.conf
+    content: |
+      # /etc/systemd/system/docker.service.d/override.conf
+      [Service]
+      ExecStart=
+      ExecStart=/usr/bin/dockerd -H fd:// -H tcp://{{ docker_remote_access_ip | default('0.0.0.0') }}:2375
+  register: docker_override
+
+- name: reload docker daemon
+  systemd:
+    daemon_reload: yes
+  when: docker_override is changed
+
+- name: restart docker service
+  service:
+    name: docker
+    state: restarted
+    daemon_reload: yes
+  when: docker_override is changed

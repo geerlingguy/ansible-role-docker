@@ -1,4 +1,3 @@
 # {{ ansible_managed }}
 [Service]
 ExecStartPre=
-{% if docker_exec_start is defined %}ExecStart={{ docker_exec_start }}{% endif %}

@@ -29,3 +29,6 @@
 
 - include_tasks: docker-users.yml
   when: docker_users
+
+- include_tasks: remote-access.yml
+  when: docker_remote_access
