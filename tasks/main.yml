@@ -10,6 +10,14 @@
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
+
+- name: Install Docker.
+  pacman:
+    name: "{{ docker_package_archlinux }}"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
+  when: ansible_os_family == 'Archlinux'
 
 # TODO: Remove this shim once 18.09.1 or later is released.
 - import_tasks: docker-1809-shim.yml
