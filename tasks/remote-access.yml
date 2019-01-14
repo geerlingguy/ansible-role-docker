@@ -1,4 +1,9 @@
 ---
+- name: Create /etc/systemd/system/docker.service.d/ 
+  file:
+    state: directory
+    path: /etc/systemd/system/docker.service.d/s
+
 - name: add docker.service.d/override.conf override
   copy:
     dest: /etc/systemd/system/docker.service.d/startup_options.conf
