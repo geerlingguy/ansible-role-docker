@@ -22,12 +22,12 @@ The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterpri
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_package_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
     docker_service_state: started
-    docker_service_enabled: yes
+    docker_service_enabled: true
     docker_restart_handler_state: restarted
 
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
 
-    docker_install_compose: True
+    docker_install_compose: true
     docker_compose_version: "1.22.0"
     docker_compose_path: /usr/local/bin/docker-compose
 

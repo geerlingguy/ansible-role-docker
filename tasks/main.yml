@@ -11,36 +11,9 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
-- name: enable remote docker access
-  block:
-    - name: add docker.service.d/override.conf override
-      copy:
-        dest: /etc/systemd/system/docker.service.d/startup_options.conf
-        content: |
-          # /etc/systemd/system/docker.service.d/override.conf
-          [Service]
-          ExecStart=
-          ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375
-      register: docker_override
-
-    - name: reload docker daemon
-      systemd:
-        daemon_reload: yes
-      when: docker_override is changed
-
-    - name: restart docker service
-      service:
-        name: docker
-        state: restarted
-        daemon_reload: yes
-      when: docker_override is changed
-
-  when: (
-      docker_remote_access is defined
-    ) and (
-     ( docker_remote_access )
-    )
-
+# TODO: Remove this shim once 18.09.1 or later is released.
+- import_tasks: docker-1809-shim.yml
+  when: ansible_service_mgr == 'systemd'
 
 - name: Ensure Docker is started and enabled at boot.
   service:

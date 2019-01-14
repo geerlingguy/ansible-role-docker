@@ -1,0 +1,16 @@
+---
+- name: Ensure containerd service dir exists.
+  file:
+    path: /etc/systemd/system/containerd.service.d
+    state: directory
+
+- name: Add shim to ensure Docker can start in all environments.
+  template:
+    src: override.conf.j2
+    dest: /etc/systemd/system/containerd.service.d/override.conf
+  register: override_template
+
+- name: Reload systemd daemon if template is changed.
+  systemd:
+    daemon_reload: true
+  when: override_template is changed
