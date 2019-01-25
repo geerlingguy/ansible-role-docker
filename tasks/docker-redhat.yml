@@ -1,0 +1,25 @@
+---
+- name: Set Docker package name
+  set_fact:
+    docker_install_name: "{{ docker_package }}{{ '-' if docker_package_version }}{{ docker_package_version|default(omit) }}"
+
+- name: Check all the facts
+  debug:
+    msg: "Package: {{ docker_install_name }}, Is bigger then 18.01: {{ docker_package_version is version('18.01', '>=') }}"
+
+- name: Install Docker 17.03 on CentOS/Redhat
+  when: docker_package_version is version('17.03', '>=') and docker_package_version is version('18.01', '<')
+  yum:
+    name:
+      - "docker-ce-selinux-{{ docker_package_version }}"
+      - "{{ docker_install_name }}"
+    conf_file: "{{ docker_yum_config }}"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
+
+- name: Install Docker on CentOS/Redhat
+  when: docker_package_version is none or docker_package_version is version('18.01', '>=')
+  package:
+    name: "{{ docker_install_name }}"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
