@@ -3,7 +3,7 @@
 docker_edition: 'ce'
 docker_package: "docker-{{ docker_edition }}"
 docker_package_state: present
-docker_package_version: nil
+docker_package_version: ''
 
 # Service options.
 docker_service_state: started
