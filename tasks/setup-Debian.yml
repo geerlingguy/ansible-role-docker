@@ -12,6 +12,7 @@
       - apt-transport-https
       - ca-certificates
     state: present
+    update-cache: true
 
 - name: Add Docker apt key.
   apt_key:
