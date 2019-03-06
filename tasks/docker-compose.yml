@@ -17,4 +17,5 @@
   get_url:
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
     dest: "{{ docker_compose_path }}"
+    checksum: "{{ docker_compose_checksum | default(omit) }}"
     mode: 0755

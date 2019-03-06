@@ -12,6 +12,7 @@ docker_restart_handler_state: restarted
 # Docker Compose options.
 docker_install_compose: true
 docker_compose_version: "1.22.0"
+docker_compose_checksum: "sha256:f679a24b93f291c3bffaff340467494f388c0c251649d640e661d509db9d57e9"
 docker_compose_path: /usr/local/bin/docker-compose
 
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.

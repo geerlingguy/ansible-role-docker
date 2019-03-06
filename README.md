@@ -29,6 +29,7 @@ Variables to control the state of the `docker` service, and whether it should st
 
     docker_install_compose: true
     docker_compose_version: "1.22.0"
+    docker_compose_checksum: "sha256:4d618e19b91b9a49f36d041446d96a1a0a067c676330a4f25aca6bbd000de7a9"
     docker_compose_path: /usr/local/bin/docker-compose
 
 Docker Compose installation options.
