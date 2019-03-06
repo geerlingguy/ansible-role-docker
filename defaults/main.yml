@@ -14,6 +14,10 @@ docker_install_compose: true
 docker_compose_version: "1.22.0"
 docker_compose_path: /usr/local/bin/docker-compose
 
+docker_install_machine: true
+docker_machine_version: "v0.16.1"
+docker_machine_path: /usr/local/bin/docker-machine
+
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
 docker_apt_release_channel: stable
 docker_apt_arch: amd64
