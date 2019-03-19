@@ -37,12 +37,14 @@ Docker Compose installation options.
     docker_apt_arch: amd64
     docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     docker_apt_ignore_key_error: True
+    docker_apt_gpg_key: https://download.docker.com/linux/ubuntu/gpg
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `edge` if you want to use the Edge release.
 
     docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo
     docker_yum_repo_enable_edge: 0
     docker_yum_repo_enable_test: 0
+    docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
 
