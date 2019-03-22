@@ -5,3 +5,6 @@
     groups: docker
     append: true
   with_items: "{{ docker_users }}"
+
+- name: reset connection to allow user changes to take affect for the current login user
+  meta: reset_connection
