@@ -26,7 +26,9 @@
   when: add_repository_key is failed
 
 - name: Add Docker apt key (alternative for older systems without SNI).
-  shell: "curl -sSL {{ docker_apt_gpg_key }} | sudo apt-key add -"
+  shell: |
+    set -o pipefail
+    curl -sSL {{ docker_apt_gpg_key }}  | sudo apt-key add -
   args:
     warn: false
   when: add_repository_key is failed
