@@ -20,6 +20,8 @@
     state: present
   register: add_repository_key
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
+  tags:
+  - configure_docker_repo
 
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
@@ -32,9 +34,13 @@
   args:
     warn: false
   when: add_repository_key is failed
+  tags:
+  - configure_docker_repo
 
 - name: Add Docker repository.
   apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: true
+  tags:
+  - configure_docker_repo

@@ -11,6 +11,8 @@
   rpm_key:
     key: https://download.docker.com/linux/centos/gpg
     state: present
+  tags:
+  - configure_docker_repo
 
 - name: Add Docker repository.
   get_url:
@@ -19,6 +21,8 @@
     owner: root
     group: root
     mode: 0644
+  tags:
+  - configure_docker_repo
 
 - name: Configure Docker Edge repo.
   ini_file:
@@ -26,6 +30,8 @@
     section: 'docker-{{ docker_edition }}-edge'
     option: enabled
     value: '{{ docker_yum_repo_enable_edge }}'
+  tags:
+  - configure_docker_repo
 
 - name: Configure Docker Test repo.
   ini_file:
@@ -33,3 +39,5 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+  tags:
+  - configure_docker_repo
