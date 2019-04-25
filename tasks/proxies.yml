@@ -1,0 +1,24 @@
+---
+
+- name: Add proxies into systemd environment
+  when:
+    - ansible_service_mgr == 'systemd'
+    - >-
+      ansible_env['http_proxy'] is defined or
+      ansible_env['HTTP_PROXY'] is defined or
+      ansible_env['https_proxy'] is defined or
+      ansible_env['HTTPS_PROXY'] is defined
+  block:
+    - name: Establish docker service config dir
+      file:
+        dest: /etc/systemd/system/docker.service.d/
+        state: directory
+        recurse: true
+
+    - name: Establish docker proxy config
+      template:
+        src: proxies.conf.j2
+        dest: /etc/systemd/system/docker.service.d/proxies.conf
+      notify:
+        - reload systemd daemon
+        - restart docker
