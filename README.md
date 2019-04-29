@@ -6,7 +6,7 @@ An Ansible Role that installs [Docker](https://www.docker.com) on Linux.
 
 ## Requirements
 
-None.
+- Ansible 2.4+
 
 ## Role Variables
 
