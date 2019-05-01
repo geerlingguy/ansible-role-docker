@@ -11,6 +11,7 @@
   rpm_key:
     key: https://download.docker.com/linux/centos/gpg
     state: present
+    validate_certs: no
 
 - name: Add Docker repository.
   get_url:
@@ -19,6 +20,7 @@
     owner: root
     group: root
     mode: 0644
+    validate_certs: no
 
 - name: Configure Docker Edge repo.
   ini_file:
