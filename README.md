@@ -50,6 +50,15 @@ Docker Compose installation options.
       - user1
       - user2
 
+Docker daemon [configuration options](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file) which will be used to create the `daemon.json` file.
+
+    docker_daemon_options:
+      storage-driver: "zfs"
+      bip: "100.64.0.1/24"
+      default-address-pools:
+        - base: "100.64.0.0/15"
+          size: 24
+
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
 
 ## Use with Ansible (and `docker` Python library)

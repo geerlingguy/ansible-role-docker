@@ -11,6 +11,16 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- name: Add daemon configration
+  copy:
+    dest: /etc/docker/daemon.json
+    mode: 0600
+    owner: root
+    group: root
+    content: "{{ docker_daemon_options | to_nice_json }}"
+  when: docker_daemon_options is defined
+  notify: restart docker
+
 # TODO: Remove this shim once 18.09.1 or later is released.
 - import_tasks: docker-1809-shim.yml
   when: ansible_service_mgr == 'systemd'
