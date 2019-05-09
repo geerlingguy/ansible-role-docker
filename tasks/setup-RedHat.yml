@@ -13,6 +13,7 @@
     state: present
   tags:
   - configure_docker_repo
+  when: docker_add_repo
 
 - name: Add Docker repository.
   get_url:
@@ -23,6 +24,7 @@
     mode: 0644
   tags:
   - configure_docker_repo
+  when: docker_add_repo
 
 - name: Configure Docker Edge repo.
   ini_file:
@@ -32,6 +34,7 @@
     value: '{{ docker_yum_repo_enable_edge }}'
   tags:
   - configure_docker_repo
+  when: docker_add_repo
 
 - name: Configure Docker Test repo.
   ini_file:
@@ -41,3 +44,4 @@
     value: '{{ docker_yum_repo_enable_test }}'
   tags:
   - configure_docker_repo
+  when: docker_add_repo

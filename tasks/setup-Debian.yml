@@ -22,10 +22,11 @@
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
   tags:
   - configure_docker_repo
+  when: docker_add_repo
 
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
-  when: add_repository_key is failed
+  when: docker_add_repo and add_repository_key is failed
 
 - name: Add Docker apt key (alternative for older systems without SNI).
   shell: |
@@ -33,7 +34,7 @@
     curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   args:
     warn: false
-  when: add_repository_key is failed
+  when: docker_add_repo and add_repository_key is failed
   tags:
   - configure_docker_repo
 
@@ -44,3 +45,4 @@
     update_cache: true
   tags:
   - configure_docker_repo
+  when: docker_add_repo
