@@ -1,0 +1,4 @@
+---
+- name: Enable Amazon Linux Extras Docker repository
+  command: amazon-linux-extras enable docker  # noqa 301
+  changed_when: false
