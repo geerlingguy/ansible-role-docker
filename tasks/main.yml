@@ -25,7 +25,7 @@
   meta: flush_handlers
 
 - include_tasks: docker-compose.yml
-  when: docker_install_compose
+  when: docker_install_compose | bool
 
 - include_tasks: docker-users.yml
-  when: docker_users
+  when: docker_users | bool
