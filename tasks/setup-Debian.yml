@@ -6,6 +6,27 @@
       - docker-engine
     state: absent
 
+- name: Determine if gnupg is installed
+  apt:
+    name: gnupg
+    state: present
+  check_mode: true
+  register: state_gnupg
+
+- name: Determine if gnupg1 is installed
+  apt:
+    name: gnupg1
+    state: present
+  check_mode: true
+  register: state_gnupg1
+  ignore_errors: True
+
+- name: install gnupg for apt-key
+  apt:
+    name: gnupg
+    state: present
+  when: '(state_gnupg is changed) and ((state_gnupg1 is changed ) or (state_gnupg1 is failed))'
+
 - name: Ensure dependencies are installed.
   apt:
     name:
