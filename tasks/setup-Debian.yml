@@ -19,7 +19,7 @@
     state: present
   check_mode: true
   register: state_gnupg1
-  ignore_errors: True
+  ignore_errors: true
 
 - name: install gnupg for apt-key
   apt:
