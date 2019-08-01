@@ -7,6 +7,7 @@
     state: absent
 
 - name: Ensure dependencies are installed.
+  become: true
   apt:
     name:
       - apt-transport-https
