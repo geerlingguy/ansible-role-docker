@@ -28,4 +28,4 @@
   when: docker_install_compose | bool
 
 - include_tasks: docker-users.yml
-  when: docker_users | bool
+  when: docker_users | length > 0
