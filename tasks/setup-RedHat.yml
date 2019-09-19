@@ -33,3 +33,10 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Set net.ipv4.ip_forward 1
+  sysctl:
+    name: "net.ipv4.ip_forward"
+    sysctl_set: "yes"
+    value: 1
+~                                            
