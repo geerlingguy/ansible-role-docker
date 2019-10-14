@@ -1,7 +1,10 @@
 ---
 - name: docker-shim | get current version when installed
   shell: |
+    set -o pipefail
     sudo -Hu nobody timeout 2 docker --version 2>&1 | grep -Eoi '([0-9]{1,}\.){2,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
+  args:
+    executable: /bin/bash
   register: docker_current_version
   changed_when: false
 

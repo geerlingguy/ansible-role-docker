@@ -7,7 +7,10 @@
 
 - name: lazydocker | get current binary version
   shell: |
+    set -o pipefail
     sudo -Hu nobody timeout 2 {{ lazydocker_path }} --version 2>&1 | grep -Eoi '([0-9]{1,}\.){1,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
+  args:
+    executable: /bin/bash
   register: lazydocker_current_version
   changed_when: false
   when:
@@ -25,4 +28,4 @@
     owner: root
     mode: 0755
   when:
-    - not lazydocker_current_binary.stat.exists or (lazydocker_current_version.stdout and lazydocker_current_version.stdout is version(lazydocker_version, '!='))
+    - not lazydocker_current_binary.stat.exists or lazydocker_current_version.stdout is version(lazydocker_version, '!=')

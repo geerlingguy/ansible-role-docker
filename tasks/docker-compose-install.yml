@@ -7,7 +7,10 @@
 
 - name: docker-compose | get current binary version
   shell: |
+    set -o pipefail
     sudo -Hu nobody timeout 2 {{ docker_compose_path }} --version 2>&1 | grep -Eoi '([0-9]{1,}\.){1,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
+  args:
+    executable: /bin/bash
   register: docker_compose_current_version
   changed_when: false
   when:
@@ -21,4 +24,4 @@
     owner: root
     mode: 0755
   when:
-    - not docker_compose_current_binary.stat.exists or (docker_compose_current_version.stdout and docker_compose_current_version.stdout is version(docker_compose_version, '!='))
+    - not docker_compose_current_binary.stat.exists or docker_compose_current_version.stdout is version(docker_compose_version, '!=')

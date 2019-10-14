@@ -38,10 +38,11 @@
 
 - name: Add Docker apt key (alternative for older systems without SNI).
   shell: |
-    set -euxo pipefail
+    set -o pipefail
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   args:
     warn: false
+    executable: /bin/bash
   when:
     - add_repository_key is failed
 
