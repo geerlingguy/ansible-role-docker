@@ -1,0 +1,34 @@
+---
+- name: docker-shim | get current version when installed
+  shell: |
+    sudo -Hu nobody timeout 2 docker --version 2>&1 | grep -Eoi '([0-9]{1,}\.){2,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
+  register: docker_current_version
+  changed_when: no
+
+- name: docker-shim | Setup shim if required
+  block:
+    - name: docker-shim | Ensure containerd service dir exists
+      file:
+        path: /etc/systemd/system/containerd.service.d
+        state: directory
+    - name: docker-shim | Add shim to ensure Docker can start in all environments.
+      template:
+        src: etc/systemd/system/containerd.service.d/override.conf.j2
+        dest: /etc/systemd/system/containerd.service.d/override.conf
+      register: docker_service_override_template
+  when:
+    - docker_current_version.stdout is version('19.03.2', '<=')
+
+- name: docker-shim | Delete shim when it outdated
+  file:
+    path: /etc/systemd/system/containerd.service.d/override.conf
+    state: absent
+  register: docker_service_override_template
+  when:
+    - docker_current_version.stdout is version('19.03.2', '>')
+
+- name: docker-shim | Reload systemd daemon if template is changed
+  systemd:
+    daemon_reload: yes
+  when:
+    - docker_service_override_template is changed

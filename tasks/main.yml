@@ -1,19 +1,36 @@
 ---
 - include_tasks: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
+  when:
+    - ansible_os_family == 'RedHat'
 
 - include_tasks: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+  when:
+    - ansible_os_family == 'Debian'
 
-- name: Install Docker.
+- name: Ensure docker config dir exists.
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Add docker/daemon.json custom config.
+  template:
+    src: etc/docker/daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: restart docker
+
+- name: Install docker
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    RUNLEVEL: 1
   notify: restart docker
 
 # TODO: Remove this shim once 18.09.1 or later is released.
-- import_tasks: docker-1809-shim.yml
-  when: ansible_service_mgr == 'systemd'
+- import_tasks: docker-shim.yml
+  when:
+    - ansible_service_mgr == 'systemd'
 
 - name: Ensure Docker is started and enabled at boot.
   service:
@@ -24,8 +41,14 @@
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
 
-- include_tasks: docker-compose.yml
-  when: docker_install_compose
+- include_tasks: docker-compose-install.yml
+  when:
+    - docker_compose_install
+
+- include_tasks: lazydocker-install.yml
+  when:
+    - lazydocker_install
 
 - include_tasks: docker-users.yml
-  when: docker_users
+  when:
+    - docker_users

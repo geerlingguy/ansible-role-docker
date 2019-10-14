@@ -1,0 +1,24 @@
+---
+- name: docker-compose | check binary installed
+  stat:
+    path: "{{ docker_compose_path }}"
+  changed_when: no
+  register: docker_compose_current_binary
+
+- name: docker-compose | get current binary version
+  shell: |
+    sudo -Hu nobody timeout 2 {{ docker_compose_path }} --version 2>&1 | grep -Eoi '([0-9]{1,}\.){1,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
+  register: docker_compose_current_version
+  changed_when: no
+  when:
+    - docker_compose_current_binary.stat.exists
+
+- name: docker-compose | download if need install, upgrade or downgrade
+  get_url:
+    url: "{{ docker_compose_url }}"
+    dest: "{{ docker_compose_path }}"
+    force: yes
+    owner: root
+    mode: 0755
+  when:
+    - not docker_compose_current_binary.stat.exists or (docker_compose_current_version.stdout and docker_compose_current_version.stdout is version(docker_compose_version, '!='))

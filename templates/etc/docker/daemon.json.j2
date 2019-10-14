@@ -1,0 +1,25 @@
+{
+	"data-root": "/srv/docker",
+	"dns": [
+		"8.8.8.8",
+		"1.1.1.1"
+	],
+	"log-driver": "journald",
+	"metrics-addr" : "0.0.0.0:9323",
+	"experimental" : true,
+	"storage-driver": "overlay2",
+	"live-restore": true,
+	"default-ulimits": {
+		"nofile": {
+			"Name": "nofile",
+			"Hard": 65536,
+			"Soft": 65536
+		}
+	},
+	"default-address-pools":[
+		{"base":"172.17.0.0/16","size":24},
+		{"base":"172.18.0.0/16","size":24},
+		{"base":"172.19.0.0/16","size":24},
+		{"base":"172.20.0.0/16","size":24}
+	]
+}
