@@ -3,7 +3,7 @@
   shell: |
     sudo -Hu nobody timeout 2 docker --version 2>&1 | grep -Eoi '([0-9]{1,}\.){2,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
   register: docker_current_version
-  changed_when: no
+  changed_when: false
 
 - name: docker-shim | Setup shim if required
   block:
@@ -29,6 +29,6 @@
 
 - name: docker-shim | Reload systemd daemon if template is changed
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
   when:
     - docker_service_override_template is changed

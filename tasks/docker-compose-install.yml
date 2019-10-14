@@ -2,14 +2,14 @@
 - name: docker-compose | check binary installed
   stat:
     path: "{{ docker_compose_path }}"
-  changed_when: no
+  changed_when: false
   register: docker_compose_current_binary
 
 - name: docker-compose | get current binary version
   shell: |
     sudo -Hu nobody timeout 2 {{ docker_compose_path }} --version 2>&1 | grep -Eoi '([0-9]{1,}\.){1,3}[0-9]{1,}(|-[a-z0-9]{1,})' | sort -uV | head -1
   register: docker_compose_current_version
-  changed_when: no
+  changed_when: false
   when:
     - docker_compose_current_binary.stat.exists
 
@@ -17,7 +17,7 @@
   get_url:
     url: "{{ docker_compose_url }}"
     dest: "{{ docker_compose_path }}"
-    force: yes
+    force: true
     owner: root
     mode: 0755
   when:

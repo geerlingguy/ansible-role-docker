@@ -6,18 +6,18 @@ docker_package_state: present
 
 # Service options.
 docker_service_state: started
-docker_service_enabled: yes
+docker_service_enabled: true
 docker_restart_handler_state: restarted
 
 # Docker Compose options.
-docker_compose_install: yes
+docker_compose_install: true
 docker_compose_version: '1.24.1'
 docker_compose_path: '/usr/local/bin/docker-compose'
 docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
 
 # LazyDocker options.
-lazydocker_install: yes
-lazydocker_version: '0.4'
+lazydocker_install: true
+lazydocker_version: '0.7.4'
 lazydocker_path: '/usr/local/bin/lazydocker'
 lazydocker_url: "https://github.com/jesseduffield/lazydocker/releases/download/v{{ lazydocker_version }}/lazydocker_{{ lazydocker_version }}_Linux_x86_64.tar.gz"
 
@@ -26,7 +26,7 @@ lazydocker_url: "https://github.com/jesseduffield/lazydocker/releases/download/v
 docker_apt_release_channel: stable
 docker_apt_arch: amd64
 docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
-docker_apt_ignore_key_error: yes
+docker_apt_ignore_key_error: true
 
 # Used only for RedHat/CentOS/Fedora.
 docker_yum_repo_url: https://download.docker.com/linux/{{ (ansible_distribution == "Fedora") | ternary("fedora","centos") }}/docker-{{ docker_edition }}.repo
