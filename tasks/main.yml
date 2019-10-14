@@ -43,12 +43,12 @@
 
 - include_tasks: docker-compose-install.yml
   when:
-    - docker_compose_install
+    - docker_compose_install | bool
 
 - include_tasks: lazydocker-install.yml
   when:
-    - lazydocker_install
+    - lazydocker_install | bool
 
 - include_tasks: docker-users.yml
   when:
-    - docker_users
+    - docker_users | length > 0

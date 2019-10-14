@@ -11,7 +11,7 @@ docker_restart_handler_state: restarted
 
 # Docker Compose options.
 docker_compose_install: yes
-docker_compose_version: '1.24.0'
+docker_compose_version: '1.24.1'
 docker_compose_path: '/usr/local/bin/docker-compose'
 docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
 
@@ -20,6 +20,7 @@ lazydocker_install: yes
 lazydocker_version: '0.4'
 lazydocker_path: '/usr/local/bin/lazydocker'
 lazydocker_url: "https://github.com/jesseduffield/lazydocker/releases/download/v{{ lazydocker_version }}/lazydocker_{{ lazydocker_version }}_Linux_x86_64.tar.gz"
+
 
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
 docker_apt_release_channel: stable
