@@ -16,6 +16,8 @@
   template:
     src: etc/docker/daemon.json.j2
     dest: /etc/docker/daemon.json
+  when:
+    - docker_service_custom_config | bool
   notify: restart docker
 
 - name: Install docker
