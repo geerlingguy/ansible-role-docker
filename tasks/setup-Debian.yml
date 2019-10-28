@@ -38,3 +38,9 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: true
+
+- name: Add Docker apt preferences file to pin a version.
+  template:
+    src: apt-preferences-docker.j2
+    dest: /etc/apt/preferences.d/docker
+  when: docker_apt_version | length > 0
