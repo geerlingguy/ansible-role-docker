@@ -1,0 +1,19 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: hetznercloud
+lint:
+  name: yamllint
+platforms:
+  - name: ansible-role-docker-${DOCKER_VERSION_CI}
+    server_type: cx11
+    image: centos-7
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

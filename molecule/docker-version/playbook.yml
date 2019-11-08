@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: ansible-role-docker
+      vars:
+        docker_package_version: "{{ lookup('env', 'DOCKER_VERSION_CI') or '18.09.2' }}"
