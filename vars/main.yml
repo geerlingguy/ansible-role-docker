@@ -1,0 +1,3 @@
+# This is tested on CentOS7
+__docker_install_name: "{{ docker_package }}{{ '-' if docker_package_version else ''}}{{ docker_package_version }}"
+__docker_17_03: "{{ docker_package_version is version('17.03', '>=') and docker_package_version is version('17.06', '<') }}"

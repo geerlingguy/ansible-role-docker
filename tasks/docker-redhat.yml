@@ -1,25 +1,24 @@
 ---
-- name: Set Docker package name
-  set_fact:
-    docker_install_name: "{{ docker_package }}{{ '-' if docker_package_version else ''}}{{ docker_package_version }}"
-
-# - name: Check all the facts
-#  debug:
-#    msg: "Package: {{ docker_install_name }}, Is bigger then 18.01: {{ docker_package_version is version('18.01', '>=') }}"
+- name: Check all the facts
+  debug:
+    msg: "Package: {{ __docker_install_name }}, Is 17.03: {{ __docker_17_03 }}"
 
 - name: Install Docker 17.03 on CentOS/Redhat
-  when: docker_package_version and docker_package_version is version('17.03', '>=') and docker_package_version is version('18.01', '<')
+  when: __docker_17_03
   yum:
     name:
       - "docker-ce-selinux-{{ docker_package_version }}"
-      - "{{ docker_install_name }}"
-    conf_file: "{{ docker_yum_config }}"
-    state: "{{ docker_package_state }}"
+      - "{{ __docker_install_name }}"
+      - containerd.io
+    conf_file: "{{ docker_yum_config }}"
+    state: "{{ docker_package_state }}"
   notify: restart docker
 
 - name: Install Docker on CentOS/Redhat
-  when: not docker_package_version or docker_package_version is version('18.01', '>=')
+  when: not __docker_17_03
   package:
-    name: "{{ docker_install_name }}"
+    name:
+      - "{{ __docker_install_name }}"
+      - containerd.io
     state: "{{ docker_package_state }}"
   notify: restart docker
