@@ -3,6 +3,12 @@
   debug:
     msg: "Package: {{ __docker_install_name }}, Is 17.03: {{ __docker_17_03 }}"
 
+# Fixme: this should be in ansible or another role
+- name: Install yum versionlock
+  yum:
+    name:
+      - yum-plugin-versionlock
+
 - name: Install Docker 17.03 on CentOS/Redhat
   when: __docker_17_03
   yum:
@@ -12,7 +18,9 @@
       - containerd.io
     conf_file: "{{ docker_yum_config }}"
     state: "{{ docker_package_state }}"
-  notify: restart docker
+  notify:
+    - restart docker
+    - lock docker package
 
 - name: Install Docker on CentOS/Redhat
   when: not __docker_17_03
@@ -21,4 +29,6 @@
       - "{{ __docker_install_name }}"
       - containerd.io
     state: "{{ docker_package_state }}"
-  notify: restart docker
+  notify:
+    - restart docker
+    - lock docker package

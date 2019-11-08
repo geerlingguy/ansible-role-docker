@@ -1,3 +1,17 @@
 ---
 - name: restart docker
   service: "name=docker state={{ docker_restart_handler_state }}"
+
+# some context:
+#  - the repo doesn't offer *all* docker-ce-cli releases
+#  - therefor we lock docker-ce only
+#  - linting:
+#     - we ignore linting since the PR for "versionlock" hasn't been merged in a year
+#     - warn: false for another Ansible warning about "command"
+- name: lock docker package
+  command: "yum versionlock {{ docker_package }}"
+  args:
+    warn: false
+  changed_when: false
+  tags:
+    - skip_ansible_lint
