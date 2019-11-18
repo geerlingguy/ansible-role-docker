@@ -1,0 +1,16 @@
+---
+- name: Ensure docker service dir exists.
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: Add Docker configuration with proxy set.
+  template:
+    src: proxy.conf.j2
+    dest: /etc/systemd/system/docker.service.d/proxy.conf
+  register: proxy_template
+
+- name: Reload systemd daemon if template is changed.
+  systemd:
+    daemon_reload: true
+  when: proxy_template is changed

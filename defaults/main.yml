@@ -27,3 +27,8 @@ docker_yum_repo_enable_test: 0
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+# proxy settings
+http_proxy: ""
+https_proxy: ""
+no_proxy: ""

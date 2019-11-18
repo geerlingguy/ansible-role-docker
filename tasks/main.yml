@@ -15,6 +15,9 @@
 - import_tasks: docker-1809-shim.yml
   when: ansible_service_mgr == 'systemd'
 
+- import_tasks: docker-service.yml
+  when: ansible_service_mgr == 'systemd'
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
