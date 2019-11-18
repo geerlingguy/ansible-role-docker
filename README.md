@@ -79,6 +79,25 @@ None.
   roles:
     - geerlingguy.docker
 ```
+Or use the following playbook with Proxy
+
+```yaml
+- hosts: all
+
+  vars:
+    http_proxy: http://user:password@proxy:port
+    https_proxy: http://user:password@proxy:port
+    no_proxy: localhost,127.0.0.0/8,192.168.0.0/16
+
+  roles:
+    - geerlingguy.docker
+
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
+    no_proxy: "{{ no_proxy }}"
+```
+
 
 ## License
 
