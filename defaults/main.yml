@@ -22,6 +22,9 @@ lazydocker_version: '0.7.4'
 lazydocker_path: '/usr/local/bin/lazydocker'
 lazydocker_url: "https://github.com/jesseduffield/lazydocker/releases/download/v{{ lazydocker_version }}/lazydocker_{{ lazydocker_version }}_Linux_x86_64.tar.gz"
 
+# Python module for docker
+docker_pip_install: true
+
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
 docker_apt_release_channel: stable
 docker_apt_arch: amd64

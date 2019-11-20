@@ -51,6 +51,10 @@
   when:
     - lazydocker_install | bool
 
+- include_tasks: docker-pip-install.yml
+  when:
+    - docker_pip_install | bool
+
 - include_tasks: docker-users.yml
   when:
     - docker_users | length > 0
