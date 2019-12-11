@@ -17,8 +17,8 @@ galaxy_info:
         - all
     - name: Debian
       versions:
-        - jessie
         - stretch
+        - buster
     - name: Ubuntu
       versions:
         - xenial
