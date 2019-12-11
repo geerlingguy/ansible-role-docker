@@ -9,7 +9,6 @@ env:
     - MOLECULE_DISTRO: centos7
     - MOLECULE_DISTRO: ubuntu1804
     - MOLECULE_DISTRO: ubuntu1604
-    - MOLECULE_DISTRO: ubuntu1404
     - MOLECULE_DISTRO: debian9
     - MOLECULE_DISTRO: fedora27
 
