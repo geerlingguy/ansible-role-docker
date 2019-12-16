@@ -11,10 +11,6 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
-# TODO: Remove this shim once 18.09.1 or later is released.
-- import_tasks: docker-1809-shim.yml
-  when: ansible_service_mgr == 'systemd'
-
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
