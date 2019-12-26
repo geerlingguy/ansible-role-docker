@@ -4,4 +4,5 @@
     name: "{{ item }}"
     groups: docker
     append: true
+  become: true
   with_items: "{{ docker_users }}"

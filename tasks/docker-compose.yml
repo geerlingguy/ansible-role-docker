@@ -9,6 +9,7 @@
   file:
     path: "{{ docker_compose_path }}"
     state: absent
+  become: true
   when: >
     docker_compose_current_version.stdout is defined
     and docker_compose_version not in docker_compose_current_version.stdout
@@ -18,3 +19,4 @@
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
     dest: "{{ docker_compose_path }}"
     mode: 0755
+  become: true

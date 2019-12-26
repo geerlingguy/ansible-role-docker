@@ -6,6 +6,7 @@
       - docker-common
       - docker-engine
     state: absent
+  become: true
 
 - name: Add Docker GPG key.
   rpm_key:
@@ -15,27 +16,31 @@
 - name: Add Docker repository.
   get_url:
     url: "{{ docker_yum_repo_url }}"
-    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
     owner: root
     group: root
     mode: 0644
+  become: true
 
 - name: Configure Docker Edge repo.
   ini_file:
-    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
-    section: 'docker-{{ docker_edition }}-edge'
+    dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
+    section: "docker-{{ docker_edition }}-edge"
     option: enabled
-    value: '{{ docker_yum_repo_enable_edge }}'
+    value: "{{ docker_yum_repo_enable_edge }}"
+  become: true
 
 - name: Configure Docker Test repo.
   ini_file:
-    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
-    section: 'docker-{{ docker_edition }}-test'
+    dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
+    section: "docker-{{ docker_edition }}-test"
     option: enabled
-    value: '{{ docker_yum_repo_enable_test }}'
+    value: "{{ docker_yum_repo_enable_test }}"
+  become: true
 
 - name: Install containerd separately (CentOS 8).
   package:
     name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
     state: present
+  become: true
   when: ansible_distribution_major_version | int == 8
