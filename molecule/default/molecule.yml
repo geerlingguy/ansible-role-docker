@@ -3,7 +3,7 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
+lint: |
   yamllint .
   ansible-lint
 platforms:
@@ -18,5 +18,3 @@ provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
-scenario:
-  name: default
