@@ -41,8 +41,8 @@ Docker Compose installation options.
 (Used only for Debian/Ubuntu.) You can switch the channel to `edge` if you want to use the Edge release.
 
     docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo
-    docker_yum_repo_enable_edge: 0
-    docker_yum_repo_enable_test: 0
+    docker_yum_repo_enable_edge: '0'
+    docker_yum_repo_enable_test: '0'
 
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
 
