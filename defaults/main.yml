@@ -29,7 +29,7 @@ docker_yum_repo_enable_test: '0'
 docker_users: []
 
 # Options to add to the docker daemon.json
-docker_daemon_options: 
+docker_daemon_options:
 
 # List of user specified certificate authorities
 docker_certificate_authorities: []
