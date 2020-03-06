@@ -40,6 +40,6 @@
 
 - name: Install containerd separately (CentOS 8).
   package:
-    name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+    name: "{{ docker_containerd_download_url }}"
     state: present
   when: ansible_distribution_major_version | int == 8
