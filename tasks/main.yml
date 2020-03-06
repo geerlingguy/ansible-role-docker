@@ -17,10 +17,6 @@
 - import_tasks: docker-certificates.yml
   when: docker_certificate_authorities
 
-# TODO: Remove this shim once 18.09.1 or later is released.
-- import_tasks: docker-1809-shim.yml
-  when: ansible_service_mgr == 'systemd'
-
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
@@ -31,7 +27,7 @@
   meta: flush_handlers
 
 - include_tasks: docker-compose.yml
-  when: docker_install_compose
+  when: docker_install_compose | bool
 
 - include_tasks: docker-users.yml
-  when: docker_users
+  when: docker_users | length > 0
