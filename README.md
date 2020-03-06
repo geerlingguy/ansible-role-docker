@@ -28,23 +28,31 @@ You can control whether the package is installed, uninstalled, or at the latest 
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
 
     docker_install_compose: true
-    docker_compose_version: "1.22.0"
+    docker_compose_version: "1.25.4"
     docker_compose_path: /usr/local/bin/docker-compose
 
 Docker Compose installation options.
 
     docker_apt_release_channel: stable
     docker_apt_arch: amd64
-    docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+    docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     docker_apt_ignore_key_error: True
+    docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `edge` if you want to use the Edge release.
 
+You can change `docker_apt_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
+Usually in combination with changing `docker_apt_repository` as well.
+
     docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo
-    docker_yum_repo_enable_edge: 0
-    docker_yum_repo_enable_test: 0
+    docker_yum_repo_enable_edge: '0'
+    docker_yum_repo_enable_test: '0'
+    docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
+
+You can change `docker_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
+Usually in combination with changing `docker_yum_repository` as well.
 
     docker_users:
       - user1

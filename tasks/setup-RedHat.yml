@@ -9,7 +9,7 @@
 
 - name: Add Docker GPG key.
   rpm_key:
-    key: https://download.docker.com/linux/centos/gpg
+    key: "{{ docker_yum_gpg_key }}"
     state: present
 
 - name: Add Docker repository.
@@ -33,3 +33,9 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Install containerd separately (CentOS 8).
+  package:
+    name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+    state: present
+  when: ansible_distribution_major_version | int == 8
