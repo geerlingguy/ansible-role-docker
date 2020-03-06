@@ -10,18 +10,17 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 6
         - 7
+        - 8
     - name: Fedora
       versions:
         - all
     - name: Debian
       versions:
-        - jessie
         - stretch
+        - buster
     - name: Ubuntu
       versions:
-        - trusty
         - xenial
         - bionic
   galaxy_tags:

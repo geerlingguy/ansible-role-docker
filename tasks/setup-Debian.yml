@@ -11,11 +11,12 @@
     name:
       - apt-transport-https
       - ca-certificates
+      - gnupg2
     state: present
 
 - name: Add Docker apt key.
   apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
+    url: "{{ docker_apt_gpg_key }}"
     id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
     state: present
   register: add_repository_key
@@ -27,9 +28,8 @@
   when: docker_add_repo and add_repository_key is failed
 
 - name: Add Docker apt key (alternative for older systems without SNI).
-  shell: |
-    set -o pipefail
-    curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  shell: >
+    curl -sSL {{ docker_apt_gpg_key }} | sudo apt-key add -
   args:
     warn: false
   when: docker_add_repo and add_repository_key is failed
