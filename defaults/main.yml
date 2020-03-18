@@ -9,6 +9,11 @@ docker_service_state: started
 docker_service_enabled: true
 docker_restart_handler_state: restarted
 
+# Docker config options.
+docker_config_options:
+  max-concurrent-downloads: 5
+  max-concurrent-uploads: 5
+
 # Docker Compose options.
 docker_install_compose: true
 docker_compose_version: "1.25.4"

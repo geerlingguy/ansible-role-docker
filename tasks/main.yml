@@ -11,6 +11,17 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- name: Ensure /etc/docker exists
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Install daemon.json
+  template:
+    src: docker-daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: restart docker
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker

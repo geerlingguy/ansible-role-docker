@@ -19,6 +19,16 @@ Available variables are listed below, along with default values (see `defaults/m
 
 The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). You can also specify a specific version of Docker to install using the distribution-specific format: Red Hat/CentOS: `docker-{{ docker_edition }}-<VERSION>`; Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>`.
 
+You can customize `daemon configuration` by providing `daemon.json` values in yaml format. Example:
+
+    docker_config_options:
+      exec-opts:
+        - native.cgroupdriver=systemd
+      log-driver: journald
+      max-concurrent-downloads: 7
+      max-concurrent-uploads: 5
+      storage-driver: overlay2
+
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_package_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
     docker_service_state: started
