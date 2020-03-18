@@ -1,0 +1,11 @@
+---
+- name: Ensure /etc/docker exists
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Install daemon.json
+  template:
+    src: docker-daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify: restart docker
