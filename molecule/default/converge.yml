@@ -11,9 +11,9 @@
     - name: Wait for systemd to complete initialization. # noqa 303
       command: systemctl is-system-running
       register: systemctl_status
-      until: >
+      until: >-
         'running' in systemctl_status.stdout or
-        'fuzz' in systemctl_status.stdout
+        'degraded' in systemctl_status.stdout
       retries: 30
       delay: 5
       when: ansible_service_mgr == 'systemd'
