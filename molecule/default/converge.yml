@@ -8,5 +8,10 @@
       apt: update_cache=yes cache_valid_time=600
       when: ansible_os_family == 'Debian'
 
+    - name: Wait for systemd to complete initialization.
+      command: systemctl status systemd-tmpfiles-setup.service
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+
   roles:
     - role: geerlingguy.docker
