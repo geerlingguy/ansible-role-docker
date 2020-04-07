@@ -5,16 +5,28 @@
   changed_when: false
   failed_when: false
 
-- name: Delete existing docker-compose version if it's different.
-  file:
-    path: "{{ docker_compose_path }}"
-    state: absent
+- name: Download and Install Docker Compose
+  block:
+  - name: Download Docker Compose (if configured).
+    get_url:
+      url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+      dest: "/tmp/docker-compose-Linux-x86_64-{{ docker_compose_version }}"
+      mode: 0755
+    register: _download_composer
+    until: _download_composer is succeeded
+    retries: 5
+    delay: 2
+    delegate_to: localhost
+  - name: Install Docker Compose
+    copy:
+      src: "/tmp/docker-compose-Linux-x86_64-{{ docker_compose_version }}"
+      dest: "{{ docker_compose_path }}"
+      mode: 0755
+      owner: root
+      group: root
   when: >
-    docker_compose_current_version.stdout is defined
-    and docker_compose_version not in docker_compose_current_version.stdout
+    docker_compose_current_version.stdout is undefined
+    or docker_compose_version not in docker_compose_current_version.stdout
 
-- name: Install Docker Compose (if configured).
-  get_url:
-    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
-    dest: "{{ docker_compose_path }}"
-    mode: 0755
+
+
