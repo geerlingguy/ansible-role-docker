@@ -7,32 +7,37 @@
       - docker-engine
     state: absent
 
-- name: Add Docker GPG key.
-  rpm_key:
-    key: "{{ docker_yum_gpg_key }}"
-    state: present
+- name: Add official docker yum repository
+  block:
 
-- name: Add Docker repository.
-  get_url:
-    url: "{{ docker_yum_repo_url }}"
-    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
-    owner: root
-    group: root
-    mode: 0644
+    - name: Add Docker GPG key.
+      rpm_key:
+        key: "{{ docker_yum_gpg_key }}"
+        state: present
 
-- name: Configure Docker Edge repo.
-  ini_file:
-    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
-    section: 'docker-{{ docker_edition }}-edge'
-    option: enabled
-    value: '{{ docker_yum_repo_enable_edge }}'
+    - name: Add Docker repository.
+      get_url:
+        url: "{{ docker_yum_repo_url }}"
+        dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+        owner: root
+        group: root
+        mode: 0644
 
-- name: Configure Docker Test repo.
-  ini_file:
-    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
-    section: 'docker-{{ docker_edition }}-test'
-    option: enabled
-    value: '{{ docker_yum_repo_enable_test }}'
+    - name: Configure Docker Edge repo.
+      ini_file:
+        dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+        section: 'docker-{{ docker_edition }}-edge'
+        option: enabled
+        value: '{{ docker_yum_repo_enable_edge }}'
+
+    - name: Configure Docker Test repo.
+      ini_file:
+        dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+        section: 'docker-{{ docker_edition }}-test'
+        option: enabled
+        value: '{{ docker_yum_repo_enable_test }}'
+
+  when: docker_yum_add_official_repository
 
 - name: Install containerd separately (CentOS 8).
   package:

@@ -15,6 +15,8 @@ docker_compose_version: "1.25.4"
 docker_compose_path: /usr/local/bin/docker-compose
 
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
+docker_apt_add_official_repository: true
+# options below apply if you add the official repo using this role (which is the default)
 docker_apt_release_channel: stable
 docker_apt_arch: amd64
 docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
@@ -22,6 +24,8 @@ docker_apt_ignore_key_error: true
 docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
 
 # Used only for RedHat/CentOS/Fedora.
+docker_yum_add_official_repository: true
+# options below apply if you add the official repo using this role (which is the default)
 docker_yum_repo_url: https://download.docker.com/linux/{{ (ansible_distribution == "Fedora") | ternary("fedora","centos") }}/docker-{{ docker_edition }}.repo
 docker_yum_repo_enable_edge: '0'
 docker_yum_repo_enable_test: '0'
