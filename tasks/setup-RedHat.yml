@@ -34,8 +34,17 @@
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
 
+- name: Check if containerd is already installed (CentOS 8).
+  shell: |
+    set -o pipefail
+    dnf list installed | grep "containerd.io.x86_64.*1.2.6-3.3.el7"
+  failed_when: false
+  register: containerd_install_result
+
 - name: Install containerd separately (CentOS 8).
   package:
     name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
     state: present
-  when: ansible_distribution_major_version | int == 8
+  when:
+    - ansible_distribution_major_version | int == 8
+    - containerd_install_result.rc != 0
