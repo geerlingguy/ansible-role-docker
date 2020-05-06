@@ -1,5 +1,6 @@
 ---
 - name: Ensure old versions of Docker are not installed.
+  become: yes
   package:
     name:
       - docker
@@ -7,6 +8,7 @@
     state: absent
 
 - name: Ensure dependencies are installed.
+  become: yes
   apt:
     name:
       - apt-transport-https
@@ -15,6 +17,7 @@
     state: present
 
 - name: Add Docker apt key.
+  become: yes
   apt_key:
     url: "{{ docker_apt_gpg_key }}"
     id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
@@ -23,6 +26,7 @@
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
 
 - name: Ensure curl is present (on older systems without SNI).
+  become: yes
   package: name=curl state=present
   when: add_repository_key is failed
 
@@ -34,6 +38,7 @@
   when: add_repository_key is failed
 
 - name: Add Docker repository.
+  become: yes
   apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present

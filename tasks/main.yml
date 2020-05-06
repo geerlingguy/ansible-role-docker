@@ -6,12 +6,14 @@
   when: ansible_os_family == 'Debian'
 
 - name: Install Docker.
+  become: yes
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
 
 - name: Ensure Docker is started and enabled at boot.
+  become: yes
   service:
     name: docker
     state: "{{ docker_service_state }}"

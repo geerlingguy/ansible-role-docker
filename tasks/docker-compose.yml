@@ -14,6 +14,7 @@
     and docker_compose_version not in docker_compose_current_version.stdout
 
 - name: Install Docker Compose (if configured).
+  become: yes
   get_url:
     url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
     dest: "{{ docker_compose_path }}"
