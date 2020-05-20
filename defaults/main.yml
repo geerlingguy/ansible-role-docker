@@ -13,6 +13,7 @@ docker_restart_handler_state: restarted
 docker_install_compose: true
 docker_compose_version: "1.25.4"
 docker_compose_path: /usr/local/bin/docker-compose
+docker_compose_bash_completion_path: /etc/bash_completion.d/docker-compose
 
 # Used only for Debian/Ubuntu. Switch 'stable' to 'edge' if needed.
 docker_apt_release_channel: stable
