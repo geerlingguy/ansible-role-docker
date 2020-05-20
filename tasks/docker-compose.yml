@@ -21,6 +21,5 @@
    
 - name: Install Docker Compose Bash Completion (if configured).
   get_url:
-    url: https://raw.github.com/docker/compose/releases/download/{{ docker_compose_version }}/contrib/completion/bash/docker-compose
+    url: https://raw.githubusercontent.com/docker/compose/{{ docker_compose_version }}/contrib/completion/bash/docker-compose
     dest: "{{ docker_compose_bash_completion_path }}"
-    mode: 0755
