@@ -25,3 +25,10 @@
 
 - include_tasks: docker-users.yml
   when: docker_users | length > 0
+
+- include_tasks: docker-login.yml
+  loop: "{{ docker_logins }}"
+  loop_control:
+    loop_var: docker_login
+  when: docker_logins | length > 0
+

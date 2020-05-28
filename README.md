@@ -59,6 +59,13 @@ Usually in combination with changing `docker_yum_repository` as well.
       - user2
 
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
+    
+    docker_logins:
+      - url: repository.example.com
+        username: myuser
+        password: mypass
+
+A list of private container registries to be logged in with `docker`.
 
 ## Use with Ansible (and `docker` Python library)
 

@@ -1,0 +1,10 @@
+---
+- name: Check if credentials exist and are authorized
+  command: timeout 5 docker login {{ docker_login.url }}
+  register: docker_login_check
+  changed_when: false
+  failed_when: docker_login_check.rc not in (0, 124) # 124 is timeout exceeded code
+
+- name: Login to registry {{ docker_login.url }} as {{ docker_login.username }}
+  shell: docker login --username {{ docker_login.username }} --password {{ docker_login.password }} {{ docker_login.url }} 2>/dev/null
+  when: docker_login_check.rc == 124

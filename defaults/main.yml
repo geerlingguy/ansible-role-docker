@@ -29,3 +29,6 @@ docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+# A list of private repositories and login credentials
+docker_logins: []
