@@ -11,6 +11,13 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- include_tasks: docker-service-proxy.yml
+  when:
+    - http_proxy is defined
+    - https_proxy is defined
+    - no_proxy is defined
+    - enable_proxy is defined and enable_proxy|bool
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
@@ -25,3 +32,4 @@
 
 - include_tasks: docker-users.yml
   when: docker_users | length > 0
+

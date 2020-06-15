@@ -1,0 +1,17 @@
+---
+- name: create a service directory
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: add proxy configuration for docker service
+  template:
+    dest: "/etc/systemd/system/docker.service.d/{{ item }}.conf"
+    src: "{{ item }}.conf.j2"
+  with_items:
+    - http_proxy
+    - https_proxy
+    - no_proxy
+  notify:
+    - reload systemd
+    - restart docker
