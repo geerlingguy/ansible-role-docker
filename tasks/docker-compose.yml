@@ -5,6 +5,20 @@
   changed_when: false
   failed_when: false
 
+- name: Get latest version from docker-compose (if configured)
+  block:
+    - name: Get latest version of docker-compose from Github API
+      uri:
+        url: https://api.github.com/repos/docker/compose/releases/latest
+        return_content: yes
+      register: url_content
+      delegate_to: localhost
+
+    - name: Set latest version in docker_compose_version variable
+      set_fact:
+        docker_compose_version: "{{url_content.json.name }}"
+  when: docker_compose_version == 'latest'
+
 - name: Delete existing docker-compose version if it's different.
   file:
     path: "{{ docker_compose_path }}"
