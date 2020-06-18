@@ -31,7 +31,7 @@ Variables to control the state of the `docker` service, and whether it should st
     docker_compose_version: "1.26.0"
     docker_compose_path: /usr/local/bin/docker-compose
 
-Docker Compose installation options.
+Docker Compose installation options. You can use `docker_compose_version: "latest"` to get the current latest version.
 
     docker_apt_release_channel: stable
     docker_apt_arch: amd64
