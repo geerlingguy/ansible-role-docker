@@ -16,7 +16,7 @@
 
     - name: Set latest version in docker_compose_version variable
       set_fact:
-        docker_compose_version: "{{url_content.json.name }}"
+        docker_compose_version: "{{ url_content.json.name }}"
   when: docker_compose_version == 'latest'
 
 - name: Delete existing docker-compose version if it's different.
