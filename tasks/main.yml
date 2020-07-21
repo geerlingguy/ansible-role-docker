@@ -11,11 +11,16 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
-- name: Ensure Docker is started and enabled at boot.
+- name: Ensure Docker is enabled at boot.
+  service:
+    name: docker
+    enabled: "{{ docker_service_enabled }}"
+
+- name: Ensure Docker is started.
   service:
     name: docker
     state: "{{ docker_service_state }}"
-    enabled: "{{ docker_service_enabled }}"
+  when: not ansible_is_chroot
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
