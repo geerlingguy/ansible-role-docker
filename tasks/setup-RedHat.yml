@@ -7,6 +7,13 @@
       - docker-engine
     state: absent
 
+# See https://github.com/containers/podman/issues/4791
+- name: Remove conflicting podman-manpages (conflits with docker on CentOS 8.1)
+  package:
+    name: podman-manpages
+    state: absent
+  when: ansible_distribution == "CentOS" and ansible_distribution_version == "8.1"
+
 - name: Add Docker GPG key.
   rpm_key:
     key: "{{ docker_yum_gpg_key }}"
