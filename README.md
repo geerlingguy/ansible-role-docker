@@ -28,10 +28,10 @@ You can control whether the package is installed, uninstalled, or at the latest 
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
 
     docker_install_compose: true
-    docker_compose_version: "1.26.0"
+    docker_compose_version: "1.26.2"
     docker_compose_path: /usr/local/bin/docker-compose
 
-Docker Compose installation options.
+Docker Compose installation options. Please note that Docker Compose installation only installs a x86_64 version of Compose. If you're running an ARM system, consider [the pip role with the additional docker-compose pip package](https://github.com/geerlingguy/ansible-role-pip).
 
     docker_apt_release_channel: stable
     docker_apt_arch: amd64
