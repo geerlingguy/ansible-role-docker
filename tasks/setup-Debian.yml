@@ -38,3 +38,4 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: true
+    mode: "0644"
