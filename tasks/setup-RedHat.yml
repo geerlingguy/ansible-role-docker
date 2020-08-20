@@ -26,6 +26,7 @@
     section: 'docker-{{ docker_edition }}-edge'
     option: enabled
     value: '{{ docker_yum_repo_enable_edge }}'
+    mode: 0644
 
 - name: Configure Docker Test repo.
   ini_file:
@@ -33,6 +34,7 @@
     section: 'docker-{{ docker_edition }}-test'
     option: enabled
     value: '{{ docker_yum_repo_enable_test }}'
+    mode: 0644
 
 - name: Install containerd separately (CentOS 8).
   package:
