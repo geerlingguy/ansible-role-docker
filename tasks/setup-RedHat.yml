@@ -45,6 +45,7 @@
 
     - name: disable container-tools
       command: dnf -y module disable container-tools
+      changed_when: false
 
     - name: install containerd
       package:
