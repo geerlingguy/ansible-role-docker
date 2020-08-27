@@ -1,0 +1,14 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check for existence of daemon.json file
+      stat:
+        path: /etc/docker/daemon.json
+      register: daemon_json_st
+
+    - name: Fail if the daemon.json was found since it wasn't specified
+      assert:
+        that: "{{ not daemon_json_st.stat.exists }}"

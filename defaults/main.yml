@@ -29,3 +29,7 @@ docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+# Optional Docker daemon.json configuration
+docker_daemon_json: {}
+docker_daemon_json_filename: /etc/docker/daemon.json

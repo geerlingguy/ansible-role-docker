@@ -11,6 +11,25 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- name: Install Docker daemon.json
+  copy:
+    content: "{{ docker_daemon_json | to_json }}"
+    dest: "{{ docker_daemon_json_filename }}"
+    mode: "0644"
+    owner: root
+    group: root
+  notify: restart docker
+  when:
+    - "docker_daemon_json|bool"
+
+- name: Clean out Docker daemon.json
+  file:
+    path: "{{ docker_daemon_json_filename }}"
+    state: absent
+  when:
+    - "not docker_daemon_json|bool"
+    - "docker_daemon_json_filename|length > 0"
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker

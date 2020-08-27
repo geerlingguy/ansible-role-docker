@@ -54,6 +54,20 @@ Usually in combination with changing `docker_apt_repository` as well.
 You can change `docker_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 Usually in combination with changing `docker_yum_repository` as well.
 
+    docker_daemon_json:
+      exec-opts:
+        - native.cgroupdriver=systemd
+      log-driver: json-file
+      log-opts:
+        max-size: "100m"
+      storage-driver: overlay2
+
+    docker_daemon_json_filename: /etc/docker/daemon.json
+
+Customize your /etc/docker/daemon.json contents and filename. The YAML passed to `docker_daemon_json` is converted
+to JSON and ends up at the location referred to by `docker_daemon_json_filename`. If you leave `docker_daemon_json`
+empty, no file will be created and `docker_daemon_json_filename` will be deleted, if it exists.
+
     docker_users:
       - user1
       - user2

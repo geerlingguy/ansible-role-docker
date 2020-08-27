@@ -1,0 +1,9 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check for existence of daemon.json file
+      stat:
+        path: /etc/docker/daemon.json
