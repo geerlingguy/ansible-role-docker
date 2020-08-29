@@ -9,6 +9,8 @@
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
+  async: "{{ docker_package_timeout }}"
+  poll: 5
   notify: restart docker
 
 - name: Ensure Docker is started and enabled at boot.

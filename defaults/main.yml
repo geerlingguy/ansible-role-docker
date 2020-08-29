@@ -3,6 +3,7 @@
 docker_edition: 'ce'
 docker_package: "docker-{{ docker_edition }}"
 docker_package_state: present
+docker_package_timeout: 1800
 
 # Service options.
 docker_service_state: started
