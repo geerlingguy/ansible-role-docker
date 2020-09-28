@@ -36,8 +36,19 @@
     value: '{{ docker_yum_repo_enable_test }}'
     mode: 0644
 
-- name: Install containerd separately (CentOS 8).
-  package:
-    name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.2.el7.x86_64.rpm
-    state: present
+- name: centos 8 - containerd and dependencies
+  block:
+    - name: install container-selinux
+      package:
+        name: container-selinux
+        state: present
+
+    - name: disable container-tools
+      command: dnf -y module disable container-tools
+      changed_when: false
+
+    - name: install containerd
+      package:
+        name: containerd.io
+        state: present
   when: ansible_distribution_major_version | int == 8
