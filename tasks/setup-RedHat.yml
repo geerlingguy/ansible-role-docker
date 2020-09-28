@@ -36,18 +36,18 @@
     value: '{{ docker_yum_repo_enable_test }}'
     mode: 0644
 
-- name: centos 8 - containerd and dependencies
+- name: Configure containerd on RHEL 8.
   block:
-    - name: install container-selinux
+    - name: Ensure container-selinux is installed.
       package:
         name: container-selinux
         state: present
 
-    - name: disable container-tools
+    - name: Disable container-tools module.
       command: dnf -y module disable container-tools
       changed_when: false
 
-    - name: install containerd
+    - name: Ensure containerd.io is installed.
       package:
         name: containerd.io
         state: present
