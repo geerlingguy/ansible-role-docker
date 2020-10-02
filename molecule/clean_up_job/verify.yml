@@ -2,7 +2,7 @@
 - name: Verify
   hosts: all
   tasks:
-    - name: Run crontab list command
+    - name: Run crontab list command  # noqa 301
       command: crontab -l
       register: crontab_list
 
