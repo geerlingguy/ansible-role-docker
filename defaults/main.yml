@@ -29,3 +29,13 @@ docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+# Clean up cron job options.
+docker_clean_up_job: false
+docker_clean_up_job_user: "{{ ansible_user_id }}"
+docker_clean_up_job_schedule:
+  minute: "0"
+  hour: "0"
+  day: "*"
+  month: "*"
+  weekday: "0"

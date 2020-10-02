@@ -1,0 +1,21 @@
+---
+- name: Ensure crontab is installed on 'RedHat' os family.
+  yum:
+    name: cronie
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure crontab is installed on 'Debian' os family.
+  apt:
+    name: cron
+  when: ansible_os_family == 'Debian'
+
+- name: Create Docker clean up cron job.
+  cron:
+    name: "docker disk clean up"
+    job: "docker system prune -af > /dev/null 2>&1"
+    minute: "{{ docker_clean_up_job_schedule.minute }}"
+    hour: "{{ docker_clean_up_job_schedule.hour }}"
+    day: "{{ docker_clean_up_job_schedule.day }}"
+    month: "{{ docker_clean_up_job_schedule.month }}"
+    weekday: "{{ docker_clean_up_job_schedule.weekday }}"
+    user: "{{ docker_clean_up_job_user }}"

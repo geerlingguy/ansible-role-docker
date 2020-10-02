@@ -60,6 +60,17 @@ Usually in combination with changing `docker_yum_repository` as well.
 
 A list of system users to be added to the `docker` group (so they can use Docker on the server).
 
+    docker_clean_up_job: false
+    docker_clean_up_job_user: "{{ ansible_user_id }}"
+    docker_clean_up_job_schedule:
+      minute: "0"
+      hour: "0"
+      day: "*"
+      month: "*"
+      weekday: "0"
+
+Docker clean up task options. When `docker_clean_up_job` is set to `true` a cron job that runs the `docker system prune -af` command will be installed with the schedule defined in `docker_clean_up_job_schedule`.
+
 ## Use with Ansible (and `docker` Python library)
 
 Many users of this role wish to also use Ansible to then _build_ Docker images and manage Docker containers on the server where Docker is installed. In this case, you can easily add in the `docker` Python library using the `geerlingguy.pip` role:

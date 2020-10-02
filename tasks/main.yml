@@ -25,3 +25,6 @@
 
 - include_tasks: docker-users.yml
   when: docker_users | length > 0
+
+- include_tasks: clean-up-job.yml
+  when: docker_clean_up_job | bool

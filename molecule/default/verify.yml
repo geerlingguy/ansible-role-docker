@@ -1,0 +1,12 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Run crontab list command
+      command: crontab -l
+      register: crontab_list
+      ignore_errors: true
+
+    - name: Fail if the crontab list command succeeds
+      assert:
+        that: "{{ crontab_list.rc != 0 }}"

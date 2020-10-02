@@ -1,0 +1,11 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Run crontab list command
+      command: crontab -l
+      register: crontab_list
+
+    - name: Fail if the crontab entry is not found
+      assert:
+        that: "{{ '0 0 * * 0 docker system prune -af > /dev/null 2>&1' in crontab_list.stdout.split('\n') }}"
