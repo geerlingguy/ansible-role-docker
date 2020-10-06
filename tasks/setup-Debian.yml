@@ -12,6 +12,7 @@
       - apt-transport-https
       - ca-certificates
       - gnupg2
+    update_cache: yes
     state: present
 
 - name: Add Docker apt key.
