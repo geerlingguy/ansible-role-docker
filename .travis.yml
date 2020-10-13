@@ -8,11 +8,16 @@ env:
   matrix:
     - MOLECULE_DISTRO: centos8
     - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: ubuntu2004
     - MOLECULE_DISTRO: ubuntu1804
     - MOLECULE_DISTRO: ubuntu1604
     - MOLECULE_DISTRO: debian10
     - MOLECULE_DISTRO: debian9
     - MOLECULE_DISTRO: fedora31
+
+before_install:
+  # Upgrade Docker to work with docker-py.
+  - curl https://gist.githubusercontent.com/geerlingguy/ce883ad4aec6a5f1187ef93bd338511e/raw/36612d28981d92863f839c5aefe5b7dd7193d6c6/travis-ci-docker-upgrade.sh | sudo bash
 
 install:
   # Install test dependencies.

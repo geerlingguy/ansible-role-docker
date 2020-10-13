@@ -2,6 +2,7 @@
 dependencies: []
 
 galaxy_info:
+  role_name: docker
   author: geerlingguy
   description: Docker for Linux.
   company: "Midwestern Mac, LLC"
@@ -23,6 +24,7 @@ galaxy_info:
       versions:
         - xenial
         - bionic
+        - focal
   galaxy_tags:
     - web
     - system
