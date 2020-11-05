@@ -1,6 +1,6 @@
 # Ansible Role: Docker
 
-[![Build Status](https://travis-ci.com/geerlingguy/ansible-role-docker.svg?branch=master)](https://travis-ci.com/geerlingguy/ansible-role-docker)
+[![CI](https://github.com/geerlingguy/ansible-role-docker/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-docker/actions?query=workflow%3ACI)
 
 An Ansible Role that installs [Docker](https://www.docker.com) on Linux.
 
