@@ -20,6 +20,11 @@
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
 
+- name: Install bash completion for docker
+  get_url:
+    url: https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker
+    dest: /etc/bash_completion.d/docker.sh
+
 - include_tasks: docker-compose.yml
   when: docker_install_compose | bool
 
