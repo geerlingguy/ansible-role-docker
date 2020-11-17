@@ -25,3 +25,19 @@
 
 - include_tasks: docker-users.yml
   when: docker_users | length > 0
+
+- name: Configure docker
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: 0666
+  notify: restart docker
+  when: not docker_default_config
+
+- name: Configure containerd
+  template:
+    src: config.toml.j2
+    dest: /etc/containerd/config.toml
+    mode: 0666
+  notify: restart docker
+  when: not docker_default_config

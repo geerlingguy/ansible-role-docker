@@ -29,3 +29,9 @@ docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
 
 # A list of users who will be added to the docker group.
 docker_users: []
+
+# configuration
+docker_default_config: true
+docker_root_path: ""
+containerd_root_path: ""
+docker_native_cgroup: ""
