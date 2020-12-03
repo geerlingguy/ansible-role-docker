@@ -51,4 +51,9 @@
       package:
         name: containerd.io
         state: present
+
+    - name: Upgrade libseccomp for containerd compatibility
+      dnf:
+        name: libseccomp
+        state: latest
   when: ansible_distribution_major_version | int == 8
