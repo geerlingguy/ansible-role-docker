@@ -51,6 +51,10 @@ Usually in combination with changing `docker_apt_repository` as well.
 
 (Used only for RedHat/CentOS.) You can enable the Edge or Test repo by setting the respective vars to `1`.
 
+`configure_swapaccount: false`
+
+(Used only on Alpine Linux) If you use GRUB, you can let this role configure swap limits for you.
+
 You can change `docker_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 Usually in combination with changing `docker_yum_repository` as well.
 
