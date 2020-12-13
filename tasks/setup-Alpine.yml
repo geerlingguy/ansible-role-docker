@@ -2,6 +2,7 @@
 - name: Update cache
   apk:
     update_cache: true
+  changed_when: false
 
 - name: Make sure dependencies are present
   apk:
@@ -50,15 +51,15 @@
   when: swapaccount.changed and configure_swapaccount
 
 - debug:
-  msg: |
-    For memory and swap limit support,
-    please follow https://wiki.alpinelinux.org/wiki/Docker#Extlinux
+    msg: |
+      For memory and swap limit support,
+      please follow https://wiki.alpinelinux.org/wiki/Docker#Extlinux
   when: bootloader.stdout == "syslinux"
 
 - debug:
-  msg: |
-    For memory and swap limit support,
-    please follow https://wiki.alpinelinux.org/wiki/Docker#Extlinux
+    msg: |
+      For memory and swap limit support,
+      please follow https://wiki.alpinelinux.org/wiki/Docker#Extlinux
   when: bootloader.stdout == "grub" and not configure_swapaccount
 
 - name: Reload facts
