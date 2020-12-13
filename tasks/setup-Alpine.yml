@@ -1,0 +1,65 @@
+---
+- name: Update cache
+  apk:
+    update_cache: true
+
+- name: Make sure dependencies are present
+  apk:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+
+- name: Make sure that the cgroups service is started
+  service:
+    name: cgroups
+    state: started
+    enabled: true
+
+- name: Set fact for the Docker package name
+  set_fact:
+    docker_package: docker
+
+- name: Check for the installed bootloader
+  shell:
+    cmd: grep "grub\|syslinux" /etc/apk/world | head -n1
+  changed_when: false
+  register: bootloader
+
+- name: Copy the swapaccount GRUB extension file
+  file:
+    src: files/grub-swapaccount.cfg
+    dest: /etc/grub.d/swapaccount
+  when: |
+    configure_swapaccount and
+    bootloader.stdout == "grub" and
+    ansible_facts['cmdline'].swapaccount != 1
+  register: swapaccount
+
+- name: Regenerate the GRUB config
+  shell:
+    cmd: 'grub-mkconfig -o /boot/grub/grub.cfg'
+    warn: false
+  when: |
+    configure_swapaccount and
+    bootloader.stdout == "grub" and
+    swapaccount.changed
+
+- debug:
+    msg: "The configured swappacount will be loaded after the next reboot"
+  when: swapaccount.changed and configure_swapaccount
+
+- debug:
+  msg: |
+    For memory and swap limit support,
+    please follow https://wiki.alpinelinux.org/wiki/Docker#Extlinux
+  when: bootloader.stdout == "syslinux"
+
+- debug:
+  msg: |
+    For memory and swap limit support,
+    please follow https://wiki.alpinelinux.org/wiki/Docker#Extlinux
+  when: bootloader.stdout == "grub" and not configure_swapaccount
+
+- name: Reload facts
+  setup:
