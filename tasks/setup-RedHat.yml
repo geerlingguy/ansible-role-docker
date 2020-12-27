@@ -43,10 +43,6 @@
         name: container-selinux
         state: present
 
-    - name: Disable container-tools module.
-      command: dnf -y module disable container-tools
-      changed_when: false
-
     - name: Ensure containerd.io is installed.
       package:
         name: containerd.io
