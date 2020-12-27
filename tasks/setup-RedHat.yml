@@ -20,12 +20,12 @@
     group: root
     mode: 0644
 
-- name: Configure Docker Edge repo.
+- name: Configure Docker Nightly repo.
   ini_file:
     dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
-    section: 'docker-{{ docker_edition }}-edge'
+    section: 'docker-{{ docker_edition }}-nightly'
     option: enabled
-    value: '{{ docker_yum_repo_enable_edge }}'
+    value: '{{ docker_yum_repo_enable_nightly }}'
     mode: 0644
 
 - name: Configure Docker Test repo.
