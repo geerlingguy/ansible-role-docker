@@ -18,7 +18,14 @@ docker_compose_path: /usr/local/bin/docker-compose
 # Used only for Debian/Ubuntu. Switch 'stable' to 'nightly' if needed.
 docker_repo_url: https://download.docker.com/linux
 docker_apt_release_channel: stable
-docker_apt_arch: amd64
+docker_architecture_map:
+  amd64: amd64
+  x86_64: amd64
+  armv7l: armhf
+  aarch64: arm64
+  32-bit: amd64
+  64-bit: amd64
+docker_apt_arch: "{{ docker_architecture_map[ansible_architecture] }}"
 docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: true
 docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
