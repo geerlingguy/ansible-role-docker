@@ -48,6 +48,8 @@ jobs:
           - ubuntu1804
           - debian10
           - debian9
+          - fedora33
+          - fedora32
           - fedora31
 
     steps:
