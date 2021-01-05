@@ -49,8 +49,6 @@ jobs:
           - debian10
           - debian9
           - fedora33
-          - fedora32
-          - fedora31
 
     steps:
       - name: Check out the codebase.
