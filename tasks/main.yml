@@ -11,23 +11,26 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
-- name: Ensure Docker is started and enabled at boot.
-  service:
-    name: docker
-    state: "{{ docker_service_state }}"
-    enabled: "{{ docker_service_enabled }}"
-
 - name: Ensure /etc/docker/ directory exists.
   file:
     path: /etc/docker
     state: directory
+    mode: 0755
+  when: docker_daemon_options.keys() | length > 0
 
 - name: Configure Docker daemon options.
   copy:
     content: "{{ docker_daemon_options | to_nice_json }}"
     dest: /etc/docker/daemon.json
     mode: 0644
+  when: docker_daemon_options.keys() | length > 0
   notify: restart docker
+
+- name: Ensure Docker is started and enabled at boot.
+  service:
+    name: docker
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
