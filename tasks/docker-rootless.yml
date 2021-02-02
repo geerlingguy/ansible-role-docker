@@ -1,0 +1,85 @@
+---
+- name: Ensure Docker is stopped and disabled as root (only rootless mode)
+  service:
+    name: docker
+    state: stopped
+    enabled: no
+
+- name: Install rootless-packages
+  ansible.builtin.package:
+    name:
+      - uidmap
+      - docker-{{ docker_edition }}-rootless-extras
+    state: present
+
+- name: Ensure User(s) for rootless mode
+  ansible.builtin.user:
+    state: present
+    name: "{{ item }}"
+  register: docker_rootless_users_details
+  with_items: "{{ docker_rootless_users }}"
+
+- name: Ensure Parent Directories
+  ansible.builtin.file:
+    path: '{{ item.home }}/.config/systemd/user'
+    state: directory
+    mode: 0700
+    owner: '{{ item.uid }}'
+    group: '{{ item.group }}'
+  with_items: '{{ docker_rootless_users_details.results }}'
+
+- name: 'Create Systemd Unitfile for each user'
+  ansible.builtin.copy:
+    dest: '{{ item.home }}/.config/systemd/user/docker.service'
+    owner: '{{ item.uid }}'
+    group: '{{ item.group }}'
+    mode: 0600
+    backup: true
+    content: |
+      [Unit]
+      Description=Docker Application Container Engine (Rootless)
+      Documentation=https://docs.docker.com/engine/security/rootless/
+
+      [Service]
+      Environment=PATH=/bin:/sbin:/usr/sbin:/sbin:/bin:/usr/bin:/usr/local/bin:/snap/bin:/home/steffen/bin/:/home/steffen/bin/:/home/steffen/.local/bin/
+      ExecStart=/bin/dockerd-rootless.sh
+      ExecReload=/bin/kill -s HUP $MAINPID
+      TimeoutSec=0
+      RestartSec=2
+      Restart=always
+      StartLimitBurst=3
+      StartLimitInterval=60s
+      LimitNOFILE=infinity
+      LimitNPROC=infinity
+      LimitCORE=infinity
+      TasksMax=infinity
+      Delegate=yes
+      Type=simple
+
+      [Install]
+      WantedBy=default.target
+  with_items: "{{ docker_rootless_users_details.results }}"
+
+# It's not possible to enable service in user context, since ansible does not login via pam.d but switches users via sudo
+# see https://github.com/ansible/ansible/issues/50272, thus we manually create the link and hope the best.
+- name: Create folder for default.target
+  ansible.builtin.file:
+    path: '{{ item.home }}/.config/systemd/user/default.target.wants'
+    state: directory
+  with_items: '{{ docker_rootless_users_details.results }}'
+  when: docker_rootless_service_enabled
+
+- name: Create link to enable service
+  ansible.builtin.file:
+    path: '{{ item.home }}/.config/systemd/user/default.target.wants/docker.service'
+    src: '{{ item.home }}/.config/systemd/user/docker.service'
+    state: link
+  with_items: '{{ docker_rootless_users_details.results }}'
+  when: docker_rootless_service_enabled
+
+- name: 'Linger users'
+  ansible.builtin.file:
+    name: '/var/lib/systemd/linger/{{ item.name }}'
+    state: touch
+  with_items: '{{ docker_rootless_users_details.results }}'
+  when: docker_rootless_service_enabled
