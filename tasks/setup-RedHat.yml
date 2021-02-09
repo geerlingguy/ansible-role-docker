@@ -1,10 +1,12 @@
 ---
-- name: Ensure old versions of Docker are not installed.
+- name: Ensure Podman, Buildah and old versions of Docker are not installed.
   package:
     name:
       - docker
       - docker-common
       - docker-engine
+      - podman
+      - buildah
     state: absent
 
 - name: Add Docker GPG key.
