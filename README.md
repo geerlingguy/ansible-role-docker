@@ -31,9 +31,10 @@ Variables to control the state of the `docker` service, and whether it should st
     docker_daemon_settings:
         data-root: /data
         debug: true
-```
 
+```
 Configure /etc/docker/daemon.json for more options please read documentation there https://docs.docker.com/config/daemon/
+
 
     docker_install_compose: true
     docker_compose_version: "1.26.0"
