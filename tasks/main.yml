@@ -11,6 +11,14 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- name: Configure /etc/docker/daemon.json
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    mode: 0640
+  when: docker_daemon_settings is defined
+  notify: restart docker
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
