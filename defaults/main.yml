@@ -5,7 +5,7 @@ docker_package: "docker-{{ docker_edition }}"
 docker_package_state: present
 
 # Docker daemon settings (generates /etc/docker/daemon.json)
-# docker_daemon_settings: 
+# docker_daemon_settings:
 # root-dir: "/data/"
 
 # Service options.
