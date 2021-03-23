@@ -11,8 +11,13 @@
     name:
       - apt-transport-https
       - ca-certificates
-      - gnupg2
     state: present
+
+- name: Ensure gnupg2 dependency is installed.
+  apt:
+    name: gnupg2
+    state: present
+  when: ansible_distribution != 'Ubuntu' or ansible_distribution_version is version('20.04', '<')
 
 - name: Add Docker apt key.
   apt_key:
