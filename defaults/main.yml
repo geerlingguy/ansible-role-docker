@@ -15,6 +15,14 @@ docker_compose_version: "1.26.0"
 docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
 docker_compose_path: /usr/local/bin/docker-compose
 
+# Rootless Docker options. Systemd only.
+docker_install_rootless: false
+# the service-enabling currently uses symlinks, not systemd
+docker_rootless_service_enabled: true
+# A list of users, which get the docker systemd unitfiles
+docker_rootless_users:
+  - nonroot_docker
+
 # Used only for Debian/Ubuntu. Switch 'stable' to 'nightly' if needed.
 docker_repo_url: https://download.docker.com/linux
 docker_apt_release_channel: stable
