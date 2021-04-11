@@ -15,3 +15,15 @@ provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+    
+verifier:
+  name: testinfra
+  directory: ../tests/
+  env:
+    # get rid of the DeprecationWarning messages of third-party libs,
+    # see "https://docs.pytest.org/en/latest/warnings.html
+    #   #deprecationwarning-and-pendingdeprecationwarning"
+    PYTHONWARNINGS: "ignore:.*U.*mode is deprecated:DeprecationWarning"
+  options:
+    # show which tests where executed in test output
+    v: 3
