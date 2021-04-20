@@ -11,11 +11,14 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
-- name: Ensure Docker is started and enabled at boot.
+- name: Configure docker service and socket state
   service:
-    name: docker
+    name: "docker.{{ item }}"
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+  with_items:
+    - service
+    - socket
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
