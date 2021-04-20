@@ -9,6 +9,13 @@
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
+  # RETRY - when a previous installation was removed, but left behind service
+  # configurations, and the docker service is disabled, package installation
+  # will occasionally fail the first time, at least under Ubuntu 18.04.
+  retries: 2
+  delay: 2
+  register: install_result
+  until: install_result is not failed
   notify: restart docker
 
 - name: Ensure Docker is started and enabled at boot.
