@@ -11,6 +11,21 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
 
+- name: Ensure /etc/docker/ directory exists.
+  file:
+    path: /etc/docker
+    state: directory
+    mode: 0755
+  when: docker_daemon_options is not none
+
+- name: Configure Docker daemon options.
+  copy:
+    content: "{{ docker_daemon_options | to_nice_json }}"
+    dest: /etc/docker/daemon.json
+    mode: 0644
+  when: docker_daemon_options is not none
+  notify: restart docker
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
