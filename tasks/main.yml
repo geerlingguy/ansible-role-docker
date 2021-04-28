@@ -5,11 +5,29 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
+- name: Remove hold on docker
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: install
+  when: docker_apt_hold|default(false)|bool
+  with_items:
+  - docker-{{ docker_edition }}
+  - docker-{{ docker_edition }}-cli
+
 - name: Install Docker.
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
+
+- name: Prevent docker from being upgraded
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  when: docker_apt_hold|default(false)|bool
+  with_items:
+  - docker-{{ docker_edition }}
+  - docker-{{ docker_edition }}-cli
 
 - name: Ensure Docker is started and enabled at boot.
   service:
