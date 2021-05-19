@@ -10,6 +10,7 @@
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Ensure Docker is started and enabled at boot.
   service:
