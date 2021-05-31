@@ -1,6 +1,6 @@
 ---
 - name: Check current docker-compose version.
-  command: docker-compose --version
+  command: "{{ docker_compose_path }} --version"
   register: docker_compose_current_version
   changed_when: false
   failed_when: false
@@ -15,6 +15,9 @@
 
 - name: Install Docker Compose (if configured).
   get_url:
-    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    url: "{{ docker_compose_url }}"
     dest: "{{ docker_compose_path }}"
     mode: 0755
+  when: >
+    docker_compose_current_version.stdout is not defined
+    or docker_compose_version not in docker_compose_current_version.stdout
