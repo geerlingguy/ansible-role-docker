@@ -14,7 +14,7 @@
   when: not ansible_facts['os_family'] == "VMware Photon OS"
 
 - name: Install Docker on Photon OS.
-  command: "tdnf install {{ item }}"
+  command: "tdnf install -y {{ item }}"
   with_items: "{{ docker_package_photon }}"
   tags: installation
   when: ansible_facts['os_family'] == "VMware Photon OS"
