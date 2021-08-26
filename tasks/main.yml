@@ -32,6 +32,7 @@
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+  when: 'not docker_install_rootless'
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
@@ -42,3 +43,6 @@
 
 - include_tasks: docker-users.yml
   when: docker_users | length > 0
+
+- include_tasks: docker-rootless.yml
+  when: docker_install_rootless | bool
