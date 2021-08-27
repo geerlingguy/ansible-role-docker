@@ -33,21 +33,25 @@ Variables to control the state of the `docker` service, and whether it should st
 
 Docker Compose installation options.
 
+    docker_repo_url: https://download.docker.com/linux
+
+The main Docker repo URL, common between Debian and RHEL systems.
+
     docker_apt_release_channel: stable
     docker_apt_arch: amd64
-    docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+    docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     docker_apt_ignore_key_error: True
-    docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `nightly` if you want to use the Nightly release.
 
 You can change `docker_apt_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 Usually in combination with changing `docker_apt_repository` as well.
 
-    docker_yum_repo_url: https://download.docker.com/linux/centos/docker-{{ docker_edition }}.repo
+    docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"docker_edition }}.repo
     docker_yum_repo_enable_nightly: '0'
     docker_yum_repo_enable_test: '0'
-    docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
+    docker_yum_gpg_key: "{{ docker_repo_url }}/centos/gpg"
 
 (Used only for RedHat/CentOS.) You can enable the Nightly or Test repo by setting the respective vars to `1`.
 

@@ -15,7 +15,7 @@ docker_compose_version: "1.26.0"
 docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
 docker_compose_path: /usr/local/bin/docker-compose
 
-# Docker repo url common for linux
+# Docker repo URL.
 docker_repo_url: https://download.docker.com/linux
 
 # Used only for Debian/Ubuntu. Switch 'stable' to 'nightly' if needed.
