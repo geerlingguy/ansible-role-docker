@@ -6,7 +6,7 @@ An Ansible Role that installs [Docker](https://www.docker.com) on Linux.
 
 ## Requirements
 
-None.
+This role requires that the user performing its actions has sufficient priveleges to install and configure Docker. [If this is not the case, you can run the role with `become: true`.](https://github.com/geerlingguy/ansible-role-docker/issues/285)
 
 ## Role Variables
 
