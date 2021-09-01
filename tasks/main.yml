@@ -11,6 +11,7 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
+  environment: "{{ proxy_env }}"
 
 - name: Ensure /etc/docker/ directory exists.
   file:
