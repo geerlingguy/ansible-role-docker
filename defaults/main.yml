@@ -39,5 +39,5 @@ docker_daemon_options: {}
 
 # proxy env, if defined, env vars https_proxy and http_proxy will be injected.
 proxy_env:
-  http_proxy: 'http://10.0.45.5:8118'
-  https_proxy: 'http://10.0.45.5:8118'
+  http_proxy:
+  https_proxy:
