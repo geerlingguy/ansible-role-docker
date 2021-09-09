@@ -1,4 +1,7 @@
 ---
+- set_fact: ansible_distribution="Ubuntu"
+  when: ansible_distribution == 'KDE neon'
+
 - name: Ensure old versions of Docker are not installed.
   package:
     name:
