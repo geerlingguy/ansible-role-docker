@@ -14,8 +14,8 @@ docker_install_compose: true
 docker_compose_version: "1.29.2"
 docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
 docker_compose_path: /usr/local/bin/docker-compose
-docker_compose_completion_url: https://raw.githubusercontent.com/docker/compose/{{ docker_compose_version }}/contrib/completion/bash/docker-compose
-docker_compose_completion_path: /etc/bash_completion.d/docker-compose
+docker_compose_bash_completion_url: https://raw.githubusercontent.com/docker/compose/{{ docker_compose_version }}/contrib/completion/bash/docker-compose
+docker_compose_bash_completion_path: /etc/bash_completion.d/docker-compose
 
 # Docker repo URL.
 docker_repo_url: https://download.docker.com/linux

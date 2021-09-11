@@ -11,7 +11,7 @@
     state: absent
   loop:
     - "{{ docker_compose_path }}"
-    - "{{ docker_compose_completion_path }}"
+    - "{{ docker_compose_bash_completion_path }}"
   when: >
     docker_compose_current_version.stdout is defined
     and docker_compose_version not in docker_compose_current_version.stdout
@@ -25,11 +25,16 @@
     docker_compose_current_version.stdout is not defined
     or docker_compose_version not in docker_compose_current_version.stdout
 
-- name: Install Docker Compose command-line completion (if configured)
+- name: Gather installed packages in search for bash-completion.
+  package_facts:
+    manager: auto
+
+- name: Install Docker Compose command-line completion for bash (if supported).
   get_url:
-    url: "{{ docker_compose_completion_url }}"
-    dest: "{{ docker_compose_completion_path }}"
+    url: "{{ docker_compose_bash_completion_url }}"
+    dest: "{{ docker_compose_bash_completion_path }}"
     mode: 0644
   when: >
-    docker_compose_current_version.stdout is not defined
-    or docker_compose_version not in docker_compose_current_version.stdout
+    'bash-completion' in ansible_facts.packages and
+    ( docker_compose_current_version.stdout is not defined
+    or docker_compose_version not in docker_compose_current_version.stdout )
