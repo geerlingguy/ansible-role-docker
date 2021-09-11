@@ -5,10 +5,13 @@
   changed_when: false
   failed_when: false
 
-- name: Delete existing docker-compose version if it's different.
+- name: Delete existing docker-compose version with its command-line completion if it's different.
   file:
-    path: "{{ docker_compose_path }}"
+    path: "{{ item }}"
     state: absent
+  loop:
+    - "{{ docker_compose_path }}"
+    - "{{ docker_compose_completion_path }}"
   when: >
     docker_compose_current_version.stdout is defined
     and docker_compose_version not in docker_compose_current_version.stdout
@@ -18,6 +21,15 @@
     url: "{{ docker_compose_url }}"
     dest: "{{ docker_compose_path }}"
     mode: 0755
+  when: >
+    docker_compose_current_version.stdout is not defined
+    or docker_compose_version not in docker_compose_current_version.stdout
+
+- name: Install Docker Compose command-line completion (if configured)
+  get_url:
+    url: "{{ docker_compose_completion_url }}"
+    dest: "{{ docker_compose_completion_path }}"
+    mode: 0644
   when: >
     docker_compose_current_version.stdout is not defined
     or docker_compose_version not in docker_compose_current_version.stdout
