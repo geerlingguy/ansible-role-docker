@@ -1,4 +1,9 @@
 ---
+
+- name: Ensure apt cache is up-to-date.
+  apt:
+    update_cache: yes
+
 - name: Ensure old versions of Docker are not installed.
   package:
     name:
