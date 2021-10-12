@@ -103,6 +103,13 @@ None.
 
 MIT / BSD
 
+## Sponsors
+
+* [We Manage](https://we-manage.de): Helping start-ups and grown-ups scaling their infrastructure in a sustainable way.
+
+The above sponsor(s) are supporting Jeff Geerling on [GitHub Sponsors](https://github.com/sponsors/geerlingguy). You can sponsor Jeff's work too, to help him continue improving this book and Ansible open source work!
+
+
 ## Author Information
 
 This role was created in 2017 by [Jeff Geerling](https://www.jeffgeerling.com/), author of [Ansible for DevOps](https://www.ansiblefordevops.com/).
