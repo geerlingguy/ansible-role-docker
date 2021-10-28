@@ -11,8 +11,8 @@
     selection: install
   when: docker_apt_hold|default(false)|bool
   with_items:
-  - docker-{{ docker_edition }}
-  - docker-{{ docker_edition }}-cli
+    - docker-{{ docker_edition }}
+    - docker-{{ docker_edition }}-cli
 
 - name: Install Docker.
   package:
@@ -26,8 +26,8 @@
     selection: hold
   when: docker_apt_hold|default(false)|bool
   with_items:
-  - docker-{{ docker_edition }}
-  - docker-{{ docker_edition }}-cli
+    - docker-{{ docker_edition }}
+    - docker-{{ docker_edition }}-cli
 
 - name: Ensure Docker is started and enabled at boot.
   service:
