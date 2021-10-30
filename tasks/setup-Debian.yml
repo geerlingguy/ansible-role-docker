@@ -39,7 +39,7 @@
 
 - name: Add Docker apt key (alternative for older systems without SNI).
   shell: >
-    curl -sSL {{ docker_apt_gpg_key }} | sudo apt-key add -
+    curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
   args:
     warn: false
   when: add_repository_key is failed
