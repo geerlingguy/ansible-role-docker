@@ -13,6 +13,7 @@
   when: >
     docker_compose_current_version.stdout is defined
     and docker_compose_version not in docker_compose_current_version.stdout
+    and ansible_os_family != "Archlinux"
 
 - name: Install Docker Compose (if configured).
   get_url:
@@ -22,3 +23,12 @@
   when: >
     docker_compose_current_version.stdout is not defined
     or docker_compose_version not in docker_compose_current_version.stdout
+    and ansible_os_family != "Archlinux"
+
+- name: Install Docker Compose (Archlinux)
+  package:
+    name: "docker-compose"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: ansible_os_family == 'Archlinux'

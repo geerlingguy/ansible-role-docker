@@ -11,6 +11,15 @@
     state: "{{ docker_package_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
+  when: ansible_os_family != 'Archlinux'
+
+- name: Install Docker (Archlinux).
+  package:
+    name: "docker"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: ansible_os_family == 'Archlinux'
 
 - name: Ensure /etc/docker/ directory exists.
   file:
