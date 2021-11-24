@@ -5,12 +5,22 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: Install Docker.
+- name: Install Docker (Ansible <2.12).
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
+  when: "ansible_version.full is version_compare('2.12', '<')"
+
+- name: Install Docker (Ansible >=2.12).
+  package:
+    name: "{{ docker_package }}"
+    state: "{{ docker_package_state }}"
+    allow_downgrade: true
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: "ansible_version.full is version_compare('2.12', '>=')"
 
 - name: Ensure /etc/docker/ directory exists.
   file:
