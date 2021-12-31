@@ -1,4 +1,14 @@
 ---
+- name: Load OS specific package information
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - '{{ansible_distribution}}.yml'
+        - '{{ansible_os_family}}.yml'
+        - default.yml
+      paths:
+        - 'vars'
 - include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
