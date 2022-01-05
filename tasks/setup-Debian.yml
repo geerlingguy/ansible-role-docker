@@ -49,3 +49,7 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: true
+    
+- name: Update apt cache
+  apt:
+    update_cache: yes
