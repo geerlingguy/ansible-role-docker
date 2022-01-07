@@ -24,8 +24,10 @@ You can control whether the package is installed, uninstalled, or at the latest 
     docker_service_state: started
     docker_service_enabled: true
     docker_restart_handler_state: restarted
+    docker_service_environment: {}
 
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set these to `stopped` and set the enabled variable to `no`.
+Additional environment variables, such as HTTP_PROXY, HTTPS_PROXY and NO_PROXY can be set with docker_service_environment and will be added to a drop-in systemd directory.
 
     docker_install_compose: true
     docker_compose_version: "1.26.0"

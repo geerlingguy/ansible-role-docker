@@ -1,0 +1,4 @@
+[Service]
+{% for environment_variable in docker_service_environment.keys() %}
+Environment="{{ environment_variable }}={{ docker_service_environment[environment_variable] }}"
+{% endfor %}
