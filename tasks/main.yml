@@ -41,7 +41,7 @@
     mode: 0755
   when: docker_service_environment.keys() | length > 0
   notify:
-    - systemc daemon-reload
+    - systemd daemon-reload
     - restart docker
 
 - name: Ensure Docker is started and enabled at boot.
