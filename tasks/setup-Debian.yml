@@ -44,13 +44,6 @@
     warn: false
   when: add_repository_key is failed
 
-- name: Get DEB architecture
-  shell: dpkg --print-architecture
-  register: docker_apt_arch
-  check_mode: false
-  changed_when: false
-  failed_when: false
-
 - name: Add Docker repository.
   apt_repository:
     repo: "{{ docker_apt_repository }}"
