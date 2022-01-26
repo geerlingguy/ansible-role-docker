@@ -10,6 +10,16 @@
     docker_compose_current_version: "{{ docker_compose_vsn.stdout | regex_search('(\\d+(\\.\\d+)+)') }}"
   when:
     - docker_compose_vsn.stdout is defined
+
+- name: Set version-specific URL variables
+  set_fact:
+    docker_compose_linux_casing: "{{ (docker_compose_version is version('2', '<')) | ternary('Linux', 'linux') }}"
+    docker_compose_version_prefix: "{{ (docker_compose_version is version('2', '<')) | ternary('', 'v') }}"
+
+- name: Set architecture
+  set_fact:
+    docker_compose_arch: "{{ (ansible_architecture == 'armv7l') | ternary('armv7', ansible_architecture) }}"
+
 - name: Delete existing docker-compose version if it's different.
   file:
     path: "{{ docker_compose_path }}"

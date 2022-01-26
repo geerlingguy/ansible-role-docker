@@ -11,8 +11,8 @@ docker_restart_handler_state: restarted
 
 # Docker Compose options.
 docker_install_compose: true
-docker_compose_version: "1.26.0"
-docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+docker_compose_version: "2.2.3"
+docker_compose_url: https://github.com/docker/compose/releases/download/{{ docker_compose_version_prefix }}{{ docker_compose_version }}/docker-compose-{{ docker_compose_linux_casing }}-{{ docker_compose_arch }}
 docker_compose_path: /usr/local/bin/docker-compose
 
 # Docker repo URL.
