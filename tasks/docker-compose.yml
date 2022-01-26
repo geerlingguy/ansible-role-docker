@@ -1,11 +1,15 @@
 ---
 - name: Check current docker-compose version.
   command: "{{ docker_compose_path }} --version"
-  register: docker_compose_current_version
+  register: docker_compose_vsn
   check_mode: false
   changed_when: false
   failed_when: false
 
+- set_fact:
+    docker_compose_current_version: "{{ docker_compose_vsn.stdout | regex_search('(\\d+(\\.\\d+)+)') }}"
+  when:
+    - docker_compose_vsn.stdout is defined
 - name: Delete existing docker-compose version if it's different.
   file:
     path: "{{ docker_compose_path }}"
@@ -20,5 +24,6 @@
     dest: "{{ docker_compose_path }}"
     mode: 0755
   when: >
-    docker_compose_current_version.stdout is not defined
-    or docker_compose_version not in docker_compose_current_version.stdout
+    (docker_compose_current_version is not defined)
+    or (docker_compose_current_version|length == 0)
+    or (docker_compose_current_version is version(docker_compose_version, '<'))
