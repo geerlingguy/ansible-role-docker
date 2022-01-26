@@ -29,6 +29,7 @@ Variables to control the state of the `docker` service, and whether it should st
 
     docker_install_compose: true
     docker_compose_version: "1.26.0"
+    docker_compose_arch: x86_64
     docker_compose_path: /usr/local/bin/docker-compose
 
 Docker Compose installation options.
