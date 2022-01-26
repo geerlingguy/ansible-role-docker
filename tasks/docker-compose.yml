@@ -6,6 +6,10 @@
   changed_when: false
   failed_when: false
 
+- name: Set architecture
+set_fact:
+  docker_compose_arch: "{{ (ansible_architecture == 'armv7l') | ternary('armv7', ansible_architecture) }}"
+
 - name: Delete existing docker-compose version if it's different.
   file:
     path: "{{ docker_compose_path }}"
