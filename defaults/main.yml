@@ -28,7 +28,7 @@ docker_apt_repository: >-
    {{ (ansible_distribution == 'Linux Mint') | ternary(lookup('ini', 'UBUNTU_CODENAME type=properties file=/etc/os-release'), ansible_distribution_release) }}
    {{ docker_apt_release_channel }}
 docker_apt_ignore_key_error: true
-docker_apt_gpg_key: "{{ docker_apt_repo_url }}/{{ ansible_distribution | lower }}/gpg"
+docker_apt_gpg_key: "{{ docker_apt_repo_url }}/gpg"
 
 # Used only for RedHat/CentOS/Fedora.
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
