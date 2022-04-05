@@ -15,7 +15,7 @@
     path: "{{ docker_compose_path }}"
     state: absent
   when: >
-    docker_compose_current_version is defined
+    (docker_compose_current_version is defined and docker_compose_current_version.stdout is defined)
     and (docker_compose_version | regex_replace('v', '')) not in docker_compose_current_version.stdout
 
 - name: Install Docker Compose (if configured).
