@@ -43,6 +43,7 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   ignore_errors: "{{ ansible_check_mode }}"
+  when: docker_service_manage | bool
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
