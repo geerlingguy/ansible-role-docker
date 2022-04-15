@@ -47,12 +47,12 @@
       checksum: sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570 # curl -sL https://download.docker.com/linux/ubuntu/gpg|sha256sum
 
 - name: De-Armor Docker GPG key
-    shell:  gpg --dearmor <  /usr/share/keyrings/docker-archive-keyring.gpg_armored > /usr/share/keyrings/docker-archive-keyring.gpg
+    shell: gpg --dearmor < /usr/share/keyrings/docker-archive-keyring.gpg_armored > /usr/share/keyrings/docker-archive-keyring.gpg
     args:
       creates: /usr/share/keyrings/docker-archive-keyring.gpg
 
 - name: "Add Docker's repository to APT sources list"
     apt_repository:
-      repo: "deb [arch={{ docker_apt_arch }}] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] {{ docker_repo_url }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+      repo: "deb [arch={{ docker_apt_arch }}] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg {{ docker_repo_url }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
       state: present
       update_cache: true
