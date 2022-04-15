@@ -29,7 +29,7 @@
   package: name=curl state=present
   when: add_repository_key is failed
 
-- name: Remove gpg keys if they exist #otherwise GPG doesn't run if file already exists
+- name: Remove gpg keys if they exist # otherwise GPG won't run if file already exists
     file:
       path: "{{ item }}"
       state: absent
