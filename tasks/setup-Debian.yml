@@ -25,27 +25,31 @@
     state: present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution_version is version('20.04', '>=')
 
-- name: Add Docker apt key.
-  apt_key:
-    url: "{{ docker_apt_gpg_key }}"
-    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
-    state: present
-  register: add_repository_key
-  ignore_errors: "{{ docker_apt_ignore_key_error }}"
-
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
   when: add_repository_key is failed
 
-- name: Add Docker apt key (alternative for older systems without SNI).
-  shell: >
-    curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
-  args:
-    warn: false
-  when: add_repository_key is failed
+- name: Remove gpg keys if they exist #otherwise GPG doesn't run if file already exists
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /usr/share/keyrings/docker-archive-keyring.gpg
+      - /usr/share/keyrings/docker-archive-keyring.gpg_armored
 
-- name: Add Docker repository.
-  apt_repository:
-    repo: "{{ docker_apt_repository }}"
-    state: present
-    update_cache: true
+- name: Download Docker gpg key
+    get_url:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      dest: /usr/share/keyrings/docker-archive-keyring.gpg_armored
+      checksum: sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570 # curl -sL https://download.docker.com/linux/ubuntu/gpg|sha256sum
+
+- name: De-Armor Docker GPG key
+    shell:  gpg --dearmor <  /usr/share/keyrings/docker-archive-keyring.gpg_armored > /usr/share/keyrings/docker-archive-keyring.gpg
+    args:
+      creates: /usr/share/keyrings/docker-archive-keyring.gpg
+
+- name: "Add Docker's repository to APT sources list"
+    apt_repository:
+      repo: "deb [arch={{ docker_apt_arch }}] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] {{ docker_repo_url }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+      state: present
+      update_cache: true
