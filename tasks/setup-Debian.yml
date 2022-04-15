@@ -4,6 +4,9 @@
     name:
       - docker
       - docker-engine
+      - docker.io
+      - containerd
+      - runc
     state: absent
 
 - name: Ensure dependencies are installed.
