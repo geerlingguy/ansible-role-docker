@@ -53,6 +53,6 @@
 
 - name: "Add Docker's repository to APT sources list"
     apt_repository:
-      repo: "deb [arch={{ docker_apt_arch }}] signed-by=/usr/share/keyrings/docker-archive-keyring.gpg {{ docker_repo_url }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+      repo: "deb arch={{ docker_apt_arch }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg {{ docker_repo_url }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
       state: present
       update_cache: true
