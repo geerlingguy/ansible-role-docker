@@ -22,3 +22,8 @@
 
   roles:
     - role: geerlingguy.docker
+
+  vars:
+    docker_daemon_options:
+      hosts:
+        - unix:///var/run/docker.sock
