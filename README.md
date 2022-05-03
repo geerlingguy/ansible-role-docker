@@ -81,7 +81,13 @@ Many users of this role wish to also use Ansible to then _build_ Docker images a
 
   vars:
     pip_install_packages:
+      - name: wheel
+      - name: pip
+        state: latest
+      - name: setuptools
+      - name: cffi
       - name: docker
+      - name: dockerpty
 
   roles:
     - geerlingguy.pip
