@@ -39,8 +39,10 @@ jobs:
     name: Molecule
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         distro:
+          - archlinux
           - rockylinux8
           - centos7
           - ubuntu2004
@@ -64,9 +66,24 @@ jobs:
       - name: Install test dependencies.
         run: pip3 install ansible molecule[docker] docker
 
+      - name: Provide MOLECULE_DISTRO to environment
+        run: echo "MOLECULE_DISTRO=${{ matrix.distro || 'centos7' }}" >> $GITHUB_ENV
+
       - name: Run Molecule tests.
+        if: matrix.distro != 'archlinux'
         run: molecule test
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          MOLECULE_DISTRO: ${{ matrix.distro }}
+          CI_IMAGE: geerlingguy/docker-${{ env.MOLECULE_DISTRO }}-ansible:latest
+
+      - name: Run Molecule tests on Arch Linux.
+        if: matrix.distro == 'archlinux'
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          # CI_IMAGE: mesaguy/ansible-molecule-archlinux:latest
+          # CI_IMAGE: carlodepieri/docker-archlinux-ansible:latest
+          # CI_IMAGE: ghcr.io/avnes/molecule-arch:latest
+          CI_IMAGE: archlinux:base-20210328.0.18194
