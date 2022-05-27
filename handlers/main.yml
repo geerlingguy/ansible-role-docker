@@ -1,4 +1,8 @@
 ---
+- name: Check Systemd configuration
+  command: systemd-analyze verify /lib/systemd/system/docker.service
+  listen: reload systemd
+
 - name: reload systemd
   systemd:
     daemon_reload: true
