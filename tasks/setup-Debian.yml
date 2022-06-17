@@ -23,7 +23,7 @@
   apt:
     name: gnupg
     state: present
-  when: ansible_distribution == 'Ubuntu' or ansible_distribution_version is version('20.04', '>=')
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
 
 - name: Add Docker apt key.
   apt_key:
