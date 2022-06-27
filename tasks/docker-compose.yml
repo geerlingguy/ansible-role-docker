@@ -14,11 +14,11 @@
     and docker_compose_version not in docker_compose_current_version.stdout
 
 - name: Install Docker Compose (if configured).
-  get_url:
-    url: "{{ docker_compose_url }}"
-    dest: "{{ docker_compose_path }}"
-    mode: 0755
-  environment: "{{ proxy_env }}"
+  shell: |
+    wget -q {{ docker_compose_url }} -O {{ docker_compose_path }}
+    chmod +x {{ docker_compose_path }}
+  args:
+    chdir: /tmp
   when: >
     docker_compose_current_version.stdout is not defined
     or docker_compose_version not in docker_compose_current_version.stdout
