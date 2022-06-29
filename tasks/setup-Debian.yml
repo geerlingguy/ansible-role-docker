@@ -11,6 +11,7 @@
     name:
       - apt-transport-https
       - ca-certificates
+    update_cache: true
     state: present
 
 - name: Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems).
