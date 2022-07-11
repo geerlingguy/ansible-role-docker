@@ -5,18 +5,18 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: Install Docker.
+- name: Install Docker packages.
   package:
-    name: "{{ docker_package }}"
-    state: "{{ docker_package_state }}"
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
   when: "ansible_version.full is version_compare('2.12', '<') or ansible_os_family not in ['RedHat', 'Debian']"
 
-- name: Install Docker (with downgrade option).
+- name: Install Docker packages (with downgrade option).
   package:
-    name: "{{ docker_package }}"
-    state: "{{ docker_package_state }}"
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
     allow_downgrade: true
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
