@@ -1,8 +1,12 @@
 ---
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
 docker_edition: 'ce'
-docker_package: "docker-{{ docker_edition }}"
-docker_package_state: present
+docker_packages:
+  - "docker-{{ docker_edition }}"
+  - "docker-{{ docker_edition }}-cli"
+  - "docker-{{ docker_edition }}-rootless-extras"
+  - "containerd.io"
+docker_packages_state: present
 
 # Service options.
 docker_service_manage: true

@@ -14,10 +14,16 @@ Available variables are listed below, along with default values (see `defaults/m
 
     # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
     docker_edition: 'ce'
-    docker_package: "docker-{{ docker_edition }}"
-    docker_package_state: present
+    docker_packages:
+        - "docker-{{ docker_edition }}"
+        - "docker-{{ docker_edition }}-cli"
+        - "docker-{{ docker_edition }}-rootless-extras"
+    docker_packages_state: present
 
-The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). You can also specify a specific version of Docker to install using the distribution-specific format: Red Hat/CentOS: `docker-{{ docker_edition }}-<VERSION>`; Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>`.
+The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). 
+You can also specify a specific version of Docker to install using the distribution-specific format: 
+Red Hat/CentOS: `docker-{{ docker_edition }}-<VERSION>` (Note: you have to add this to all packages);
+Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>` (Note: you have to add this to all packages).
 
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_package_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
