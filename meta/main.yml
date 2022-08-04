@@ -26,6 +26,7 @@ galaxy_info:
         - xenial
         - bionic
         - focal
+        - jammy
   galaxy_tags:
     - web
     - system
