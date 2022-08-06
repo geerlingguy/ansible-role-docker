@@ -5,22 +5,39 @@
 - include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: Install Docker.
+- name: Install Docker packages.
   package:
-    name: "{{ docker_package }}"
-    state: "{{ docker_package_state }}"
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
   when: "ansible_version.full is version_compare('2.12', '<') or ansible_os_family not in ['RedHat', 'Debian']"
 
-- name: Install Docker (with downgrade option).
+- name: Install Docker packages (with downgrade option).
   package:
-    name: "{{ docker_package }}"
-    state: "{{ docker_package_state }}"
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
     allow_downgrade: true
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
   when: "ansible_version.full is version_compare('2.12', '>=') and ansible_os_family in ['RedHat', 'Debian']"
+
+- name: Install docker-compose plugin.
+  package:
+    name: "{{ docker_compose_package }}"
+    state: "{{ docker_compose_package_state }}"
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: "docker_install_compose_plugin | bool == true and (ansible_version.full is version_compare('2.12', '<') or ansible_os_family not in ['RedHat', 'Debian'])"
+
+- name: Install docker-compose-plugin (with downgrade option).
+  package:
+    name: "{{ docker_compose_package }}"
+    state: "{{ docker_compose_package_state }}"
+    allow_downgrade: true
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: "docker_install_compose_plugin | bool == true and ansible_version.full is version_compare('2.12', '>=') and ansible_os_family in ['RedHat', 'Debian']"
 
 - name: Ensure /etc/docker/ directory exists.
   file:
@@ -43,6 +60,7 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   ignore_errors: "{{ ansible_check_mode }}"
+  when: docker_service_manage | bool
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers

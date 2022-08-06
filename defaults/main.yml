@@ -1,14 +1,23 @@
 ---
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
 docker_edition: 'ce'
-#docker_package: "docker-{{ docker_edition }}"
-docker_package: "docker.io"
-docker_package_state: present
+docker_packages:
+  - "docker-{{ docker_edition }}"
+  - "docker-{{ docker_edition }}-cli"
+  - "docker-{{ docker_edition }}-rootless-extras"
+  - "containerd.io"
+docker_packages_state: present
 
 # Service options.
+docker_service_manage: true
 docker_service_state: started
 docker_service_enabled: true
 docker_restart_handler_state: restarted
+
+# Docker Compose Plugin options.
+docker_install_compose_plugin: false
+docker_compose_package: docker-compose-plugin
+docker_compose_package_state: present
 
 # Docker Compose options.
 docker_install_compose: true
