@@ -48,4 +48,5 @@
   apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present
+    filename: "{{ docker_apt_filename }}"
     update_cache: true
