@@ -25,6 +25,12 @@ galaxy_info:
         - bionic
         - focal
         - jammy
+    - name: Alpine
+      version:
+        - all
+    - name: Arch
+      versions:
+        - all
   galaxy_tags:
     - web
     - system

@@ -6,7 +6,7 @@
       files:
         - '{{ansible_distribution}}.yml'
         - '{{ansible_os_family}}.yml'
-        - default.yml
+        - main.yml
       paths:
         - 'vars'
 
