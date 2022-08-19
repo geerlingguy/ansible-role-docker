@@ -1,5 +1,5 @@
 ---
-- name: Load OS specific package information
+- name: Load OS-specific vars.
   include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
