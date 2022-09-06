@@ -79,5 +79,20 @@
 - include_tasks: docker-compose.yml
   when: docker_install_compose | bool
 
-- include_tasks: docker-users.yml
+- name: Get all docker group infos
+  getent:
+    database: group
+    key: docker
+    split: ':'
   when: docker_users | length > 0
+
+- name: Check there is at least one user to add to docker group
+  set_fact:
+    at_least_one_user_to_modify: true
+  when:
+    - docker_users | length > 0
+    - item not in ansible_facts.getent_group["docker"][2]
+  with_items: "{{ docker_users }}"
+
+- include_tasks: docker-users.yml
+  when: at_least_one_user_to_modify is defined
