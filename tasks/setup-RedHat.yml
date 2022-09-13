@@ -26,8 +26,8 @@
     regexp: '{{ __current_item }}'
     replace: '{{ docker_repo_url }}'
   with_items:
-  - 'https://download.docker.com/linux'
-  - 'https://download-stage.docker.com/linux/'
+    - 'https://download.docker.com/linux'
+    - 'https://download-stage.docker.com/linux/'
   loop_control:
     loop_var: "__current_item"
 
