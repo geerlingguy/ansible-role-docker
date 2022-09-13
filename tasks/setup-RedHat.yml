@@ -20,6 +20,12 @@
     group: root
     mode: 0644
 
+- name: Replace Docker default domain repo.
+  ansible.builtin.replace:
+    path: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    regexp: 'https://download.docker.com/linux'
+    replace: '{{ docker_repo_url }}'
+
 - name: Configure Docker Nightly repo.
   ini_file:
     dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
