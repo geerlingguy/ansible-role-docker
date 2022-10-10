@@ -28,7 +28,7 @@ galaxy_info:
     - name: Alpine
       version:
         - all
-    - name: Arch
+    - name: ArchLinux
       versions:
         - all
   galaxy_tags:
