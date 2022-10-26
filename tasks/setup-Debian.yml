@@ -28,7 +28,7 @@
 - name: Add Docker apt key.
   ansible.builtin.get_url:
     url: "{{ docker_apt_gpg_key }}"
-    dest: /etc/apt/trusted.gpg.d/docker.asc
+    dest: "{{ docker_apt_gpg_keyring }}_armored"
     mode: '0644'
     force: true
   register: add_repository_key
@@ -44,6 +44,17 @@
   args:
     warn: false
   when: add_repository_key is failed
+
+- name: De-Armor Docker signing key
+  command: gpg --yes --dearmor -o "{{ docker_apt_gpg_keyring }}" "{{ docker_apt_gpg_keyring }}_armored"
+  no_log: true
+  args:
+    creates: "{{ docker_apt_gpg_keyring }}"
+
+- name: Set permission to the docker Signing key
+  file:
+    path: "{{ docker_apt_gpg_keyring }}"
+    mode: '0644'
 
 - name: Add Docker repository.
   apt_repository:
