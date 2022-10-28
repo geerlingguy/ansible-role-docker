@@ -1,15 +1,15 @@
 ---
 - name: Check current docker-compose version.
-  command: docker-compose --version
+  command: "docker-compose --version"
   register: docker_compose_current_version
   changed_when: false
   failed_when: false
 
-- name: Get latest version from docker-compose (if configured)
+- name: Get latest version from Docker compose
   block:
-    - name: Get latest version of docker-compose from Github API
+    - name: Get latest version of Docker Compose from Github API
       uri:
-        url: https://api.github.com/repos/docker/compose/releases/latest
+        url: "{{ docker_compose_version_api_url }}"
         return_content: yes
       register: url_content
       delegate_to: localhost
@@ -17,7 +17,7 @@
     - name: Set latest version in docker_compose_version variable
       set_fact:
         docker_compose_version: "{{ url_content.json.name }}"
-  when: docker_compose_version == 'latest'
+  when: docker_compose_version is defined and docker_compose_version == 'latest'
 
 - name: Delete existing docker-compose version if it's different.
   file:
@@ -29,6 +29,6 @@
 
 - name: Install Docker Compose (if configured).
   get_url:
-    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    url: "{{ docker_compose_download_url }}"
     dest: "{{ docker_compose_path }}"
     mode: 0755
