@@ -11,7 +11,7 @@ docker_restart_handler_state: restarted
 
 # Docker Compose options.
 docker_install_compose: true
-docker_compose_version: "v1.26.0"
+docker_compose_version: "v2.11.1"
 docker_compose_version_api_url: "https://api.github.com/repos/docker/compose/releases/latest"
 docker_compose_arch: "{{ ansible_architecture }}"
 docker_compose_download_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ docker_compose_arch }}"
