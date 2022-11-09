@@ -33,17 +33,22 @@
     force: true
   register: add_repository_key
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('18.04', '>=')
 
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
-  when: add_repository_key is failed
+  when: >
+    (add_repository_key is skipped)
+    or (add_repository_key is failed)
 
 - name: Add Docker apt key (alternative for older systems without SNI).
   shell: >
     curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
   args:
     warn: false
-  when: add_repository_key is failed
+  when: >
+    (add_repository_key is skipped)
+    or (add_repository_key is failed)
 
 - name: Add Docker repository.
   apt_repository:
