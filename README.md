@@ -12,18 +12,15 @@ None.
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
-    docker_edition: 'ce'
     docker_packages:
-        - "docker-{{ docker_edition }}"
-        - "docker-{{ docker_edition }}-cli"
-        - "docker-{{ docker_edition }}-rootless-extras"
+        - "docker-ce"
+        - "docker-ce-cli"
+        - "docker-ce-rootless-extras"
     docker_packages_state: present
 
-The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). 
-You can also specify a specific version of Docker to install using the distribution-specific format: 
-Red Hat/CentOS: `docker-{{ docker_edition }}-<VERSION>` (Note: you have to add this to all packages);
-Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>` (Note: you have to add this to all packages).
+You can also specify a specific version of Docker to install using the distribution-specific format:
+Red Hat/CentOS: `docker-ce-<VERSION>` (Note: you have to add this to all packages);
+Debian/Ubuntu: `docker-ce=<VERSION>` (Note: you have to add this to all packages).
 
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_package_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
@@ -62,7 +59,7 @@ The main Docker repo URL, common between Debian and RHEL systems.
 You can change `docker_apt_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 Usually in combination with changing `docker_apt_repository` as well.
 
-    docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"docker_edition }}.repo
+    docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-ce.repo"
     docker_yum_repo_enable_nightly: '0'
     docker_yum_repo_enable_test: '0'
     docker_yum_gpg_key: "{{ docker_repo_url }}/centos/gpg"
@@ -119,7 +116,7 @@ MIT / BSD
 
 ## Sponsors
 
-* [We Manage](https://we-manage.de): Helping start-ups and grown-ups scaling their infrastructure in a sustainable way.
+- [We Manage](https://we-manage.de): Helping start-ups and grown-ups scaling their infrastructure in a sustainable way.
 
 The above sponsor(s) are supporting Jeff Geerling on [GitHub Sponsors](https://github.com/sponsors/geerlingguy). You can sponsor Jeff's work too, to help him continue improving these Ansible open source projects!
 
