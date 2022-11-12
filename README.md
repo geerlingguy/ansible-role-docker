@@ -12,6 +12,12 @@ None.
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
+    docker_packages:
+        - "docker-ce"
+        - "docker-ce-cli"
+        - "docker-ce-rootless-extras"
+    docker_packages_state: present
+
 You can specify a specific version of Docker to install using the distribution-specific format:
 Red Hat/CentOS: `docker-ce-<VERSION>` (Note: you have to add this to all packages);
 Debian/Ubuntu: `docker-ce=<VERSION>` (Note: you have to add this to all packages).
