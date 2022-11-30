@@ -52,7 +52,7 @@ Docker Compose installation options.
 The main Docker repo URL, common between Debian and RHEL systems.
 
     docker_apt_release_channel: stable
-    docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+    docker_apt_arch: "{{ {'x86_64': 'amd64', 'armv7l': 'armhf', 'aarch64': 'arm64'}[ansible_architecture] }}"
     docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     docker_apt_ignore_key_error: True
     docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
