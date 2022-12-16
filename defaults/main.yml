@@ -9,6 +9,7 @@ docker_packages:
 docker_packages_state: present
 
 # Service options.
+docker_service_prevent_autostart: false
 docker_service_manage: true
 docker_service_state: started
 docker_service_enabled: true
