@@ -29,13 +29,13 @@ docker_compose_path: /usr/local/bin/docker-compose
 # Docker repo URL.
 docker_repo_url: https://download.docker.com/linux
 
-# Used only for Debian/Ubuntu. Switch 'stable' to 'nightly' if needed.
+# Used only for Debian/Ubuntu/Pop!_OS. Switch 'stable' to 'nightly' if needed.
 docker_apt_release_channel: stable
-docker_apt_ansible_distro_name: "{{ 'ubuntu' if ansible_distribution == 'Pop!_OS' else ansible_distribution }}"
+docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_distribution == 'Pop!_OS' else ansible_distribution }}"  # If Docker ever officially supports Pop!_OS, this can be removed.
 docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
-docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ docker_apt_ansible_distro_name | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: true
-docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distro_name | lower }}/gpg"
+docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}/gpg"
 
 # Used only for RedHat/CentOS/Fedora.
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
