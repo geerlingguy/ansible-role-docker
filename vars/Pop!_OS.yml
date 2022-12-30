@@ -1,0 +1,13 @@
+---
+# Since:
+# * `ansible_distribution` evaluates to Pop!_OS, and
+# * docker does not (yet) support Pop!_OS, and
+# * Pop_OS is effectively Ubuntu (for our purposes), and
+# * There isn't a 'better'  variable we easily use
+# we need to just wire in 'ubuntu' instead of relying on `ansible_distribution`.
+
+# If "https://download.docker.com/linux/pop!_os/gpg" ever exists, this can be removed.
+docker_apt_gpg_key: "{{ docker_repo_url }}/ubuntu/gpg"
+
+# If "https://download.docker.com/linux/pop!_os/....." ever exists, this can be removed.
+docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/ubuntu {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
