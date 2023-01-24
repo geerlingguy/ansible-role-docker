@@ -31,7 +31,7 @@ docker_repo_url: https://download.docker.com/linux
 
 # Used only for Debian/Ubuntu/Pop!_OS. Switch 'stable' to 'nightly' if needed.
 docker_apt_release_channel: stable
-docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_distribution == 'Pop!_OS' else ansible_distribution }}"  # If Docker ever officially supports Pop!_OS, this can be removed.
+docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_distribution in ['Pop!_OS', 'Linux Mint'] else ansible_distribution }}"  # Only necessary until Docker officially supports Pop!_OS and Linux Mint
 docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
 docker_apt_repository: "deb [arch={{ docker_apt_arch }}] {{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: true
