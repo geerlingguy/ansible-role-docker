@@ -11,6 +11,7 @@
   rpm_key:
     key: "{{ docker_yum_gpg_key }}"
     state: present
+  when: docker_add_repo | bool
 
 - name: Add Docker repository.
   get_url:
@@ -19,6 +20,7 @@
     owner: root
     group: root
     mode: 0644
+  when: docker_add_repo | bool
 
 - name: Configure Docker Nightly repo.
   ini_file:
@@ -28,6 +30,7 @@
     value: '{{ docker_yum_repo_enable_nightly }}'
     mode: 0644
     no_extra_spaces: true
+  when: docker_add_repo | bool
 
 - name: Configure Docker Test repo.
   ini_file:
@@ -37,6 +40,7 @@
     value: '{{ docker_yum_repo_enable_test }}'
     mode: 0644
     no_extra_spaces: true
+  when: docker_add_repo | bool
 
 - name: Configure containerd on RHEL 8.
   block:
