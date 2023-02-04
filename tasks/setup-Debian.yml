@@ -1,13 +1,13 @@
 ---
 - name: Ensure old versions of Docker are not installed.
-  package:
+  ansible.builtin.package:
     name:
       - docker
       - docker-engine
     state: absent
 
 - name: Ensure dependencies are installed.
-  apt:
+  ansible.builtin.apt:
     name:
       - apt-transport-https
       - ca-certificates
@@ -15,13 +15,13 @@
   when: docker_add_repo | bool
 
 - name: Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems).
-  apt:
+  ansible.builtin.apt:
     name: gnupg2
     state: present
   when: ansible_distribution != 'Ubuntu' or ansible_distribution_version is version('20.04', '<')
 
 - name: Ensure additional dependencies are installed (on Ubuntu >= 20.04).
-  apt:
+  ansible.builtin.apt:
     name: gnupg
     state: present
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
@@ -37,16 +37,18 @@
   when: docker_add_repo | bool
 
 - name: Ensure curl is present (on older systems without SNI).
-  package: name=curl state=present
+  ansible.builtin.package:
+    name: curl
+    state: present
   when: add_repository_key is failed and docker_add_repo | bool
 
-- name: Add Docker apt key (alternative for older systems without SNI).
-  shell: >
+- name: Add Docker apt key (alternative for older systems without SNI).  # noqa command-instead-of-module
+  ansible.builtin.shell: >
     curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
   when: add_repository_key is failed and docker_add_repo | bool
 
 - name: Add Docker repository.
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: true
