@@ -104,6 +104,9 @@ Many users of this role wish to also use Ansible to then _build_ Docker images a
     - geerlingguy.pip
     - geerlingguy.docker
 ```
+## About Amazon Linux
+
+Installation of docker-ce comes from amazon-linux-extras packages
 
 ## Dependencies
 

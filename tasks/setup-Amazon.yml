@@ -1,0 +1,23 @@
+---
+- name: Ensure a list of yum packages are installed on Amazon Linux
+  package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python-pip
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - amazon-linux-extras
+
+- name: Add extras repository
+  command: yum-config-manager --enable extras
+  register: yum_config_manager_output
+  changed_when: yum_config_manager_output.rc != 0
+
+- name: Install docker-ce from amazon-linux-extras packages
+  package:
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
+  notify: restart docker
