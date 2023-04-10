@@ -1,0 +1,45 @@
+---
+- name: Ensure dockerd-rootless-setup.sh is installed
+  apt:
+    name:
+      - uidmap
+      - docker-ce-rootless-extras
+    state: present
+
+- name: Stop any running root instances of docker daemon
+  systemd:
+    name: docker.service
+    state: stopped
+    enabled: false
+
+- name: Close root docker socket
+  systemd:
+    name: docker.socket
+    state: stopped
+    enabled: false
+
+- name: Remove docker.sock file
+  file:
+    path: /var/run/docker.sock
+    state: absent
+
+- name: Install rootless docker
+  become: false
+  command: /usr/bin/dockerd-rootless-setuptool.sh install
+
+- name: Enable and start rootless docker
+  become: false
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+    scope: user
+
+- name: Decouple rootless docker from user session
+  command: loginctl enable-linger {{ ansible_user }}
+
+- name: Add DOCKER_HOST to systemwide environment file
+  lineinfile:
+    path: /etc/environment
+    insertafter: EOF
+    line: 'DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock'
