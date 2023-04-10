@@ -65,6 +65,11 @@
   when: docker_daemon_options.keys() | length > 0
   notify: restart docker
 
+- name: Uninstall rootless docker
+  become: false
+  command: /usr/bin/dockerd-rootless-setuptool.sh uninstall --force
+  when: docker_rootless == false
+
 - name: Ensure Docker is started and enabled at boot
   service:
     name: docker

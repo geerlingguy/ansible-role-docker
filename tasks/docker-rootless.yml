@@ -32,7 +32,7 @@
   systemd:
     name: docker
     state: started
-    enabled: yes
+    enabled: true
     scope: user
 
 - name: Decouple rootless docker from user session
