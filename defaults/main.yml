@@ -7,6 +7,7 @@ docker_packages:
   - "docker-{{ docker_edition }}-rootless-extras"
   - "containerd.io"
 docker_packages_state: present
+docker_rootless: false
 
 # Service options.
 docker_service_manage: true
