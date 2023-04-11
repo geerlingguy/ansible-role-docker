@@ -36,10 +36,10 @@
     scope: user
 
 - name: Decouple rootless docker from user session
-  command: loginctl enable-linger {{ ansible_user }}
+  command: "loginctl enable-linger {{ ansible_user }}"
 
 - name: Add DOCKER_HOST to systemwide environment file
   lineinfile:
     path: /etc/environment
     insertafter: EOF
-    line: 'DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock'
+    line: "DOCKER_HOST=unix://{{ lookup('env', 'XDG_RUNTIME_DIR') }}/docker.sock"
