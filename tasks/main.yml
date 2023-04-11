@@ -75,6 +75,13 @@
   command: /usr/bin/dockerd-rootless-setuptool.sh uninstall --force
   when: docker_rootless == false and rootless_conf.stat.exists
 
+- name: Reset DOCKER_HOST environment
+  lineinfile:
+    path: /etc/environment
+    state: absent
+    regexp: '^DOCKER_HOST=unix:///run/user/.*/docker.sock$'
+  when: docker_rootless == false and rootless_conf.stat.exists
+
 - name: Ensure Docker is started and enabled at boot
   service:
     name: docker
