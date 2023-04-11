@@ -7,13 +7,13 @@
     state: present
 
 - name: Stop any running root instances of docker daemon
-  systemd:
+  service:
     name: docker.service
     state: stopped
     enabled: false
 
 - name: Close root docker socket
-  systemd:
+  service:
     name: docker.socket
     state: stopped
     enabled: false
@@ -32,9 +32,10 @@
   become: false
   systemd:
     name: docker.service
-    state: restarted
-    enabled: true
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
     scope: user
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Decouple rootless docker from user session
   command: "loginctl enable-linger {{ ansible_user }}"
