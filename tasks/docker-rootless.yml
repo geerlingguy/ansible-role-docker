@@ -26,12 +26,13 @@
 - name: Install rootless docker
   become: false
   command: /usr/bin/dockerd-rootless-setuptool.sh install
+  when: rootless_conf.stat.exists == false
 
 - name: Enable and start rootless docker
   become: false
   systemd:
-    name: docker
-    state: started
+    name: docker.service
+    state: restarted
     enabled: true
     scope: user
 

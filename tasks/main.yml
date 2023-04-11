@@ -65,10 +65,15 @@
   when: docker_daemon_options.keys() | length > 0
   notify: restart docker
 
+- name: Stat for rootless docker
+  stat:
+    path: "{{ lookup('env', 'XDG_RUNTIME_DIR') }}/docker.sock"
+  register: rootless_conf
+
 - name: Uninstall rootless docker
   become: false
   command: /usr/bin/dockerd-rootless-setuptool.sh uninstall --force
-  when: docker_rootless == false
+  when: docker_rootless == false and rootless_conf.stat.exists
 
 - name: Ensure Docker is started and enabled at boot
   service:
