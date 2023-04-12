@@ -1,10 +1,19 @@
 ---
 - name: Ensure dockerd-rootless-setup.sh is installed
-  apt:
+  package:
     name:
       - uidmap
       - docker-ce-rootless-extras
     state: present
+  when: ansible_distribution != "CentOS"
+
+- name: Ensure dockerd-rootless-setup.sh is installed
+  package:
+    name:
+      - shadow-utils
+      - docker-ce-rootless-extras
+    state: present
+  when: ansible_distribution == "CentOS"
 
 - name: Stop any running root instances of docker daemon
   service:
@@ -22,6 +31,10 @@
   file:
     path: /var/run/docker.sock
     state: absent
+
+- name: Modprobe ip_tables
+  modprobe:
+    name: ip_tables
 
 - name: Install rootless docker
   become: false
