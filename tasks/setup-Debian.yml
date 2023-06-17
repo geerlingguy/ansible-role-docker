@@ -46,6 +46,10 @@
   ansible.builtin.shell: >
     set -o pipefail
     curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
+  args:
+    executable: /bin/bash
+  register: dl
+  until: dl is success
   when: add_repository_key is failed and docker_add_repo | bool
 
 - name: Add Docker repository.
