@@ -45,6 +45,7 @@ jobs:
           - ubuntu2204
           - ubuntu2004
           - ubuntu1804
+          - debian12
           - debian11
           - debian10
           - fedora34
