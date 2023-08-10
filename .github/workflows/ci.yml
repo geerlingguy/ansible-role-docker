@@ -45,6 +45,7 @@ jobs:
           - ubuntu2204
           - ubuntu2004
           - ubuntu1804
+          - debian12
           - debian11
           - debian10
           - fedora34
@@ -61,7 +62,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible molecule[docker] docker
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
 
       - name: Run Molecule tests.
         run: molecule test

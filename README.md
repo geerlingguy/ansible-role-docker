@@ -47,6 +47,10 @@ Docker Compose Plugin installation options. These differ from the below in that 
 
 Docker Compose installation options.
 
+    docker_add_repo: true
+
+Controls whether this role will add the official Docker repository. Set to `false` if you want to use the default docker packages for your system or manage the package repository on your own.
+
     docker_repo_url: https://download.docker.com/linux
 
 The main Docker repo URL, common between Debian and RHEL systems.
