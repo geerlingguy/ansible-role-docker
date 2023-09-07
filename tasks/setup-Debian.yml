@@ -18,13 +18,13 @@
   apt:
     name: gnupg2
     state: present
-  when: ansible_distribution != 'Ubuntu' or ansible_distribution_version is version('20.04', '<')
+  when: ansible_facts.distribution != 'Ubuntu' or ansible_facts.distribution_version is version('20.04', '<')
 
 - name: Ensure additional dependencies are installed (on Ubuntu >= 20.04).
   apt:
     name: gnupg
     state: present
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
+  when: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('20.04', '>=')
 
 - name: Add Docker apt key.
   ansible.builtin.get_url:
