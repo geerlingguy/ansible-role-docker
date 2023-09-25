@@ -44,6 +44,11 @@
 
 - name: Configure containerd on RHEL 8.
   block:
+    - name: Ensure runc is not installed.
+      package:
+        name: runc
+        state: absent
+
     - name: Ensure container-selinux is installed.
       package:
         name: container-selinux
