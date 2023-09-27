@@ -31,7 +31,8 @@
     url: "{{ docker_apt_gpg_key }}"
     dest: /etc/apt/trusted.gpg.d/docker.asc
     mode: '0644'
-    force: true
+    force: false
+    checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
   register: add_repository_key
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
   when: docker_add_repo | bool
