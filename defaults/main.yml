@@ -15,12 +15,12 @@ docker_service_enabled: true
 docker_restart_handler_state: restarted
 
 # Docker Compose Plugin options.
-docker_install_compose_plugin: false
+docker_install_compose_plugin: true
 docker_compose_package: docker-compose-plugin
 docker_compose_package_state: present
 
 # Docker Compose options.
-docker_install_compose: true
+docker_install_compose: false
 docker_compose_version: "v2.11.1"
 docker_compose_arch: "{{ ansible_facts.architecture }}"
 docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ docker_compose_arch }}"
@@ -32,13 +32,17 @@ docker_add_repo: true
 # Docker repo URL.
 docker_repo_url: https://download.docker.com/linux
 
-# Used only for Debian/Ubuntu. Switch 'stable' to 'nightly' if needed.
+# Used only for Debian/Ubuntu/Pop!_OS/Linux Mint. Switch 'stable' to 'nightly' if needed.
 docker_apt_release_channel: stable
+# docker_apt_ansible_distribution is a workaround for Ubuntu variants which can't be identified as such by Ansible,
+# and is only necessary until Docker officially supports them.
+docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_facts.distribution in ['Pop!_OS', 'Linux Mint'] else ansible_facts.distribution }}"
 docker_apt_arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
 docker_apt_repository: "deb [arch={{ docker_apt_arch }} signed-by=/etc/apt/trusted.gpg.d/docker.asc] {{ docker_repo_url }}/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: true
 docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_facts.distribution | lower }}/gpg"
 docker_apt_gpg_key_checksum: "sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570"
+docker_apt_filename: "docker"
 
 # Used only for RedHat/CentOS/Fedora.
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
