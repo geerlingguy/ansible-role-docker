@@ -37,7 +37,7 @@ docker_apt_release_channel: stable
 # docker_apt_ansible_distribution is a workaround for Ubuntu variants which can't be identified as such by Ansible,
 # and is only necessary until Docker officially supports them.
 docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_distribution in ['Pop!_OS', 'Linux Mint'] else ansible_distribution }}"
-docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'armhf' if ansible_architecture == 'armv7l' else 'amd64' }}"
+docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'armhf' if ansible_architecture == 'armv7l' else 'amd64' if ansible_architecture == 'x86_64' else 'ansible_architecture' }}"
 docker_apt_repository: "deb [arch={{ docker_apt_arch }} signed-by=/etc/apt/trusted.gpg.d/docker.asc] {{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: true
 docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}/gpg"
