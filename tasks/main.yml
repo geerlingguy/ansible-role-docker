@@ -1,4 +1,9 @@
 ---
+- name: Check if vars directory exists
+  stat:
+    path: 'vars'
+  register: vars_dir
+
 - name: Load OS-specific vars.
   include_vars: "{{ lookup('first_found', params) }}"
   vars:
@@ -9,6 +14,7 @@
         - main.yml
       paths:
         - 'vars'
+  when: vars_dir.stat.exists and vars_dir.stat.isdir
 
 - include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
