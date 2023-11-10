@@ -3,6 +3,7 @@
   package:
     name:
       - docker
+      - docker.io
       - docker-engine
     state: absent
 
