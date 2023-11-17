@@ -36,12 +36,12 @@
 - name: Ensure curl is present
   package: name=curl state=present
 
-- name: Add Docker apt key 
+- name: Add Docker apt key
   shell: >
     curl -fsSL {{ docker_apt_gpg_key }} | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
   changed_when: false
 
-- name: Change permissions for /etc/apt/keyrings/docker.gpg 
+- name: Change permissions for /etc/apt/keyrings/docker.gpg
   file:
     path: /etc/apt/keyrings/docker.gpg
     mode: 'a+r'
