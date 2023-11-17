@@ -39,6 +39,7 @@
 - name: Add Docker apt key 
   shell: >
     curl -fsSL {{ docker_apt_gpg_key }} | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
+  changed_when: false
 
 - name: Change permissions for /etc/apt/keyrings/docker.gpg 
   file:
