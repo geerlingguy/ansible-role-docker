@@ -27,25 +27,23 @@
     state: present
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
 
-- name: Add Docker apt key.
-  ansible.builtin.get_url:
-    url: "{{ docker_apt_gpg_key }}"
-    dest: /etc/apt/trusted.gpg.d/docker.asc
-    mode: '0644'
-    force: false
-    checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
-  register: add_repository_key
-  ignore_errors: "{{ docker_apt_ignore_key_error }}"
-  when: docker_add_repo | bool
+- name: Ensure directory exists for /etc/apt/keyrings
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
 
-- name: Ensure curl is present (on older systems without SNI).
+- name: Ensure curl is present
   package: name=curl state=present
-  when: add_repository_key is failed and docker_add_repo | bool
 
-- name: Add Docker apt key (alternative for older systems without SNI).
+- name: Add Docker apt key 
   shell: >
-    curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
-  when: add_repository_key is failed and docker_add_repo | bool
+    curl -sSL {{ docker_apt_gpg_key }} | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
+
+- name: Change permissions for /etc/apt/keyrings/docker.gpg 
+  file:
+    path: /etc/apt/keyrings/docker.gpg
+    mode: 'a+r'
 
 - name: Add Docker repository.
   apt_repository:
