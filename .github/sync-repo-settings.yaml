@@ -1,0 +1,20 @@
+# Whether or not rebase-merging is enabled on this repository.
+# Defaults to `true`
+rebaseMergeAllowed: true
+
+# Whether or not squash-merging is enabled on this repository.
+# Defaults to `true`
+squashMergeAllowed: true
+
+# Whether or not PRs are merged with a merge commit on this repository.
+# Defaults to `false`
+mergeCommitAllowed: false
+
+# Automatically delete head branches after merging PRs.  Defaults to `true`.
+deleteBranchOnMerge: true
+
+# Rules for branch protection (add multiple entries to configure multiple branches)
+branchProtectionRules:
+# Identifies the protection rule pattern. Name of the branch to be protected.
+# Defaults to `master`
+- pattern: master
