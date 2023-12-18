@@ -33,13 +33,16 @@
     state: directory
     mode: '0755'
 
-- name: Ensure curl is present
-  package: name=curl state=present
-
-- name: Add Docker apt key
-  shell: >
-    curl -fsSL {{ docker_apt_gpg_key }} | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
-  changed_when: false
+- name: Add Docker apt key.
+  ansible.builtin.get_url:
+    url: "{{ docker_apt_gpg_key }}"
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+    force: false
+    checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
+  register: add_repository_key
+  ignore_errors: "{{ docker_apt_ignore_key_error }}"
+  when: docker_add_repo | bool
 
 - name: Change permissions for /etc/apt/keyrings/docker.gpg
   file:
