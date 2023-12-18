@@ -44,10 +44,14 @@
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
   when: docker_add_repo | bool
 
-- name: Change permissions for /etc/apt/keyrings/docker.gpg
-  file:
-    path: /etc/apt/keyrings/docker.gpg
-    mode: 'a+r'
+- name: Ensure curl is present (on older systems without SNI).
+  package: name=curl state=present
+  when: add_repository_key is failed and docker_add_repo | bool
+
+- name: Add Docker apt key (alternative for older systems without SNI).
+  shell: >
+    curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
+  when: add_repository_key is failed and docker_add_repo | bool
 
 - name: Add Docker repository.
   apt_repository:
