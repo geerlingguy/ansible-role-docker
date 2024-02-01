@@ -6,6 +6,7 @@ docker_packages:
   - "docker-{{ docker_edition }}-cli"
   - "docker-{{ docker_edition }}-rootless-extras"
   - "containerd.io"
+  - docker-buildx-plugin
 docker_packages_state: present
 
 # Service options.
