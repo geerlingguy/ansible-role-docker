@@ -1,0 +1,60 @@
+---
+- name: Ensure dockerd-rootless-setup.sh is installed
+  package:
+    name:
+      - uidmap
+      - docker-ce-rootless-extras
+    state: present
+  when: ansible_distribution != "CentOS"
+
+- name: Ensure dockerd-rootless-setup.sh is installed
+  package:
+    name:
+      - shadow-utils
+      - docker-ce-rootless-extras
+    state: present
+  when: ansible_distribution == "CentOS"
+
+- name: Stop any running root instances of docker daemon
+  service:
+    name: docker.service
+    state: stopped
+    enabled: false
+
+- name: Close root docker socket
+  service:
+    name: docker.socket
+    state: stopped
+    enabled: false
+
+- name: Remove docker.sock file
+  file:
+    path: /var/run/docker.sock
+    state: absent
+
+- name: Modprobe ip_tables
+  modprobe:
+    name: ip_tables
+
+- name: Install rootless docker
+  become: false
+  command: /usr/bin/dockerd-rootless-setuptool.sh install
+  when: rootless_conf.stat.exists == false
+
+- name: Enable and start rootless docker
+  become: false
+  systemd:
+    name: docker.service
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+    scope: user
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Decouple rootless docker from user session
+  command: "loginctl enable-linger {{ ansible_user }}"
+
+- name: Add DOCKER_HOST to systemwide environment file
+  lineinfile:
+    path: /etc/environment
+    insertafter: EOF
+    line: "DOCKER_HOST=unix://{{ lookup('env', 'XDG_RUNTIME_DIR') }}/docker.sock"

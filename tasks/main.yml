@@ -65,13 +65,34 @@
   when: docker_daemon_options.keys() | length > 0
   notify: restart docker
 
-- name: Ensure Docker is started and enabled at boot.
+- name: Stat for rootless docker
+  stat:
+    path: "{{ lookup('env', 'XDG_RUNTIME_DIR') }}/docker.sock"
+  register: rootless_conf
+
+- name: Uninstall rootless docker
+  become: false
+  command: /usr/bin/dockerd-rootless-setuptool.sh uninstall --force
+  when: docker_rootless == false and rootless_conf.stat.exists
+
+- name: Reset DOCKER_HOST environment
+  lineinfile:
+    path: /etc/environment
+    state: absent
+    regexp: '^DOCKER_HOST=unix:///run/user/.*/docker.sock$'
+  when: docker_rootless == false and rootless_conf.stat.exists
+
+- name: Ensure Docker is started and enabled at boot
   service:
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   ignore_errors: "{{ ansible_check_mode }}"
-  when: docker_service_manage | bool
+  when: docker_service_manage | bool and docker_rootless == false
+
+- name: Setting up docker daemon as non-root
+  include_tasks: docker-rootless.yml
+  when: docker_rootless == true
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
