@@ -1,0 +1,9 @@
+---
+- name: Create volumes with options
+  docker_volume:
+    name: "{{ item.name }}"
+    driver_options:
+      type: "{{ item.driver_options.type }}"
+      o: "{{ item.driver_options.o | default(omit) }}"
+      device: "{{ item.driver_options.device }}"
+  with_items: "{{ docker_volumes }}"

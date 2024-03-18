@@ -1,5 +1,7 @@
 # Ansible Role: Docker
 
+Forked by Catalina Sindrilaru (Eau de Web) to allow the creation of volumes using the docker_volumes variable (see defaults/main.yml for an example).
+
 [![CI](https://github.com/geerlingguy/ansible-role-docker/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-docker/actions?query=workflow%3ACI)
 
 An Ansible Role that installs [Docker](https://www.docker.com) on Linux.

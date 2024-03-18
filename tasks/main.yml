@@ -96,3 +96,6 @@
 
 - include_tasks: docker-users.yml
   when: at_least_one_user_to_modify is defined
+
+- include_tasks: docker-volumes.yml
+  when: docker_volumes | length > 0

@@ -56,3 +56,16 @@ docker_users: []
 
 # Docker daemon options as a dict
 docker_daemon_options: {}
+
+# A list of docker volumes that will be created
+docker_volumes: []
+
+# Example:
+
+# ---
+# docker_volumes: 
+#   - name: data
+#     driver_options:
+#       type: nfs
+#       o: addr=10.0.2.2,rw,nfsvers=4
+#       device: ":/data/"
