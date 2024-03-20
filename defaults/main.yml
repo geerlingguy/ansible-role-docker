@@ -63,7 +63,7 @@ docker_volumes: []
 # Example:
 
 # ---
-# docker_volumes: 
+# docker_volumes:
 #   - name: data
 #     driver_options:
 #       type: nfs
