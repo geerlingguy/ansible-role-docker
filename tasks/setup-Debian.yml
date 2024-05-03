@@ -57,6 +57,8 @@
 
 - name: Configure Amazon ECR Docker Credential Helper
   # More details see: https://github.com/awslabs/amazon-ecr-credential-helper
+  tags:
+    - ecr-setup
   block:
     - name: Update ECR Docker Credential Helper
       apt:
