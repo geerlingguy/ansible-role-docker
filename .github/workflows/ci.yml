@@ -19,12 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'geerlingguy.docker'
 
       - name: Set up Python 3.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -41,23 +41,24 @@ jobs:
     strategy:
       matrix:
         distro:
+          - rockylinux9
           - rockylinux8
+          - ubuntu2404
           - ubuntu2204
           - ubuntu2004
-          - ubuntu1804
           - debian12
           - debian11
           - debian10
-          - fedora34
+          - fedora39
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'geerlingguy.docker'
 
       - name: Set up Python 3.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
