@@ -31,10 +31,16 @@
     state: present
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
 
+- name: Ensure directory exists for /etc/apt/keyrings
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
 - name: Add Docker apt key.
   ansible.builtin.get_url:
     url: "{{ docker_apt_gpg_key }}"
-    dest: /etc/apt/trusted.gpg.d/docker.asc
+    dest: /etc/apt/keyrings/docker.asc
     mode: '0644'
     force: false
     checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
