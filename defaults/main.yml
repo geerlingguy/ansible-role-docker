@@ -8,6 +8,7 @@ docker_packages:
   - "containerd.io"
   - docker-buildx-plugin
 docker_packages_state: present
+docker_rootless: false
 
 # Service options.
 docker_service_manage: true
