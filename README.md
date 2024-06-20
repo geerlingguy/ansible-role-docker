@@ -99,7 +99,7 @@ Many users of this role wish to also use Ansible to then _build_ Docker images a
 
   vars:
     pip_install_packages:
-      - name: docker
+      - name: "docker < 7.0.0"
 
   roles:
     - geerlingguy.pip
