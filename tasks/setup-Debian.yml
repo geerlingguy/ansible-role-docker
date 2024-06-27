@@ -2,13 +2,7 @@
 - # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
   name: Ensure old versions of Docker are not installed.
   package:
-    name:
-      - docker
-      - docker.io
-      - docker-engine
-      - podman-docker
-      - containerd
-      - runc
+    name: "{{ docker_obsolete_packages }}"
     state: absent
 
 - name: Ensure dependencies are installed.
