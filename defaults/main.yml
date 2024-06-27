@@ -7,6 +7,13 @@ docker_packages:
   - "docker-{{ docker_edition }}-rootless-extras"
   - "containerd.io"
   - docker-buildx-plugin
+docker_obsolete_packages:
+  - docker
+  - docker.io
+  - docker-engine
+  - podman-docker
+  - containerd
+  - runc
 docker_packages_state: present
 
 # Service options.
