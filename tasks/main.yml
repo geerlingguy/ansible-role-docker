@@ -70,6 +70,7 @@
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+    daemon_reload: true
   ignore_errors: "{{ ansible_check_mode }}"
   when: docker_service_manage | bool
 
