@@ -1,4 +1,12 @@
 ---
+- name: Remove deprecated Docker repository.
+  apt_repository:
+    repo: "{{ docker_apt_repository_deprecated }}"
+    state: absent
+    filename: "{{ docker_apt_filename }}"
+    update_cache: true
+  when: docker_add_repo | bool
+
 - # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
   name: Ensure old versions of Docker are not installed.
   package:
