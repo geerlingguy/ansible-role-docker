@@ -22,6 +22,7 @@ galaxy_info:
         - bionic
         - focal
         - jammy
+        - noble
     - name: Alpine
       version:
         - all
