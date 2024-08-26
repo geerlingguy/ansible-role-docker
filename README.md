@@ -51,7 +51,7 @@ docker_restart_handler_state: restarted
 Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set `docker_service_manage` to `false`.
 
 ```yaml
-docker_install_compose_plugin: false
+docker_install_compose_plugin: true
 docker_compose_package: docker-compose-plugin
 docker_compose_package_state: present
 ```
@@ -59,9 +59,10 @@ docker_compose_package_state: present
 Docker Compose Plugin installation options. These differ from the below in that docker-compose is installed as a docker plugin (and used with `docker compose`) instead of a standalone binary.
 
 ```yaml
-docker_install_compose: true
-docker_compose_version: "1.26.0"
+docker_install_compose: false
+docker_compose_version: "2.11.1"
 docker_compose_arch: "{{ ansible_architecture }}"
+docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ docker_compose_arch }}"
 docker_compose_path: /usr/local/bin/docker-compose
 ```
 
