@@ -1,5 +1,5 @@
 ---
-- name: Check current docker-compose version.
+- name: Check current `docker-compose` version.
   command: "{{ docker_compose_path }} --version"
   register: docker_compose_vsn
   check_mode: false
@@ -12,7 +12,7 @@
     docker_compose_vsn.stdout is defined
     and (docker_compose_vsn.stdout | length > 0)
 
-- name: Delete existing docker-compose version if it's different.
+- name: Delete existing `docker-compose` version if it's different.
   file:
     path: "{{ docker_compose_path }}"
     state: absent

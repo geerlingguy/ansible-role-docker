@@ -19,6 +19,7 @@
     state: absent
 
 - name: Ensure dependencies are installed.
+  become: true
   apt:
     name:
       - apt-transport-https
@@ -30,13 +31,13 @@
   file:
     path: /etc/apt/keyrings
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: Add Docker apt key.
   ansible.builtin.get_url:
     url: "{{ docker_apt_gpg_key }}"
     dest: /etc/apt/keyrings/docker.asc
-    mode: '0644'
+    mode: "0644"
     force: false
     checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
   register: add_repository_key
