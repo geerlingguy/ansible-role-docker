@@ -45,6 +45,7 @@
   when: docker_add_repo | bool
 
 - name: Ensure curl is present (on older systems without SNI).
+  become: true
   package: name=curl state=present
   when: add_repository_key is failed and docker_add_repo | bool
 
