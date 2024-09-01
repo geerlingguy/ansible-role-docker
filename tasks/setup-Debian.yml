@@ -50,6 +50,7 @@
   when: add_repository_key is failed and docker_add_repo | bool
 
 - name: Add Docker apt key (alternative for older systems without SNI).
+  become: true
   shell: >
     curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
   when: add_repository_key is failed and docker_add_repo | bool
