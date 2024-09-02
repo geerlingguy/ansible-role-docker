@@ -34,6 +34,7 @@
     mode: "0755"
 
 - name: Add Docker apt key.
+  become: true
   ansible.builtin.get_url:
     url: "{{ docker_apt_gpg_key }}"
     dest: /etc/apt/keyrings/docker.asc
