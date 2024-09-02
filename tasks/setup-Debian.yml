@@ -61,6 +61,6 @@
     repo: "{{ docker_apt_repository }}"
     state: present
     filename: "{{ docker_apt_filename }}"
-    update_cache_insecure: true
+    validate_certs: false
     update_cache: true
   when: docker_add_repo | bool
