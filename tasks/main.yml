@@ -104,6 +104,7 @@
   when: at_least_one_user_to_modify is defined
 
 - name: Set `/var/run/docker.sock` right permissions
+  become: true
   ansible.builtin.file:
     path: /var/run/docker.sock
     mode: "0666"
