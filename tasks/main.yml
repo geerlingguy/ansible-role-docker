@@ -25,6 +25,7 @@
   when: "ansible_version.full is version_compare('2.12', '<') or ansible_os_family not in ['RedHat', 'Debian']"
 
 - name: Install Docker packages (with downgrade option).
+  become: true
   package:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
