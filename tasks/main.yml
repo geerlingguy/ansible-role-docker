@@ -95,7 +95,9 @@
     at_least_one_user_to_modify: true
   when:
     - docker_users | length > 0
-    - item not in ansible_facts.getent_group["docker"][2]
+    - docker_user not in ansible_facts.getent_group["docker"][2]
+  loop_control:
+    loop_var:  docker_user
   with_items: "{{ docker_users }}"
 
 - include_tasks: docker-users.yml
