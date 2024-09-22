@@ -116,7 +116,7 @@ A list of system users to be added to the `docker` group (so they can use Docker
 
 ```yaml
 docker_daemon_options:
-  storage-driver: "devicemapper"
+  storage-driver: "overlay2"
   log-opts:
     max-size: "100m"
 ```
