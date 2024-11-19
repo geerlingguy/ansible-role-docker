@@ -34,6 +34,7 @@ docker_obsolete_packages:
   - docker
   - docker.io
   - docker-engine
+  - docker-doc
   - podman-docker
   - containerd
   - runc
