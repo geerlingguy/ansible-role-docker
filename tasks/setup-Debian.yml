@@ -4,6 +4,11 @@
     path: /etc/apt/trusted.gpg.d/docker.asc
     state: absent
 
+- name: Ensure old apt source list is not present in /etc/apt/sources.list.d
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list
+    state: absent
+
 - name: Ensure the repo referencing the previous trusted.gpg.d key is not present
   apt_repository:
     repo: "deb [arch={{ docker_apt_arch }} signed-by=/etc/apt/trusted.gpg.d/docker.asc] {{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
@@ -30,13 +35,13 @@
   file:
     path: /etc/apt/keyrings
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: Add Docker apt key.
   ansible.builtin.get_url:
     url: "{{ docker_apt_gpg_key }}"
     dest: /etc/apt/keyrings/docker.asc
-    mode: '0644'
+    mode: "0644"
     force: false
     checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
   register: add_repository_key
