@@ -47,6 +47,7 @@ jobs:
           - debian12
           - debian11
           - fedora40
+          - fedora41
 
     steps:
       - name: Check out the codebase.
