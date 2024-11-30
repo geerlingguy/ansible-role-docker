@@ -1,0 +1,15 @@
+---
+docker_install_compose_plugin: false
+docker_obsolete_packages:
+  - docker
+  - docker.io
+  - docker-engine
+  - podman-docker
+  - containerd
+  - runc
+  # - docker
+  # - docker-compose
+  # - docker-compose-plugin
+  # - docker-ce
+  # - docker-ce-cli
+  # - docker-ce-rootless-extras
