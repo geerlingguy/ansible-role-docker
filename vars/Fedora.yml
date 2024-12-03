@@ -1,0 +1,12 @@
+---
+docker_install_compose_plugin: false
+docker_obsolete_packages:
+  - docker
+  - docker-engine
+  - docker-common
+  # - docker
+  # - docker-compose
+  # - docker-compose-plugin
+  # - docker-ce
+  # - docker-ce-cli
+  # - docker-ce-rootless-extras
