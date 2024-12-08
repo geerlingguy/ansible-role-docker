@@ -1,9 +1,19 @@
 ---
 # ---------------------------------------------------------------------
-# Proxy variables (optional) for download packages using a proxy server
-proxy_env:
-  http_proxy: http://192.168.20.112:10808
-  https_proxy: http://192.168.20.112:10808
+# Proxy Configuration (Optional)
+#
+# Use these proxy settings if your environment requires internet access
+# through a proxy server, such as in corporate networks or restricted environments.
+#
+# To enable proxy settings:
+# 1. Remove the surrounding comments (uncomment the desired lines).
+# 2. Replace 'proxy-server-ip' and 'port' with your actual proxy server details.
+# 3. Remove Delete the empty curly braces {} that precede the proxy_env key.
+#
+proxy_env: {}
+  # http_proxy: http://proxy-server-ip:port   # URL for HTTP proxy, e.g., http://192.168.1.100:8080
+  # https_proxy: http://proxy-server-ip:port  # URL for HTTPS proxy, e.g., http://192.168.1.100:8080
+
 # ---------------------------------------------------------------------
 
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
