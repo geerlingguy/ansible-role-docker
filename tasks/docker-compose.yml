@@ -25,6 +25,7 @@
     url: "{{ docker_compose_url }}"
     dest: "{{ docker_compose_path }}"
     mode: 0755
+  environment: "{{ proxy_env | default({}) }}"
   when: >
     (docker_compose_current_version is not defined)
     or (docker_compose_current_version | length == 0)
