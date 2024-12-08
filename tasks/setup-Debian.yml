@@ -15,6 +15,7 @@
     state: absent
     filename: "{{ docker_apt_filename }}"
     update_cache: true
+  environment: "{{ proxy_env | default({}) }}"
   when: docker_add_repo | bool
 
 - # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
@@ -29,6 +30,7 @@
       - apt-transport-https
       - ca-certificates
     state: present
+  environment: "{{ proxy_env | default({}) }}"
   when: docker_add_repo | bool
 
 - name: Ensure directory exists for /etc/apt/keyrings
@@ -46,15 +48,18 @@
     checksum: "{{ docker_apt_gpg_key_checksum | default(omit) }}"
   register: add_repository_key
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
+  environment: "{{ proxy_env | default({}) }}"
   when: docker_add_repo | bool
 
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
+  environment: "{{ proxy_env | default({}) }}"
   when: add_repository_key is failed and docker_add_repo | bool
 
 - name: Add Docker apt key (alternative for older systems without SNI).
   shell: >
     curl -sSL {{ docker_apt_gpg_key }} | apt-key add -
+  environment: "{{ proxy_env | default({}) }}"
   when: add_repository_key is failed and docker_add_repo | bool
 
 - name: Add Docker repository.
@@ -63,4 +68,5 @@
     state: present
     filename: "{{ docker_apt_filename }}"
     update_cache: true
+  environment: "{{ proxy_env | default({}) }}"
   when: docker_add_repo | bool
