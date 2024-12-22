@@ -8,6 +8,10 @@
   package:
     name: "{{ docker_obsolete_packages }}"
     state: absent
+  register: obsolete_package_results
+  failed_when:
+    - '"Depsolve Error occurred" not in obsolete_package_results.msg'
+    - obsolete_package_results.rc == 0
 
 - name: Add Docker GPG key.
   rpm_key:
