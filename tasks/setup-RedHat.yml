@@ -1,4 +1,9 @@
 ---
+- name: Set obselete packages if not already defined
+  set_fact:
+    docker_obsolete_packages: "{{ docker_obsolete_packages_redhat }}"
+  when: docker_obsolete_packages is not defined
+
 - name: Ensure old versions of Docker are not installed.
   package:
     name: "{{ docker_obsolete_packages }}"

@@ -31,6 +31,12 @@ You can control whether the package is installed, uninstalled, or at the latest 
 
 ```yaml
 docker_obsolete_packages:
+```
+
+A list of packages to be uninstalled on all platforms prior to running this role. By default this will `docker_obsolete_packages_debian` on debian based systems and `docker_obsolete_packages_redhat` on redhat systems.
+
+```yaml
+docker_obsolete_packages_debian:
   - docker
   - docker.io
   - docker-engine
@@ -39,8 +45,23 @@ docker_obsolete_packages:
   - containerd
   - runc
 ```
+A list of packages to be uninstalled on Debian based systems prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/debian/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
 
-A list of packages to be uninstalled prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/debian/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
+```yaml
+docker_obsolete_packages_redhat:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-engine
+  - podman
+  - runc
+```
+
+A list of packaged to be uninstalled on RedHat based systems prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/rhel/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
 
 ```yaml
 docker_service_manage: true

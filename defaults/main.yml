@@ -8,13 +8,26 @@ docker_packages:
   - "containerd.io"
   - docker-buildx-plugin
 docker_packages_state: present
-docker_obsolete_packages:
+
+# obsolete packages are different on Redhat and Debian and are set to docker_obsolete_packages in their respective tasks files
+docker_obsolete_packages_debian:
   - docker
   - docker.io
   - docker-engine
   - docker-doc
   - podman-docker
   - containerd
+  - runc
+docker_obsolete_packages_redhat:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-engine
+  - podman
   - runc
 
 # Service options.
