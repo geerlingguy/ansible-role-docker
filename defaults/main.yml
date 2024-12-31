@@ -47,8 +47,6 @@ docker_obsolete_packages_redhat:
   - docker-latest
   - docker-latest-logrotate
   - docker-logrotate
-  - docker-selinux
-  - docker-engine-selinux
   - docker-engine
 
 # Service options.
