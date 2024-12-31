@@ -22,22 +22,37 @@ docker_packages:
 docker_packages_state: present
 ```
 
-The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition). 
-You can also specify a specific version of Docker to install using the distribution-specific format: 
+The `docker_edition` should be either `ce` (Community Edition) or `ee` (Enterprise Edition).
+You can also specify a specific version of Docker to install using the distribution-specific format:
 Red Hat/CentOS: `docker-{{ docker_edition }}-<VERSION>` (Note: you have to add this to all packages);
 Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>` (Note: you have to add this to all packages).
 
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_packages_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
 ```yaml
-docker_obsolete_packages:
+docker_obsolete_packages_debian:
   - docker
   - docker.io
   - docker-engine
   - docker-doc
+  - docker-compose
+  - docker-compose-v2
   - podman-docker
   - containerd
   - runc
+
+# Used only for Fedora/CentOS/Rocky
+docker_obsolete_packages_redhat:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-selinux
+  - docker-engine-selinux
+  - docker-engine
 ```
 
 A list of packages to be uninstalled prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/debian/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
@@ -61,7 +76,7 @@ Docker Compose Plugin installation options. These differ from the below in that 
 
 ```yaml
 docker_install_compose: false
-docker_compose_version: "2.29.2"
+docker_compose_version: "v2.32.1"
 docker_compose_arch: "{{ ansible_architecture }}"
 docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ docker_compose_arch }}"
 docker_compose_path: /usr/local/bin/docker-compose
