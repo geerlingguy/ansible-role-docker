@@ -4,16 +4,16 @@
   vars:
     params:
       files:
-        - '{{ansible_distribution}}.yml'
-        - '{{ansible_os_family}}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
         - main.yml
       paths:
         - 'vars'
 
-- include_tasks: setup-RedHat.yml
+- include_tasks: setup-RedHat.yml # noqa: name[missing]
   when: ansible_os_family == 'RedHat'
 
-- include_tasks: setup-Debian.yml
+- include_tasks: setup-Debian.yml # noqa: name[missing]
   when: ansible_os_family == 'Debian'
 
 - name: Install Docker packages.
@@ -76,7 +76,7 @@
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
 
-- include_tasks: docker-compose.yml
+- include_tasks: docker-compose.yml # noqa: name[missing]
   when: docker_install_compose | bool
 
 - name: Get docker group info using getent.
@@ -94,5 +94,5 @@
     - item not in ansible_facts.getent_group["docker"][2]
   with_items: "{{ docker_users }}"
 
-- include_tasks: docker-users.yml
+- include_tasks: docker-users.yml # noqa: name[missing]
   when: at_least_one_user_to_modify is defined
