@@ -1,0 +1,51 @@
+---
+- name: Verify Docker Role
+  hosts: all
+  tasks:
+    - name: Verify Docker binary is available
+      command: docker version
+      register: docker_version_result
+      changed_when: false
+      failed_when: docker_version_result.rc != 0
+
+    - name: Show Docker version details
+      debug:
+        msg: >
+          Docker Version Output:
+          {{ docker_version_result.stdout_lines | join('\n') }}
+
+    - name: Verify Docker service is running
+      command: systemctl is-active docker
+      register: docker_service_status
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+      failed_when: docker_service_status.stdout.strip() != "active"
+
+    - name: Display Docker service status
+      debug:
+        msg: "Docker service is {{ docker_service_status.stdout.strip() }}"
+      when: ansible_service_mgr == 'systemd'
+
+    - name: Pull the 'hello-world' image
+      command: docker pull hello-world
+      register: docker_pull_result
+      changed_when: true
+      failed_when: docker_pull_result.rc != 0
+
+    - name: Show result of pulling the 'hello-world' image
+      debug:
+        msg: >
+          Pulling 'hello-world' completed with output:
+          {{ docker_pull_result.stdout_lines | join('\n') }}
+
+    - name: Run a test container (hello-world)
+      command: docker run --rm hello-world
+      register: docker_run_result
+      changed_when: true
+      failed_when: docker_run_result.rc != 0
+
+    - name: Display test container output
+      debug:
+        msg: >
+          Running 'hello-world' container completed with output:
+          {{ docker_run_result.stdout_lines | join('\n') }}
