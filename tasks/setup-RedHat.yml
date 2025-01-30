@@ -1,10 +1,9 @@
 ---
+# See https://docs.docker.com/engine/install/fedora/#uninstall-old-versions
+# or  https://docs.docker.com/engine/install/centos/#uninstall-old-versions
 - name: Ensure old versions of Docker are not installed.
-  package:
-    name:
-      - docker
-      - docker-common
-      - docker-engine
+  ansible.builtin.package:
+    name: "{{ docker_obsolete_packages_redhat }}"
     state: absent
 
 - name: Add Docker GPG key.

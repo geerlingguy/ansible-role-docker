@@ -30,17 +30,37 @@ Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>` (Note: you have to add th
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_packages_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
 ```yaml
-docker_obsolete_packages:
+# Used only for Debian/Ubuntu
+docker_obsolete_packages_debian:
   - docker
   - docker.io
   - docker-engine
   - docker-doc
+  - docker-compose
+  - docker-compose-v2
   - podman-docker
   - containerd
   - runc
+
+# Used only for Fedora/CentOS/Rocky
+docker_obsolete_packages_redhat:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-selinux
+  - docker-engine-selinux
+  - docker-engine
 ```
 
-A list of packages to be uninstalled prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/debian/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
+A list of packages to be uninstalled prior to running this role. See Docker's installation instructions for an up-to-date list of old packages that should be removed:
+
+- [Docker's installation instructions - Debian](https://docs.docker.com/engine/install/debian/#uninstall-old-versions)
+- [Docker's installation instructions - Fedora](https://docs.docker.com/engine/install/fedora/#uninstall-old-versions)
+
 
 ```yaml
 docker_service_manage: true

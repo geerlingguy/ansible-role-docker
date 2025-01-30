@@ -19,8 +19,8 @@
 
 - # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
   name: Ensure old versions of Docker are not installed.
-  package:
-    name: "{{ docker_obsolete_packages }}"
+  ansible.builtin.package:
+    name: "{{ docker_obsolete_packages_debian }}"
     state: absent
 
 - name: Ensure dependencies are installed.

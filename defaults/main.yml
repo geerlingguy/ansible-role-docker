@@ -8,14 +8,29 @@ docker_packages:
   - "containerd.io"
   - docker-buildx-plugin
 docker_packages_state: present
-docker_obsolete_packages:
+
+# Used only for Debian/Ubuntu
+docker_obsolete_packages_debian:
   - docker
   - docker.io
   - docker-engine
   - docker-doc
+  - docker-compose
+  - docker-compose-v2
   - podman-docker
   - containerd
   - runc
+
+# Used only for Fedora/CentOS/Rocky
+docker_obsolete_packages_redhat:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-engine
 
 # Service options.
 docker_service_manage: true
@@ -57,7 +72,7 @@ docker_apt_filename: "docker"
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
 docker_yum_repo_enable_nightly: '0'
 docker_yum_repo_enable_test: '0'
-docker_yum_gpg_key: "{{ docker_repo_url }}/centos/gpg"
+docker_yum_gpg_key: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora', 'centos') }}/gpg"
 
 # A list of users who will be added to the docker group.
 docker_users: []
