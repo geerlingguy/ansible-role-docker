@@ -3,7 +3,7 @@
 # or  https://docs.docker.com/engine/install/centos/#uninstall-old-versions
 - name: Ensure old versions of Docker are not installed.
   ansible.builtin.package:
-    name: "{{ docker_obsolete_packages_redhat }}"
+    name: "{{ docker_obsolete_packages }}"
     state: absent
 
 - name: Add Docker GPG key.

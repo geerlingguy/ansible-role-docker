@@ -1,0 +1,10 @@
+# Used only for Fedora/CentOS/Rocky
+docker_obsolete_packages:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-engine

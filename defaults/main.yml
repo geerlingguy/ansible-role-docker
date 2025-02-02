@@ -21,17 +21,6 @@ docker_obsolete_packages_debian:
   - containerd
   - runc
 
-# Used only for Fedora/CentOS/Rocky
-docker_obsolete_packages_redhat:
-  - docker
-  - docker-client
-  - docker-client-latest
-  - docker-common
-  - docker-latest
-  - docker-latest-logrotate
-  - docker-logrotate
-  - docker-engine
-
 # Service options.
 docker_service_manage: true
 docker_service_state: started

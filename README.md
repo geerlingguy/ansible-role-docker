@@ -31,7 +31,7 @@ You can control whether the package is installed, uninstalled, or at the latest 
 
 ```yaml
 # Used only for Debian/Ubuntu
-docker_obsolete_packages_debian:
+docker_obsolete_packages:
   - docker
   - docker.io
   - docker-engine
@@ -41,19 +41,6 @@ docker_obsolete_packages_debian:
   - podman-docker
   - containerd
   - runc
-
-# Used only for Fedora/CentOS/Rocky
-docker_obsolete_packages_redhat:
-  - docker
-  - docker-client
-  - docker-client-latest
-  - docker-common
-  - docker-latest
-  - docker-latest-logrotate
-  - docker-logrotate
-  - docker-selinux
-  - docker-engine-selinux
-  - docker-engine
 ```
 
 A list of packages to be uninstalled prior to running this role. See Docker's installation instructions for an up-to-date list of old packages that should be removed:
