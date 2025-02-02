@@ -41,12 +41,13 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux9
-          - ubuntu2404
-          - ubuntu2204
-          - debian12
-          - debian11
+          # - rockylinux9  # uncommented to save bandwidth
+          # - ubuntu2404
+          # - ubuntu2204
+          # - debian12
+          # - debian11
           - fedora40
+          # - fedora41
 
     steps:
       - name: Check out the codebase.
