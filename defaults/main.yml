@@ -10,7 +10,7 @@ docker_packages:
 docker_packages_state: present
 
 # Used only for Debian/Ubuntu
-docker_obsolete_packages_debian:
+docker_obsolete_packages:
   - docker
   - docker.io
   - docker-engine
