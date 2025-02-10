@@ -30,7 +30,6 @@ Debian/Ubuntu: `docker-{{ docker_edition }}=<VERSION>` (Note: you have to add th
 You can control whether the package is installed, uninstalled, or at the latest version by setting `docker_packages_state` to `present`, `absent`, or `latest`, respectively. Note that the Docker daemon will be automatically restarted if the Docker package is updated. This is a side effect of flushing all handlers (running any of the handlers that have been notified by this and any other role up to this point in the play).
 
 ```yaml
-# Used only for Debian/Ubuntu
 docker_obsolete_packages:
   - docker
   - docker.io
@@ -43,11 +42,10 @@ docker_obsolete_packages:
   - runc
 ```
 
-A list of packages to be uninstalled prior to running this role. See Docker's installation instructions for an up-to-date list of old packages that should be removed:
+`docker_obsolete_packages` for different os-family linux distributions:
 
-- [Docker's installation instructions - Debian](https://docs.docker.com/engine/install/debian/#uninstall-old-versions)
-- [Docker's installation instructions - Fedora](https://docs.docker.com/engine/install/fedora/#uninstall-old-versions)
-
+- [`RedHat.yaml`](./vars/RedHat.yml), [obsolete packages](https://docs.docker.com/engine/install/fedora/#uninstall-old-versions)
+- [`Debian.yaml`](./vars/Debian.yml), [obsolete packages](https://docs.docker.com/engine/install/debian/#uninstall-old-versions)
 
 ```yaml
 docker_service_manage: true
@@ -106,7 +104,7 @@ Usually in combination with changing `docker_apt_repository` as well. `docker_ap
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
 docker_yum_repo_enable_nightly: '0'
 docker_yum_repo_enable_test: '0'
-docker_yum_gpg_key: "{{ docker_repo_url }}/centos/gpg"
+docker_yum_gpg_key: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora', 'centos') }}/gpg"
 ```
 
 (Used only for RedHat/CentOS.) You can enable the Nightly or Test repo by setting the respective vars to `1`.
