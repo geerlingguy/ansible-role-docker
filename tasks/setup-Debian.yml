@@ -1,8 +1,11 @@
 ---
-- name: Check if the distribution is Ubuntu 24.04 or later and save it as a fact
-  ansible.builtin.set_fact:
+- name: Check if deb822 format should be used and save it as a fact
+  vars:
     is_ubuntu2404_or_greater: >-
       {{ ansible_distribution == "Ubuntu" and ansible_distribution_version is version('24.04', '>=') }}
+  ansible.builtin.set_fact:
+    docker_use_deb822_format: >-
+      {{ docker_deb822_format | default(is_ubuntu2404_or_greater) }}
 
 - name: Ensure apt key is not present in trusted.gpg.d
   ansible.builtin.file:
@@ -13,7 +16,7 @@
   vars:
     old_apt_source_list_files:
       - /etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution }}.list
-      - "{{ is_ubuntu2404_or_greater | ansible.builtin.ternary('/etc/apt/sources.list.d/docker.list', '') }}"
+      - "{{ docker_use_deb822_format | ansible.builtin.ternary('/etc/apt/sources.list.d/docker.list', '') }}"
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
@@ -38,7 +41,7 @@
     dependencies:
       - apt-transport-https
       - ca-certificates
-      - "{{ is_ubuntu2404_or_greater | ansible.builtin.ternary('python3-debian', '') }}"
+      - "{{ docker_use_deb822_format | ansible.builtin.ternary('python3-debian', '') }}"
   apt:
     name: "{{ dependencies | select }}"
     state: present
@@ -78,12 +81,12 @@
     update_cache: true
   when:
     - docker_add_repo | bool
-    - ansible_distribution != "Ubuntu" or (ansible_distribution == "Ubuntu" and ansible_distribution_version is version('24.04', '<'))
+    - not docker_use_deb822_format
 
 - name: Manage the deb822 format
   when:
     - docker_add_repo | bool
-    - is_ubuntu2404_or_greater
+    - docker_use_deb822_format
   block:
     - name: Add Docker repository with deb822 format.
       ansible.builtin.deb822_repository:
