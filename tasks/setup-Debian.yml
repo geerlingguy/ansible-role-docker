@@ -1,13 +1,23 @@
 ---
+- name: Check if the distribution is Ubuntu 24.04 or later and save it as a fact
+  ansible.builtin.set_fact:
+    is_ubuntu2404_or_greater: >-
+      {{ ansible_distribution == "Ubuntu" and ansible_distribution_version is version('24.04', '>=') }}
+
 - name: Ensure apt key is not present in trusted.gpg.d
   ansible.builtin.file:
     path: /etc/apt/trusted.gpg.d/docker.asc
     state: absent
 
-- name: Ensure old apt source list is not present in /etc/apt/sources.list.d
+- name: Ensure old apt source list files are not present in /etc/apt/sources.list.d
+  vars:
+    old_apt_source_list_files:
+      - /etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution }}.list
+      - "{{ is_ubuntu2404_or_greater | ansible.builtin.ternary('/etc/apt/sources.list.d/docker.list', '') }}"
   ansible.builtin.file:
-    path: "/etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution }}.list"
+    path: "{{ item }}"
     state: absent
+  loop: "{{ old_apt_source_list_files | select }}"
 
 - name: Ensure the repo referencing the previous trusted.gpg.d key is not present
   apt_repository:
@@ -24,10 +34,13 @@
     state: absent
 
 - name: Ensure dependencies are installed.
-  apt:
-    name:
+  vars:
+    dependencies:
       - apt-transport-https
       - ca-certificates
+      - "{{ is_ubuntu2404_or_greater | ansible.builtin.ternary('python3-debian', '') }}"
+  apt:
+    name: "{{ dependencies | select }}"
     state: present
   when: docker_add_repo | bool
 
@@ -63,4 +76,25 @@
     state: present
     filename: "{{ docker_apt_filename }}"
     update_cache: true
-  when: docker_add_repo | bool
+  when:
+    - docker_add_repo | bool
+    - ansible_distribution != "Ubuntu" or (ansible_distribution == "Ubuntu" and ansible_distribution_version is version('24.04', '<'))
+
+- name: Manage the deb822 format
+  when:
+    - docker_add_repo | bool
+    - is_ubuntu2404_or_greater
+  block:
+    - name: Add Docker repository with deb822 format.
+      ansible.builtin.deb822_repository:
+        name: "{{ docker_apt_filename }}"
+        types: deb
+        uris: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}"
+        suites: "{{ ansible_distribution_release }}"
+        components: "{{ docker_apt_release_channel }}"
+        signed_by: /etc/apt/keyrings/docker.asc
+        architectures: "{{ docker_apt_arch }}"
+      notify: Update apt cache
+
+    - name: Ensure handlers are notified immediately to update the apt cache.
+      ansible.builtin.meta: flush_handlers
