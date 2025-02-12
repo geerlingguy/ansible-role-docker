@@ -1,11 +1,11 @@
 ---
 - name: Check if deb822 format should be used and save it as a fact
   vars:
-    is_ubuntu2404_or_greater: >-
-      {{ ansible_distribution == "Ubuntu" and ansible_distribution_version is version('24.04', '>=') }}
+    is_ubuntu2304_or_greater: "{{ ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('23.04', '>=') }}"
+    is_debian12_or_greater: "{{ ansible_distribution == 'Debian' and ansible_distribution_version is version('12', '>=') }}"
+    is_deb822_preferred: "{{ is_ubuntu2304_or_greater or is_debian12_or_greater }}"
   ansible.builtin.set_fact:
-    docker_use_deb822_format: >-
-      {{ docker_deb822_format | default(is_ubuntu2404_or_greater) }}
+    docker_use_deb822_format: "{{ docker_apt_deb822_format | default(is_deb822_preferred) }}"
 
 - name: Ensure apt key is not present in trusted.gpg.d
   ansible.builtin.file:

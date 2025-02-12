@@ -77,10 +77,10 @@ Controls whether this role will add the official Docker repository. Set to `fals
 
 For any instance running Ubuntu 24.04 or later, the Docker repository source file will be in `deb822` format by default.
 
-This behavior can be modified using the `docker_deb822_format` variable. For example, if the one-line format is preferred, set the variable as follows:
+This behavior can be modified using the `docker_apt_deb822_format` variable. For example, if the one-line format is preferred, set the variable as follows:
 
 ```yaml
-docker_deb822_format: false
+docker_apt_deb822_format: false
 ```
 
 When set to `true`, the `deb822` format will be used for all Debian-based installations. Note that enabling this will also remove any existing `docker.list` file and install `python3-debian`.
