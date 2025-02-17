@@ -35,10 +35,17 @@ docker_obsolete_packages:
   - docker.io
   - docker-engine
   - docker-doc
+  - docker-compose
+  - docker-compose-v2
   - podman-docker
   - containerd
   - runc
 ```
+
+`docker_obsolete_packages` for different os-family:
+
+- [`RedHat.yaml`](./vars/RedHat.yml)
+- [`Debian.yaml`](./vars/Debian.yml)
 
 A list of packages to be uninstalled prior to running this role. See [Docker's installation instructions](https://docs.docker.com/engine/install/debian/#uninstall-old-versions) for an up-to-date list of old packages that should be removed.
 
