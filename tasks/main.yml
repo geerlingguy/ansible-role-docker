@@ -65,6 +65,13 @@
   when: docker_daemon_options.keys() | length > 0
   notify: restart docker
 
+- name: Ensure the Docker daemon options file is deleted when no longer needed.
+  file:
+    path: /etc/docker/daemon.json
+    state: absent
+  when: docker_daemon_options.keys() | length == 0
+  notify: restart docker
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker
