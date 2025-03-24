@@ -6,7 +6,7 @@
 
 - name: Ensure old apt source list is not present in /etc/apt/sources.list.d
   ansible.builtin.file:
-    path: "/etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution }}.list"
+    path: "/etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution | lower }}.list"
     state: absent
 
 - name: Ensure the repo referencing the previous trusted.gpg.d key is not present
