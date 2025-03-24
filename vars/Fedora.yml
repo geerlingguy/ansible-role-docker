@@ -1,0 +1,6 @@
+---
+docker_install_compose_plugin: false
+docker_obsolete_packages:
+  - docker
+  - docker-engine
+  - docker-common
