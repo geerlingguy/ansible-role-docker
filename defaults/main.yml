@@ -18,17 +18,6 @@ docker_obsolete_packages_debian:
   - podman-docker
   - containerd
   - runc
-docker_obsolete_packages_redhat:
-  - docker
-  - docker-client
-  - docker-client-latest
-  - docker-common
-  - docker-latest
-  - docker-latest-logrotate
-  - docker-logrotate
-  - docker-engine
-  - podman
-  - runc
 
 # Service options.
 docker_service_manage: true

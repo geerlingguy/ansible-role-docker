@@ -1,18 +1,4 @@
 ---
-- name: Set obselete packages if not already defined
-  set_fact:
-    docker_obsolete_packages: "{{ docker_obsolete_packages_redhat }}"
-  when: docker_obsolete_packages is not defined
-
-- name: Ensure old versions of Docker are not installed.
-  package:
-    name: "{{ docker_obsolete_packages }}"
-    state: absent
-  register: obsolete_package_results
-  failed_when:
-    - '"Depsolve Error occurred" not in obsolete_package_results.msg'
-    - obsolete_package_results.rc == 0
-
 - name: Add Docker GPG key.
   rpm_key:
     key: "{{ docker_yum_gpg_key }}"
