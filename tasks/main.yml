@@ -66,9 +66,9 @@
   notify: restart docker
 
 - name: Create docker config target directory
-  file: 
+  file:
     path: /etc/systemd/system/docker.service.d
-    state: directory 
+    state: directory
     mode: 0755
   when: docker_service_settings | length > 0
 
