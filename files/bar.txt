@@ -1,0 +1,1 @@
+-- files for use with the copy resource

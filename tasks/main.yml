@@ -80,6 +80,22 @@
   when: docker_service_settings | length > 0
   notify: restart docker
 
+- name: Create certs directories for Docker registries
+  file:
+    path: "/etc/docker/certs.d/{{ item.host }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ docker_custom_registries }}"
+  when: item.host | length > 0 and item.ca_file | length > 0
+
+- name: Copy CA certificates for Docker registries
+  copy:
+    src: "files/{{ item.ca_file }}"
+    dest: "/etc/docker/certs.d/{{ item.host }}/ca.crt"
+  loop: "{{ docker_custom_registries }}"
+  when: item.host | length > 0 and item.ca_file | length > 0
+  notify: restart docker
+
 - name: Ensure Docker is started and enabled at boot.
   service:
     name: docker

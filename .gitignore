@@ -2,4 +2,4 @@
 */__pycache__
 *.pyc
 .cache
-
+/files/registry-prd-ca.crt

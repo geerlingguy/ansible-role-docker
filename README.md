@@ -140,6 +140,17 @@ docker_service_settings:
 
 Custom docker service configuration. Should only be used for `HTTP/HTTPS proxy` settings.
 
+```yaml
+docker_custom_registries:
+  - host: "registry.prd.example.com"
+    ca_file: "registry-prd-example-ca.crt"
+  - host: "registry.dev.example.com"
+    ca_file: "registry-dev-example-ca.crt"
+```
+
+Custom trust private Docker registries with custom Certificate Authorities (CAs).
+Place the CA files under the files/ directory of your role or playbook. Each CA will be installed under /etc/docker/certs.d/\<host>/ca.crt.
+
 ## Use with Ansible (and `docker` Python library)
 
 Many users of this role wish to also use Ansible to then _build_ Docker images and manage Docker containers on the server where Docker is installed. In this case, you can easily add in the `docker` Python library using the `geerlingguy.pip` role:
