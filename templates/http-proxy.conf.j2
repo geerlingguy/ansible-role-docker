@@ -1,0 +1,4 @@
+[Service]
+{% for docker_service_setting in docker_service_settings %}
+Environment="{{ docker_service_setting }}"
+{% endfor %}
