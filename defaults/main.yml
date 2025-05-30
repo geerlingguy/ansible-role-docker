@@ -66,3 +66,6 @@ docker_users: []
 
 # Docker daemon options as a dict
 docker_daemon_options: {}
+
+# Docker HTTP/HTTPS proxy settings as list of environment configurations
+docker_service_settings: []

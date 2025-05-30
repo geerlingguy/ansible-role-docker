@@ -131,6 +131,15 @@ docker_daemon_options:
 
 Custom `dockerd` options can be configured through this dictionary representing the json file `/etc/docker/daemon.json`.
 
+```yaml
+docker_service_settings:
+  - HTTP_PROXY=http://proxy.example.com:80
+  - HTTPS_PROXY=https://proxy.example.com:443
+  - NO_PROXY=localhost,127.0.0.1,docker-registry.example.com,.corp
+```
+
+Custom docker service configuration. Should only be used for `HTTP/HTTPS proxy` settings.
+
 ## Use with Ansible (and `docker` Python library)
 
 Many users of this role wish to also use Ansible to then _build_ Docker images and manage Docker containers on the server where Docker is installed. In this case, you can easily add in the `docker` Python library using the `geerlingguy.pip` role:
