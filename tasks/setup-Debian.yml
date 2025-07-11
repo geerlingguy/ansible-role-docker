@@ -28,6 +28,7 @@
     name:
       - apt-transport-https
       - ca-certificates
+      - gpg
     state: present
   when: docker_add_repo | bool
 
