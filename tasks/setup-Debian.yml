@@ -9,6 +9,15 @@
     path: "/etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution | lower }}.list"
     state: absent
 
+- name: Ensure dependencies are installed.
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gpg
+    state: present
+  when: docker_add_repo | bool
+
 - name: Ensure the repo referencing the previous trusted.gpg.d key is not present
   apt_repository:
     repo: "deb [arch={{ docker_apt_arch }} signed-by=/etc/apt/trusted.gpg.d/docker.asc] {{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
@@ -22,15 +31,6 @@
   package:
     name: "{{ docker_obsolete_packages }}"
     state: absent
-
-- name: Ensure dependencies are installed.
-  apt:
-    name:
-      - apt-transport-https
-      - ca-certificates
-      - gpg
-    state: present
-  when: docker_add_repo | bool
 
 - name: Ensure directory exists for /etc/apt/keyrings
   file:
