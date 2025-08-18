@@ -51,8 +51,3 @@
 
 - name: Ensure handlers are notified immediately to update the apt cache.
   ansible.builtin.meta: flush_handlers
-
-- name: Remove Docker apt key if docker_add_repo is false.
-  ansible.builtin.file:
-    path: /etc/apt/keyrings/docker.asc
-    state: "{{ 'file' if docker_add_repo | bool else 'absent' }}"
