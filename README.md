@@ -69,7 +69,7 @@ Docker Compose Plugin installation options. These differ from the below in that 
 ```yaml
 docker_install_compose: false
 docker_compose_version: "v2.32.1"
-docker_compose_arch: "{{ ansible_architecture }}"
+docker_compose_arch: "{{ ansible_facts.architecture }}"
 docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-{{ docker_compose_arch }}"
 docker_compose_path: /usr/local/bin/docker-compose
 ```
@@ -90,10 +90,10 @@ The main Docker repo URL, common between Debian and RHEL systems.
 
 ```yaml
 docker_apt_release_channel: stable
-docker_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
-docker_apt_repository: "deb [arch={{ docker_apt_arch }}{{' signed-by=/etc/apt/keyrings/docker.asc' if add_repository_key is not failed}}] {{ docker_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+docker_apt_arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
+docker_apt_repository: "deb [arch={{ docker_apt_arch }}{{' signed-by=/etc/apt/keyrings/docker.asc' if add_repository_key is not failed}}] {{ docker_repo_url }}/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} {{ docker_apt_release_channel }}"
 docker_apt_ignore_key_error: True
-docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
+docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_facts.distribution | lower }}/gpg"
 docker_apt_filename: "docker"
 ```
 
@@ -103,10 +103,10 @@ You can change `docker_apt_gpg_key` to a different url if you are behind a firew
 Usually in combination with changing `docker_apt_repository` as well. `docker_apt_filename` controls the name of the source list file created in `sources.list.d`. If you are upgrading from an older (<7.0.0) version of this role, you should change this to the name of the existing file (e.g. `download_docker_com_linux_debian` on Debian) to avoid conflicting lists.
 
 ```yaml
-docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
+docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
 docker_yum_repo_enable_nightly: '0'
 docker_yum_repo_enable_test: '0'
-docker_yum_gpg_key: "{{ docker_repo_url }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora', 'centos') }}/gpg"
+docker_yum_gpg_key: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora', 'centos') }}/gpg"
 ```
 
 (Used only for RedHat/CentOS.) You can enable the Nightly or Test repo by setting the respective vars to `1`.
