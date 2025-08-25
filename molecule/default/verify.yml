@@ -17,14 +17,14 @@
     - name: Verify Docker service is running
       command: systemctl is-active docker
       register: docker_service_status
-      when: ansible_service_mgr == 'systemd'
+      when: ansible_facts.service_mgr == 'systemd'
       changed_when: false
       failed_when: docker_service_status.stdout.strip() != "active"
 
     - name: Display Docker service status
       debug:
         msg: "Docker service is {{ docker_service_status.stdout.strip() }}"
-      when: ansible_service_mgr == 'systemd'
+      when: ansible_facts.service_mgr == 'systemd'
 
     - name: Pull the 'hello-world' image
       command: docker pull hello-world

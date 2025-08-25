@@ -4,17 +4,17 @@
   vars:
     params:
       files:
-        - '{{ansible_distribution}}.yml'
-        - '{{ansible_os_family}}.yml'
+        - '{{ansible_facts.distribution}}.yml'
+        - '{{ansible_facts.os_family}}.yml'
         - main.yml
       paths:
         - 'vars'
 
 - include_tasks: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
+  when: ansible_facts.os_family == 'RedHat'
 
 - include_tasks: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts.os_family == 'Debian'
 
 - name: Install Docker packages.
   package:
@@ -22,7 +22,7 @@
     state: "{{ docker_packages_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
-  when: "ansible_version.full is version_compare('2.12', '<') or ansible_os_family not in ['RedHat', 'Debian']"
+  when: "ansible_version.full is version_compare('2.12', '<') or ansible_facts.os_family not in ['RedHat', 'Debian']"
 
 - name: Install Docker packages (with downgrade option).
   package:
@@ -31,7 +31,7 @@
     allow_downgrade: true
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
-  when: "ansible_version.full is version_compare('2.12', '>=') and ansible_os_family in ['RedHat', 'Debian']"
+  when: "ansible_version.full is version_compare('2.12', '>=') and ansible_facts.os_family in ['RedHat', 'Debian']"
 
 - name: Install docker-compose plugin.
   package:
@@ -39,7 +39,7 @@
     state: "{{ docker_compose_package_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
-  when: "docker_install_compose_plugin | bool == true and (ansible_version.full is version_compare('2.12', '<') or ansible_os_family not in ['RedHat', 'Debian'])"
+  when: "docker_install_compose_plugin | bool == true and (ansible_version.full is version_compare('2.12', '<') or ansible_facts.os_family not in ['RedHat', 'Debian'])"
 
 - name: Install docker-compose-plugin (with downgrade option).
   package:
@@ -48,7 +48,7 @@
     allow_downgrade: true
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
-  when: "docker_install_compose_plugin | bool == true and ansible_version.full is version_compare('2.12', '>=') and ansible_os_family in ['RedHat', 'Debian']"
+  when: "docker_install_compose_plugin | bool == true and ansible_version.full is version_compare('2.12', '>=') and ansible_facts.os_family in ['RedHat', 'Debian']"
 
 - name: Ensure /etc/docker/ directory exists.
   file:
