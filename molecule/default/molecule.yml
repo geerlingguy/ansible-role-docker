@@ -17,8 +17,5 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      inject_facts_as_vars: false
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
