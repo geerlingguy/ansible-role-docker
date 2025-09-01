@@ -7,7 +7,7 @@ galaxy_info:
   description: Docker for Linux.
   company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"
-  min_ansible_version: 2.10
+  min_ansible_version: 2.15.1
   platforms:
     - name: Fedora
       versions:
@@ -17,6 +17,7 @@ galaxy_info:
         - buster
         - bullseye
         - bookworm
+        - trixie
     - name: Ubuntu
       versions:
         - bionic
