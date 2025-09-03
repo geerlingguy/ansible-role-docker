@@ -103,10 +103,10 @@ You can change `docker_apt_gpg_key` to a different url if you are behind a firew
 Usually in combination with changing `docker_apt_repository` as well. `docker_apt_filename` controls the name of the source list file created in `sources.list.d`. If you are upgrading from an older (<7.0.0) version of this role, you should change this to the name of the existing file (e.g. `download_docker_com_linux_debian` on Debian) to avoid conflicting lists.
 
 ```yaml
-docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
+docker_yum_repo_url: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/docker-{{ docker_edition }}.repo"
 docker_yum_repo_enable_nightly: '0'
 docker_yum_repo_enable_test: '0'
-docker_yum_gpg_key: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora', 'centos') }}/gpg"
+docker_yum_gpg_key: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/gpg"
 ```
 
 (Used only for RedHat/CentOS.) You can enable the Nightly or Test repo by setting the respective vars to `1`.
