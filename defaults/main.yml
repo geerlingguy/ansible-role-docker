@@ -56,10 +56,10 @@ docker_apt_gpg_key_checksum: "sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807c
 docker_apt_filename: "docker"
 
 # Used only for RedHat/CentOS/Fedora.
-docker_yum_repo_url: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora','centos') }}/docker-{{ docker_edition }}.repo"
+docker_yum_repo_url: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/docker-{{ docker_edition }}.repo"
 docker_yum_repo_enable_nightly: '0'
 docker_yum_repo_enable_test: '0'
-docker_yum_gpg_key: "{{ docker_repo_url }}/{{ (ansible_facts.distribution == 'Fedora') | ternary('fedora', 'centos') }}/gpg"
+docker_yum_gpg_key: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/gpg"
 
 # A list of users who will be added to the docker group.
 docker_users: []
