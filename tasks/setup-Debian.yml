@@ -30,7 +30,7 @@
 
 - name: Add or remove Docker repository.
   ansible.builtin.deb822_repository:
-    name: docker
+    name: "{{ docker_apt_filename }}"
     types: deb
     uris: "{{ docker_repo_url }}/{{ ansible_facts.distribution | lower }}"
     suites: "{{ ansible_facts.distribution_release }}"

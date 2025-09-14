@@ -90,9 +90,6 @@ The main Docker repo URL, common between Debian and RHEL systems.
 
 ```yaml
 docker_apt_release_channel: stable
-docker_apt_arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
-docker_apt_repository: "deb [arch={{ docker_apt_arch }}{{' signed-by=/etc/apt/keyrings/docker.asc' if add_repository_key is not failed}}] {{ docker_repo_url }}/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} {{ docker_apt_release_channel }}"
-docker_apt_ignore_key_error: True
 docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_facts.distribution | lower }}/gpg"
 docker_apt_filename: "docker"
 ```
@@ -100,7 +97,7 @@ docker_apt_filename: "docker"
 (Used only for Debian/Ubuntu.) You can switch the channel to `nightly` if you want to use the Nightly release.
 
 You can change `docker_apt_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
-Usually in combination with changing `docker_apt_repository` as well. `docker_apt_filename` controls the name of the source list file created in `sources.list.d`. If you are upgrading from an older (<7.0.0) version of this role, you should change this to the name of the existing file (e.g. `download_docker_com_linux_debian` on Debian) to avoid conflicting lists.
+`docker_apt_filename` controls the name of the source list file created in `sources.list.d`. If you are upgrading from an older (<7.0.0) version of this role, you should change this to the name of the existing file (e.g. `download_docker_com_linux_debian` on Debian) to avoid conflicting lists.
 
 ```yaml
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/docker-{{ docker_edition }}.repo"
