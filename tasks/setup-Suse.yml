@@ -1,0 +1,27 @@
+---
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name:
+      - docker
+      - docker-engine
+      - docker.io
+      - docker-ce
+      - docker-ce-cli
+    state: absent
+
+- name: Add Docker repository (openSUSE / SLES).
+  zypper_repository:
+    name: "docker-ce"
+    repo: "{{ docker_zypper_repo_url }}"
+    state: present
+    auto_import_keys: yes
+  when: docker_add_repo | bool
+
+- name: Refresh zypper repositories.
+  command: zypper --non-interactive refresh
+  when: docker_add_repo | bool
+
+- name: Ensure Docker packages are installed.
+  ansible.legacy.zypper:
+    name: "{{ docker_packages }}"
+    state: present

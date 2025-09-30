@@ -13,6 +13,9 @@
 - include_tasks: setup-RedHat.yml
   when: ansible_facts.os_family == 'RedHat'
 
+- include_tasks: setup-Suse.yml
+  when: ansible_facts.os_family == 'Suse'
+
 - include_tasks: setup-Debian.yml
   when: ansible_facts.os_family == 'Debian'
 
@@ -39,7 +42,7 @@
     state: "{{ docker_compose_package_state }}"
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
-  when: "docker_install_compose_plugin | bool == true and (ansible_version.full is version_compare('2.12', '<') or ansible_facts.os_family not in ['RedHat', 'Debian'])"
+  when: "docker_install_compose_plugin | bool == true and (ansible_version.full is version_compare('2.12', '<') or ansible_facts.os_family not in ['RedHat', 'Debian', 'Suse'])"
 
 - name: Install docker-compose-plugin (with downgrade option).
   package:

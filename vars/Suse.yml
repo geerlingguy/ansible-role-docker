@@ -1,0 +1,35 @@
+---
+# Used only for openSUSE / SLES (Suse OS-Family)
+# https://en.opensuse.org/Docker
+# https://docs.docker.com/engine/install/binaries/
+
+docker_obsolete_packages:
+  - docker-engine
+  - docker.io
+  - docker-ce
+  - docker-ce-cli
+  - docker-buildx-plugin
+  - docker-ce-rootless-extras
+  - containerd.io
+  - runc
+
+# SUSE provides a monolithic "docker" package and companions.
+docker_packages:
+  - docker
+  - containerd
+  - docker-runc
+
+docker_suse_release: >-
+  {{ 'openSUSE_Leap_15.5'
+     if ansible_distribution_version is match('15\.5')
+     else 'openSUSE_Leap_15.4'
+     if ansible_distribution_version is match('15\.4')
+     else 'openSUSE_Tumbleweed'
+     if ansible_distribution == 'openSUSE Tumbleweed'
+     else 'openSUSE_Leap_' + ansible_distribution_version }}
+
+
+# Official repo for openSUSE Leap (adjust $releasever if needed)
+docker_zypper_repo_url: "https://download.opensuse.org/repositories/Virtualization:/containers/{{ docker_suse_release }}/"
+
+docker_add_repo: true
