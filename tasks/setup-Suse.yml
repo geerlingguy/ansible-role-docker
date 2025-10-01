@@ -15,11 +15,11 @@
     repo: "{{ docker_zypper_repo_url }}"
     state: present
     auto_import_keys: yes
-  when: docker_add_repo | bool
+  when: docker_add_repo | bool == true
 
 - name: Refresh zypper repositories.
   command: zypper --non-interactive refresh
-  when: docker_add_repo | bool
+  when: docker_add_repo | bool == true
 
 - name: Ensure Docker packages are installed.
   ansible.legacy.zypper:

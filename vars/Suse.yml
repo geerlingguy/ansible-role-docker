@@ -30,6 +30,7 @@ docker_suse_release: >-
 
 
 # Official repo for openSUSE Leap (adjust $releasever if needed)
-docker_zypper_repo_url: "https://download.opensuse.org/repositories/Virtualization:/containers/{{ docker_suse_release }}/"
+docker_zypper_repo_url: >-
+  https://download.opensuse.org/repositories/Virtualization:/containers/{{ docker_suse_release }}/
 
 docker_add_repo: true
