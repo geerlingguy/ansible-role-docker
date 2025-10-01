@@ -28,7 +28,6 @@
   ansible.legacy.zypper:
     name: "{{ docker_packages }}"
     state: present
-    autoremove: no
 
 # Ensure Docker is started and enabled at boot
 - name: Ensure Docker is started and enabled at boot
