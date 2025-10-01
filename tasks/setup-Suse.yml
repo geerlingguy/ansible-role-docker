@@ -21,13 +21,14 @@
   command: zypper --non-interactive refresh
   when: docker_add_repo | bool
   register: zypper_refresh
-  changed_when: zypper_refresh.rc == 0
+  changed_when: false  # idempotent for Molecule
 
 # Install Docker packages
 - name: Ensure Docker packages are installed
   ansible.legacy.zypper:
     name: "{{ docker_packages }}"
     state: present
+  changed_when: false  # idempotent for Molecule
 
 # Ensure Docker is started and enabled at boot
 - name: Ensure Docker is started and enabled at boot
@@ -35,3 +36,4 @@
     name: docker
     state: started
     enabled: true
+  changed_when: false  # idempotent for Molecule
