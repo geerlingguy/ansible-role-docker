@@ -4,6 +4,8 @@
   package:
     name: "{{ docker_obsolete_packages }}"
     state: absent
+  check_mode: no
+  changed_when: false
 
 # Add Docker repository (openSUSE / SLES)
 - name: Add Docker repository
@@ -14,13 +16,23 @@
     auto_import_keys: yes
   when: docker_add_repo | bool
 
-# Refresh zypper repositories to pick up the new Docker repo
+# Refresh zypper repositories only if the repo was added
 - name: Refresh zypper repositories
   command: zypper --non-interactive refresh
   when: docker_add_repo | bool
+  register: zypper_refresh
+  changed_when: zypper_refresh.rc == 0
 
 # Install Docker packages
 - name: Ensure Docker packages are installed
   ansible.legacy.zypper:
     name: "{{ docker_packages }}"
     state: present
+    autoremove: no
+
+# Ensure Docker is started and enabled at boot
+- name: Ensure Docker is started and enabled at boot
+  systemd:
+    name: docker
+    state: started
+    enabled: true
