@@ -30,6 +30,12 @@ galaxy_info:
     - name: ArchLinux
       versions:
         - all
+    - name: SLES
+      versions:
+        - all
+    - name: openSUSE
+      versions:
+        - all
   galaxy_tags:
     - web
     - system

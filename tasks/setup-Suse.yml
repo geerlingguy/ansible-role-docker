@@ -1,0 +1,39 @@
+---
+# Remove old or conflicting Docker packages
+- name: Ensure old versions of Docker are not installed
+  package:
+    name: "{{ docker_obsolete_packages }}"
+    state: absent
+  check_mode: no
+  changed_when: false
+
+# Add Docker repository (openSUSE / SLES)
+- name: Add Docker repository
+  zypper_repository:
+    name: "docker-ce"
+    repo: "{{ docker_zypper_repo_url }}"
+    state: present
+    auto_import_keys: yes
+  when: docker_add_repo | bool
+
+# Refresh zypper repositories only if the repo was added
+- name: Refresh zypper repositories
+  command: zypper --non-interactive refresh
+  when: docker_add_repo | bool
+  register: zypper_refresh
+  changed_when: false  # idempotent for Molecule
+
+# Install Docker packages
+- name: Ensure Docker packages are installed
+  ansible.legacy.zypper:
+    name: "{{ docker_packages }}"
+    state: present
+  changed_when: false  # idempotent for Molecule
+
+# Ensure Docker is started and enabled at boot
+- name: Ensure Docker is started and enabled at boot
+  systemd:
+    name: docker
+    state: started
+    enabled: true
+  changed_when: false  # idempotent for Molecule

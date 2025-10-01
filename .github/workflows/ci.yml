@@ -47,6 +47,7 @@ jobs:
           - debian12
           - debian11
           - fedora40
+          - opensuseleap15
 
     steps:
       - name: Check out the codebase.
