@@ -104,7 +104,7 @@
     repo: >-
       deb [arch={{ ansible_facts.architecture }}]
       {{ docker_repo_url }}/{{ ansible_facts['distribution'] | lower }}
-      {{ ansible_facts['lsb']['codename'] }} {{ docker_apt_release_channel }}
+      {{ ansible_facts['lsb']['codename'] | default(ansible_facts.get('distribution_release', '')) }}
     filename: "{{ docker_apt_filename }}"
     state: present
-  when: docker_add_repo | bool
+  when: docker_add_repo | bool and ansible_facts.os_family == 'Debian'
