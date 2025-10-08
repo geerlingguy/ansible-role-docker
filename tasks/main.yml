@@ -99,3 +99,12 @@
 
 - include_tasks: docker-users.yml
   when: at_least_one_user_to_modify is defined
+- name: Add Docker apt repo
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ ansible_facts.architecture }}]
+      {{ docker_repo_url }}/{{ ansible_facts['distribution'] | lower }}
+      {{ ansible_facts['lsb']['codename'] }} {{ docker_apt_release_channel }}
+    filename: "{{ docker_apt_filename }}"
+    state: present
+  when: docker_add_repo | bool
