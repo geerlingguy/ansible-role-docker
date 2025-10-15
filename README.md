@@ -54,6 +54,7 @@ A list of packages to be uninstalled prior to running this role. See [Docker's i
 docker_service_manage: true
 docker_service_state: started
 docker_service_enabled: true
+docker_service_start_command: ""
 docker_restart_handler_state: restarted
 ```
 
