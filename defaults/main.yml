@@ -23,6 +23,7 @@ docker_obsolete_packages:
 docker_service_manage: true
 docker_service_state: started
 docker_service_enabled: true
+docker_service_start_command: ""
 docker_restart_handler_state: restarted
 
 # Docker Compose Plugin options.
