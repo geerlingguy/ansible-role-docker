@@ -68,7 +68,7 @@
   when: docker_daemon_options.keys() | length > 0
   notify: restart docker
 
-- name: Replace Docker service ExecStart command.
+- name: Replace Docker service ExecStart command if configured.
   when: docker_service_start_command != ""
   notify: restart docker
   block:
@@ -76,16 +76,18 @@
       ansible.builtin.systemd_service:
         name: docker
       register: docker_service_status
+
     - name: Patch docker.service
       ansible.builtin.replace:
         path: "{{ docker_service_status.status['FragmentPath'] }}"
         regexp: "^ExecStart=.*$"
         replace: "ExecStart={{ docker_service_start_command }}"
       register: docker_service_patch
+
     - name: Reload systemd services
       service:
         daemon_reload: true
-      when: docker_service_patch.changed
+      when: docker_service_patch is changed
 
 - name: Ensure Docker is started and enabled at boot.
   service:
