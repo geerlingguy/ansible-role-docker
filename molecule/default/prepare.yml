@@ -1,0 +1,34 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Install python3-apt for Debian/Ubuntu
+      apt:
+        name: python3-apt
+        state: present
+        update_cache: yes
+      when: ansible_facts.os_family == 'Debian'
+
+    - name: Install common packages for RedHat family (best-effort)
+      block:
+        - name: Try to install python3-dnf
+          package:
+            name: python3-dnf
+            state: present
+
+        - name: Try to install python3-libselinux
+          package:
+            name: python3-libselinux
+            state: present
+      when: ansible_facts.os_family == 'RedHat'
+      ignore_errors: true
+
+    - name: Install packages for Suse family (best-effort)
+      block:
+        - name: Try to install python3-zypp
+          package:
+            name: python3-zypp
+            state: present
+      when: ansible_facts.os_family == 'Suse'
+      ignore_errors: true
