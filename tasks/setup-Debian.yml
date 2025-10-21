@@ -23,7 +23,6 @@
 - name: Ensure dependencies are installed.
   ansible.builtin.apt:
     name:
-      - apt-transport-https
       - ca-certificates
       - python3-debian
     state: present
