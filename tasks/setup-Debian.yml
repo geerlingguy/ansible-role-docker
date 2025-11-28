@@ -16,9 +16,23 @@
     state: absent
 
 - name: Ensure legacy repo file is not present.
-  ansible.builtin.file:
-    path: "/etc/apt/sources.list.d/docker.list"
-    state: absent
+  block:
+    - name: Check for legacy docker.list
+      ansible.builtin.stat:
+        path: "/etc/apt/sources.list.d/docker.list"
+      register: legacy_docker_list
+    - name: Check whether legacy docker.list references the official Docker repo
+      ansible.builtin.command:
+        cmd: grep -q "{{ docker_repo_url }}" /etc/apt/sources.list.d/docker.list
+      register: legacy_grep
+      ignore_errors: true
+      changed_when: false
+
+    - name: Remove legacy docker.list if it does not reference the official Docker repo
+      ansible.builtin.file:
+        path: "/etc/apt/sources.list.d/docker.list"
+        state: absent
+      when: legacy_docker_list.stat.exists and legacy_grep.rc != 0
 
 - name: Ensure dependencies are installed.
   ansible.builtin.apt:
