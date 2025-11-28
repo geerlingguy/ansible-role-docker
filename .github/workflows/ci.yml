@@ -41,12 +41,12 @@ jobs:
     strategy:
       matrix:
         distro:
-          - rockylinux9
+          - rockylinux10
           - ubuntu2404
           - ubuntu2204
+          - debian13
           - debian12
-          - debian11
-          - fedora40
+          - fedora43
           - opensuseleap15
 
     steps:
