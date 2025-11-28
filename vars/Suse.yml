@@ -23,11 +23,11 @@ docker_packages:
 
 # Map SUSE releases to Docker repository paths
 docker_suse_release: >-
-  {% if ansible_distribution_version is match('15\\.6') %}
+  {% if ansible_facts.distribution_version is match('15\\.6') %}
     openSUSE_Leap_15.6
-  {% elif ansible_distribution_version is match('15\\.5') %}
+  {% elif ansible_facts.distribution_version is match('15\\.5') %}
     openSUSE_Leap_15.5
-  {% elif ansible_distribution_version is match('15\\.4') %}
+  {% elif ansible_facts.distribution_version is match('15\\.4') %}
     openSUSE_Leap_15.4
   {% else %}
     openSUSE_Tumbleweed

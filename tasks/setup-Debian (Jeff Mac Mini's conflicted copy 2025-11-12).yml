@@ -1,0 +1,42 @@
+---
+- name: Ensure apt key is not present in trusted.gpg.d
+  ansible.builtin.file:
+    path: /etc/apt/trusted.gpg.d/docker.asc
+    state: absent
+
+- name: Ensure old apt source list is not present in /etc/apt/sources.list.d
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/download_docker_com_linux_{{ docker_apt_ansible_distribution | lower }}.list"
+    state: absent
+
+# See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
+- name: Ensure old versions of Docker are not installed.
+  ansible.builtin.package:
+    name: "{{ docker_obsolete_packages }}"
+    state: absent
+
+- name: Ensure legacy repo file is not present.
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/docker.list"
+    state: absent
+
+- name: Ensure dependencies are installed.
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - python3-debian
+    state: present
+
+- name: Add or remove Docker repository.
+  ansible.builtin.deb822_repository:
+    name: "{{ docker_apt_filename }}"
+    types: deb
+    uris: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}"
+    suites: "{{ ansible_facts.distribution_release }}"
+    components: "{{ docker_apt_release_channel }}"
+    signed_by: "{{ docker_apt_gpg_key }}"
+    state: "{{ 'present' if docker_add_repo | bool else 'absent' }}"
+  notify: apt update
+
+- name: Ensure handlers are notified immediately to update the apt cache.
+  ansible.builtin.meta: flush_handlers
