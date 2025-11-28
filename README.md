@@ -16,9 +16,11 @@ Available variables are listed below, along with default values (see `defaults/m
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
 docker_edition: 'ce'
 docker_packages:
-    - "docker-{{ docker_edition }}"
-    - "docker-{{ docker_edition }}-cli"
-    - "docker-{{ docker_edition }}-rootless-extras"
+  - "docker-{{ docker_edition }}"
+  - "docker-{{ docker_edition }}-cli"
+  - "docker-{{ docker_edition }}-rootless-extras"
+  - "containerd.io"
+  - docker-buildx-plugin
 docker_packages_state: present
 ```
 
@@ -92,11 +94,14 @@ The main Docker repo URL, common between Debian and RHEL systems.
 
 ```yaml
 docker_apt_release_channel: stable
-docker_apt_gpg_key: "{{ docker_repo_url }}/{{ ansible_facts.distribution | lower }}/gpg"
+docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_facts.distribution in ['Pop!_OS', 'Linux Mint'] else ansible_facts.distribution }}"
+docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}/gpg"
 docker_apt_filename: "docker"
 ```
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `nightly` if you want to use the Nightly release.
+
+`docker_apt_ansible_distribution` is a workaround for Ubuntu variants which can't be identified as such by Ansible, and is only necessary until Docker officially supports them.
 
 You can change `docker_apt_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
 `docker_apt_filename` controls the name of the source list file created in `sources.list.d`. If you are upgrading from an older (<7.0.0) version of this role, you should change this to the name of the existing file (e.g. `download_docker_com_linux_debian` on Debian) to avoid conflicting lists.
@@ -114,12 +119,22 @@ You can change `docker_yum_gpg_key` to a different url if you are behind a firew
 Usually in combination with changing `docker_yum_repository` as well.
 
 ```yaml
+docker_users: []
+```
+
+A list of system users to be added to the `docker` group (so they can use Docker on the server). Example:
+
+```yaml
 docker_users:
   - user1
   - user2
 ```
 
-A list of system users to be added to the `docker` group (so they can use Docker on the server).
+```yaml
+docker_daemon_options: {}
+```
+
+Custom `dockerd` options can be configured through this dictionary representing the json file `/etc/docker/daemon.json`. Example:
 
 ```yaml
 docker_daemon_options:
@@ -127,8 +142,6 @@ docker_daemon_options:
   log-opts:
     max-size: "100m"
 ```
-
-Custom `dockerd` options can be configured through this dictionary representing the json file `/etc/docker/daemon.json`.
 
 ## Use with Ansible (and `docker` Python library)
 
