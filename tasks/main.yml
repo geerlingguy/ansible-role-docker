@@ -19,6 +19,21 @@
 - include_tasks: setup-Debian.yml
   when: ansible_facts.os_family == 'Debian'
 
+- name: Ensure /etc/docker/ directory exists.
+  file:
+    path: /etc/docker
+    state: directory
+    mode: 0755
+  when: docker_daemon_options.keys() | length > 0
+
+- name: Configure Docker daemon options.
+  copy:
+    content: "{{ docker_daemon_options | to_nice_json }}"
+    dest: /etc/docker/daemon.json
+    mode: 0644
+  when: docker_daemon_options.keys() | length > 0
+  notify: restart docker
+
 - name: Install Docker packages.
   package:
     name: "{{ docker_packages }}"
@@ -52,21 +67,6 @@
   notify: restart docker
   ignore_errors: "{{ ansible_check_mode }}"
   when: "docker_install_compose_plugin | bool == true and ansible_version.full is version_compare('2.12', '>=') and ansible_facts.os_family in ['RedHat', 'Debian']"
-
-- name: Ensure /etc/docker/ directory exists.
-  file:
-    path: /etc/docker
-    state: directory
-    mode: 0755
-  when: docker_daemon_options.keys() | length > 0
-
-- name: Configure Docker daemon options.
-  copy:
-    content: "{{ docker_daemon_options | to_nice_json }}"
-    dest: /etc/docker/daemon.json
-    mode: 0644
-  when: docker_daemon_options.keys() | length > 0
-  notify: restart docker
 
 - name: Replace Docker service ExecStart command if configured.
   when: docker_service_start_command != ""
