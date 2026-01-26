@@ -44,11 +44,11 @@ docker_add_repo: true
 # Docker repo URL.
 docker_repo_url: https://download.docker.com/linux
 
-# Used only for Debian/Ubuntu/Pop!_OS/Linux Mint. Switch 'stable' to 'nightly' if needed.
+# Used only for Debian/Kali/Ubuntu/Pop!_OS/Linux Mint. Switch 'stable' to 'nightly' if needed.
 docker_apt_release_channel: stable
 # docker_apt_ansible_distribution is a workaround for Ubuntu variants which can't be identified as such by Ansible,
 # and is only necessary until Docker officially supports them.
-docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_facts.distribution in ['Pop!_OS', 'Linux Mint'] else ansible_facts.distribution }}"
+docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_facts.distribution in ['Pop!_OS', 'Linux Mint'] else 'debian' if ansible_facts.distribution in ['Kali'] else ansible_facts.distribution }}"
 docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}/gpg"
 docker_apt_filename: "docker"
 
