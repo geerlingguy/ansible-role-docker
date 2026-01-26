@@ -27,12 +27,31 @@
       - python3-debian
     state: present
 
+# Kali has no local method of determining its Debian codename. This wouldn't be reliable anyway,
+# as "stable" is often what package maintainers develop for, and Kali is based on "debian-testing".
+- name: Obtain Debian stable's codename
+  ansible.builtin.uri:
+    url: https://ftp.debian.org/debian/dists/stable/Release
+    return_content: true
+  register: debian_release
+  until: debian_release.status == 200
+  retries: 5 # Retry a total of 5 times
+  delay: 30 # Every 30 seconds, meaning try 5 times in 2.5 minutes
+  failed_when: "debian_release is failed or 'Codename' not in debian_release.content"
+  when: ansible_facts.distribution == 'Kali'
+
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/regex_search_filter.html#examples
+- name: Set Debian stable's codename for Kali
+  ansible.builtin.set_fact:
+    debian_codename: "{{ (debian_release.content | regex_search('^Codename: (\\w+)$', '\\1', multiline=True))[0] }}"
+  when: ansible_facts.distribution == 'Kali'
+
 - name: Add or remove Docker repository.
   ansible.builtin.deb822_repository:
     name: "{{ docker_apt_filename }}"
     types: deb
     uris: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}"
-    suites: "{{ docker_apt_ansible_distribution_release }}"
+    suites: "{{ debian_codename if ansible_facts.distribution == 'Kali' else ansible_facts.distribution_release }}"
     components: "{{ docker_apt_release_channel }}"
     signed_by: "{{ docker_apt_gpg_key }}"
     state: "{{ 'present' if docker_add_repo | bool else 'absent' }}"
