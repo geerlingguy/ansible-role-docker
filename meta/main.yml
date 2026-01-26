@@ -24,6 +24,7 @@ galaxy_info:
         - focal
         - jammy
         - noble
+        - plucky
     - name: Alpine
       version:
         - all
