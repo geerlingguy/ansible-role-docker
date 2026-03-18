@@ -56,11 +56,13 @@ A list of packages to be uninstalled prior to running this role. See [Docker's i
 docker_service_manage: true
 docker_service_state: started
 docker_service_enabled: true
+docker_socket_state: started
+docker_socket_enabled: true
 docker_service_start_command: ""
 docker_restart_handler_state: restarted
 ```
 
-Variables to control the state of the `docker` service, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set `docker_service_manage` to `false`.
+Variables to control the state of the `docker` service and socket, and whether it should start on boot. If you're installing Docker inside a Docker container without systemd or sysvinit, you should set `docker_service_manage` to `false`.
 
 ```yaml
 docker_install_compose_plugin: true
