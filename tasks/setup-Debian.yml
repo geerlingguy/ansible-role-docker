@@ -10,10 +10,14 @@
     state: absent
 
 # See https://docs.docker.com/engine/install/debian/#uninstall-old-versions
+# Only remove obsolete packages when using the official Docker repo. When
+# docker_add_repo is false the user intentionally installs system packages
+# (e.g. docker.io on Ubuntu) which overlap with this list.
 - name: Ensure old versions of Docker are not installed.
   ansible.builtin.package:
     name: "{{ docker_obsolete_packages }}"
     state: absent
+  when: docker_add_repo | bool
 
 - name: Ensure legacy repo file is not present.
   ansible.builtin.file:

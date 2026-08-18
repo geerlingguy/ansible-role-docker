@@ -1,4 +1,15 @@
 ---
+- name: Restart Docker socket (Debian/Ubuntu system packages).
+  ansible.builtin.service:
+    name: docker.socket
+    state: restarted
+  ignore_errors: "{{ ansible_check_mode }}"
+  when:
+    - docker_service_manage | bool
+    - ansible_facts.os_family == 'Debian'
+    - not docker_add_repo | bool
+  listen: restart docker
+
 - name: restart docker
   ansible.builtin.service:
     name: docker
