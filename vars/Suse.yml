@@ -40,5 +40,10 @@ docker_suse_release: >-
 docker_zypper_repo_url: >-
   https://download.opensuse.org/repositories/Virtualization:/containers/{{ docker_suse_release | trim }}/
 
+# On SLES/openSUSE, the compose v2 CLI plugin is packaged as 'docker-compose'
+# (installed to /usr/lib/docker/cli-plugins/). This differs from the Debian/Ubuntu
+# package name 'docker-compose-plugin' used by Docker Inc.'s own repositories.
+docker_compose_package: docker-compose
+
 # Control whether to add the Docker repository
 docker_add_repo: true
