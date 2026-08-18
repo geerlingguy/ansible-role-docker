@@ -1,4 +1,17 @@
 ---
+# Fail early if docker_suse_use_containers_module is set on a non-SLES system.
+# The SUSE Containers Module is only available on registered SLES systems.
+- name: Fail if docker_suse_use_containers_module is set on non-SLES system
+  ansible.builtin.fail:
+    msg: >-
+      docker_suse_use_containers_module is only supported on SLES systems
+      registered with SUSE Customer Center. This system is
+      {{ ansible_facts.distribution }}, which does not have the
+      sle-module-containers module available.
+  when:
+    - docker_suse_use_containers_module | bool
+    - ansible_facts.distribution != 'SLES'
+
 # Remove old or conflicting Docker packages
 - name: Ensure old versions of Docker are not installed
   package:
@@ -7,20 +20,81 @@
   check_mode: no
   changed_when: false
 
-# Add Docker repository (openSUSE / SLES)
+# Add Docker repository (openSUSE / SLES via OBS)
 - name: Add Docker repository
   zypper_repository:
     name: "docker-ce"
     repo: "{{ docker_zypper_repo_url }}"
     state: present
     auto_import_keys: yes
-  when: docker_add_repo | bool
+  when:
+    - docker_add_repo | bool
+    - not (docker_suse_use_containers_module | bool and ansible_facts.distribution == 'SLES')
 
-# Refresh zypper repositories only if the repo was added
+# Refresh zypper repositories only if the OBS repo was added
 - name: Refresh zypper repositories
   command: zypper --non-interactive refresh
-  when: docker_add_repo | bool
+  when:
+    - docker_add_repo | bool
+    - not (docker_suse_use_containers_module | bool and ansible_facts.distribution == 'SLES')
   register: zypper_refresh
+  changed_when: false  # idempotent for Molecule
+
+# Activate the SUSE Containers Module on registered SLES systems.
+# Checks SCC registration status first, then activates the module.
+# SUSEConnect is idempotent: exits 0 if the module is already active.
+- name: Check SLES SCC registration status
+  ansible.builtin.command: SUSEConnect --status-text
+  register: suse_connect_status
+  changed_when: false
+  when:
+    - docker_suse_use_containers_module | bool
+    - ansible_facts.distribution == 'SLES'
+
+- name: Fail if SLES system is not registered with SCC
+  ansible.builtin.fail:
+    msg: >-
+      This SLES system is not registered with SUSE Customer Center.
+      Register first with: SUSEConnect -r <REGCODE>
+      Then re-run this role.
+  when:
+    - docker_suse_use_containers_module | bool
+    - ansible_facts.distribution == 'SLES'
+    - "'Registered' not in suse_connect_status.stdout"
+
+- name: Activate SUSE Containers Module via SUSEConnect
+  ansible.builtin.command: >-
+    SUSEConnect --product
+    sle-module-containers/{{ ansible_facts.distribution_version }}/{{ ansible_facts.architecture }}
+  when:
+    - docker_suse_use_containers_module | bool
+    - ansible_facts.distribution == 'SLES'
+  changed_when: false
+
+# Activate SUSE Package Hub on SLES to provide docker-compose.
+# docker-compose is not part of the official SLE Containers Module —
+# it is only available from SUSE Package Hub (openSUSE Backports).
+# SUSEConnect is idempotent: exits 0 if the module is already active.
+- name: Activate SUSE Package Hub via SUSEConnect
+  ansible.builtin.command: >-
+    SUSEConnect --product
+    PackageHub/{{ ansible_facts.distribution_version }}/{{ ansible_facts.architecture }}
+  when:
+    - docker_install_compose_plugin | bool
+    - docker_suse_use_containers_module | bool
+    - ansible_facts.distribution == 'SLES'
+  changed_when: false
+
+# Install docker-compose plugin (openSUSE / SLES)
+# Uses ansible.legacy.zypper instead of the generic package module to ensure
+# idempotent change reporting — zypper may report changed even when the package
+# is already installed when called via the generic module.
+- name: Install docker-compose plugin.
+  ansible.legacy.zypper:
+    name: "{{ docker_compose_package }}"
+    state: "{{ docker_compose_package_state }}"
+  notify: restart docker
+  when: docker_install_compose_plugin | bool
   changed_when: false  # idempotent for Molecule
 
 # Install Docker packages

@@ -87,6 +87,12 @@ docker_add_repo: true
 Controls whether this role will add the official Docker repository. Set to `false` if you want to use the default docker packages for your system or manage the package repository on your own.
 
 ```yaml
+docker_suse_use_containers_module: false
+```
+
+(Used only for SLES.) When set to `true`, the role activates the official SUSE Containers Module (`sle-module-containers`) via `SUSEConnect` instead of adding the openSUSE OBS repository. This requires the system to be registered with SUSE Customer Center (SCC). The role will fail with a clear error message if the system is not registered or if this variable is set on a non-SLES system (e.g. openSUSE Leap or Tumbleweed).
+
+```yaml
 docker_repo_url: https://download.docker.com/linux
 ```
 
