@@ -1,6 +1,6 @@
 ---
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
-docker_edition: 'ce'
+docker_edition: "ce"
 docker_packages:
   - "docker-{{ docker_edition }}"
   - "docker-{{ docker_edition }}-cli"
@@ -56,7 +56,7 @@ docker_apt_filename: "docker"
 
 # Used only for RedHat/CentOS/Fedora.
 docker_yum_repo_url: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/docker-{{ docker_edition }}.repo"
-docker_yum_repo_enable_test: '0'
+docker_yum_repo_enable_test: "0"
 docker_yum_gpg_key: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/gpg"
 
 # A list of users who will be added to the docker group.
@@ -64,3 +64,12 @@ docker_users: []
 
 # Docker daemon options as a dict
 docker_daemon_options: {}
+
+# Rootless Docker options.
+docker_rootless: false
+docker_rootless_user: ""
+docker_rootless_subid_start: ""
+docker_rootless_subid_count: 65536
+docker_rootless_network_driver: ""
+docker_rootless_environment: {}
+docker_rootless_expose_privileged_ports: false

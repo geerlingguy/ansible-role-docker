@@ -4,7 +4,25 @@
     name: docker
     state: "{{ docker_restart_handler_state }}"
   ignore_errors: "{{ ansible_check_mode }}"
-  when: docker_service_manage | bool
+  when:
+    - docker_service_manage | bool
+    - not (docker_rootless | bool)
+
+- name: Restart rootless docker
+  ansible.builtin.systemd_service:
+    name: docker
+    scope: user
+    state: "{{ docker_restart_handler_state }}"
+  listen: restart docker
+  become: true
+  become_user: "{{ docker_rootless_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "{{ docker_rootless_runtime_dir }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path={{ docker_rootless_runtime_dir }}/bus"
+  ignore_errors: "{{ ansible_check_mode }}"
+  when:
+    - docker_service_manage | bool
+    - docker_rootless | bool
 
 - name: apt update
   ansible.builtin.apt:

@@ -1,0 +1,31 @@
+[Unit]
+Description=Docker Application Container Engine (Rootless)
+Documentation=https://docs.docker.com/go/rootless/
+Requires=dbus.socket
+
+[Service]
+Environment=PATH=/usr/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/bin
+{% if docker_rootless_network_driver | length > 0 %}
+Environment="DOCKERD_ROOTLESS_ROOTLESSKIT_NET={{ docker_rootless_network_driver }}"
+{% endif %}
+{% for env_key, env_val in docker_rootless_environment.items() %}
+Environment="{{ env_key }}={{ env_val | replace('\\', '\\\\') | replace('\"', '\\\"') }}"
+{% endfor %}
+ExecStart=/usr/bin/dockerd-rootless.sh
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+StartLimitBurst=3
+StartLimitInterval=60s
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+Delegate=yes
+Type=notify
+NotifyAccess=all
+KillMode=mixed
+
+[Install]
+WantedBy=default.target
