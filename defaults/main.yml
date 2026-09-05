@@ -1,6 +1,6 @@
 ---
 # Edition can be one of: 'ce' (Community Edition) or 'ee' (Enterprise Edition).
-docker_edition: 'ce'
+docker_edition: "ce"
 docker_packages:
   - "docker-{{ docker_edition }}"
   - "docker-{{ docker_edition }}-cli"
@@ -55,8 +55,11 @@ docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | 
 docker_apt_filename: "docker"
 
 # Used only for RedHat/CentOS/Fedora.
-docker_yum_repo_url: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/docker-{{ docker_edition }}.repo"
-docker_yum_repo_enable_test: '0'
+docker_yum_repo_url: >-
+  {{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora'
+     else 'rhel' if ansible_facts.distribution == 'RedHat'
+     else 'centos' }}/docker-{{ docker_edition }}.repo
+docker_yum_repo_enable_test: "0"
 docker_yum_gpg_key: "{{ docker_repo_url }}/{{ 'fedora' if ansible_facts.distribution == 'Fedora' else 'rhel' if ansible_facts.distribution == 'RedHat' else 'centos' }}/gpg"
 
 # A list of users who will be added to the docker group.
@@ -64,3 +67,29 @@ docker_users: []
 
 # Docker daemon options as a dict
 docker_daemon_options: {}
+
+# Rootless Docker options
+docker_rootless: false
+docker_rootless_user: ""
+docker_rootless_subid_start: ""
+docker_rootless_subid_count: 65536
+docker_rootless_network_driver: ""
+docker_rootless_environment: {}
+docker_rootless_expose_privileged_ports: false
+
+# cAdvisor options service options
+docker_install_cadvisor: false
+docker_cadvisor_service_manage: true
+docker_cadvisor_state: started
+docker_cadvisor_service_enabled: true
+docker_cadvisor_restart_handler_state: restarted
+docker_cadvisor_listen_ip: "127.0.0.1"
+docker_cadvisor_port: 8080
+docker_cadvisor_extra_args: []
+
+# cAdvisor Package Options
+docker_cadvisor_version: "latest"
+docker_cadvisor_arch: >-
+  {{ 'amd64' if ansible_facts.architecture in ['x86_64', 'amd64']
+     else 'arm64' if ansible_facts.architecture in ['aarch64', 'arm64']
+     else ansible_facts.architecture }}

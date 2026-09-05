@@ -1,0 +1,54 @@
+---
+- name: Converge
+  hosts: all
+
+  pre_tasks:
+    - name: Update apt cache.
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 600
+      when: ansible_facts.os_family == 'Debian'
+
+    - name: Wait for systemd to complete initialization.  # noqa: command-instead-of-module
+      ansible.builtin.command: systemctl is-system-running
+      register: systemctl_status
+      until: >
+        'running' in systemctl_status.stdout or
+        'degraded' in systemctl_status.stdout
+      retries: 30
+      delay: 5
+      when: ansible_facts.service_mgr == 'systemd'
+      changed_when: false
+      failed_when: systemctl_status.rc > 1
+
+    - name: Ensure container system services are active for rootless testing.
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: started
+      loop:
+        - dbus.socket
+        - systemd-user-sessions.service
+        - systemd-logind.service
+      when: ansible_facts.service_mgr == 'systemd'
+
+    - name: Ensure container permissions for rootless testing.
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - {path: /usr/bin/newuidmap, mode: "4755"}
+        - {path: /usr/bin/newgidmap, mode: "4755"}
+        - {path: /etc/shadow, mode: "0644"}
+      failed_when: false
+
+  roles:
+    - role: geerlingguy.docker
+      vars:
+        docker_rootless: true
+        docker_rootless_user: testdocker
+        docker_daemon_options:
+          log-level: "info"
+          storage-driver: "vfs"
+          exec-opts:
+            - "native.cgroupdriver=cgroupfs"
+        docker_install_cadvisor: true

@@ -1,0 +1,22 @@
+[Unit]
+Description=cAdvisor (Container Advisor)
+Documentation=https://github.com/google/cadvisor
+After=network.target{% if docker_rootless | bool %} user@{{ docker_rootless_uid }}.service{% else %} docker.service{% endif %}
+
+[Service]
+Type=simple
+ExecStartPre=/usr/bin/docker -H {{ docker_cadvisor_effective_docker_endpoint }} info
+ExecStart=/usr/local/bin/cadvisor \
+  -listen_ip={{ docker_cadvisor_listen_ip }} \
+  -port={{ docker_cadvisor_port }} \
+  -prometheus_endpoint=/metrics \
+  -docker={{ docker_cadvisor_effective_docker_endpoint }}{% if docker_cadvisor_effective_containerd_endpoint | length > 0 %} \
+  -containerd={{ docker_cadvisor_effective_containerd_endpoint }}{% endif %}{% for arg in docker_cadvisor_extra_args %} \
+  {{ arg }}{% endfor %}
+
+Restart=always
+RestartSec=10s
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

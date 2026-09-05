@@ -10,6 +10,28 @@
       paths:
         - 'vars'
 
+- name: Validate platform support for rootless mode.
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.os_family in ['Debian', 'RedHat', 'Suse']
+      - ansible_facts.service_mgr == 'systemd'
+    fail_msg: >-
+      Rootless Docker requires systemd and is currently supported on Debian,
+      RedHat, and SUSE families. Platform '{{ ansible_facts.distribution | default(ansible_facts.os_family) }}'
+      with init system '{{ ansible_facts.service_mgr }}' is not supported for rootless mode.
+  when: docker_rootless | bool
+
+- name: Ensure system Docker service and socket are unmasked.
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    masked: false
+  loop:
+    - docker.service
+    - docker.socket
+  when:
+    - not (docker_rootless | bool)
+    - ansible_facts.service_mgr == 'systemd'
+
 - include_tasks: setup-RedHat.yml
   when: ansible_facts.os_family == 'RedHat'
 
@@ -58,18 +80,24 @@
     path: /etc/docker
     state: directory
     mode: 0755
-  when: docker_daemon_options.keys() | length > 0
+  when:
+    - not (docker_rootless | bool)
+    - docker_daemon_options.keys() | length > 0
 
 - name: Configure Docker daemon options.
   copy:
     content: "{{ docker_daemon_options | to_nice_json }}"
     dest: /etc/docker/daemon.json
     mode: 0644
-  when: docker_daemon_options.keys() | length > 0
+  when:
+    - not (docker_rootless | bool)
+    - docker_daemon_options.keys() | length > 0
   notify: restart docker
 
 - name: Replace Docker service ExecStart command if configured.
-  when: docker_service_start_command != ""
+  when:
+    - not (docker_rootless | bool)
+    - docker_service_start_command != ""
   notify: restart docker
   block:
     - name: Get Docker service status
@@ -95,7 +123,13 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   ignore_errors: "{{ ansible_check_mode }}"
-  when: docker_service_manage | bool
+  when:
+    - not (docker_rootless | bool)
+    - docker_service_manage | bool
+
+- name: Converge rootless Docker daemon.
+  ansible.builtin.include_tasks: rootless.yml
+  when: docker_rootless | bool
 
 - name: Ensure handlers are notified now to avoid firewall conflicts.
   meta: flush_handlers
@@ -108,15 +142,24 @@
     database: group
     key: docker
     split: ':'
-  when: docker_users | length > 0
+  when:
+    - not (docker_rootless | bool)
+    - docker_users | length > 0
 
 - name: Check if there are any users to add to the docker group.
   set_fact:
     at_least_one_user_to_modify: true
   when:
+    - not (docker_rootless | bool)
     - docker_users | length > 0
     - item not in ansible_facts.getent_group["docker"][2]
   with_items: "{{ docker_users }}"
 
 - include_tasks: docker-users.yml
-  when: at_least_one_user_to_modify is defined
+  when:
+    - not (docker_rootless | bool)
+    - at_least_one_user_to_modify is defined
+
+- name: Install and configure cAdvisor.
+  ansible.builtin.include_tasks: cadvisor.yml
+  when: docker_install_cadvisor | bool

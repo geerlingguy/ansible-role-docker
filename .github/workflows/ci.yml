@@ -69,3 +69,65 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
+
+  molecule-rootless:
+    name: Molecule (Rootless)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - ubuntu2404
+          - fedora43
+          - opensuseleap15
+
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v4
+        with:
+          path: 'geerlingguy.docker'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'  # Can't go to 3.14+ until Ansible 13.x
+
+      - name: Install test dependencies.
+        run: |
+          pip3 install ansible molecule molecule-plugins[docker] docker
+          ansible-galaxy collection install -r requirements.yml
+
+      - name: Run Molecule rootless tests.
+        run: molecule test -s rootless
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+
+  molecule-cadvisor:
+    name: Molecule (cAdvisor)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - ubuntu2404
+
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v4
+        with:
+          path: 'geerlingguy.docker'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'  # Can't go to 3.14+ until Ansible 13.x
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
+
+      - name: Run Molecule cAdvisor tests.
+        run: molecule test -s cadvisor
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
