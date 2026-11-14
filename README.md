@@ -98,11 +98,14 @@ docker_apt_ansible_distribution: "{{ 'ubuntu' if ansible_facts.distribution in [
 docker_apt_repo_url: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}"
 docker_apt_gpg_key: "{{ docker_repo_url }}/{{ docker_apt_ansible_distribution | lower }}/gpg"
 docker_apt_filename: "docker"
+docker_apt_distribution_release: "{{ ansible_facts.distribution_release }}"
 ```
 
 (Used only for Debian/Ubuntu.) You can switch the channel to `nightly` if you want to use the Nightly release.
 
 `docker_apt_ansible_distribution` is a workaround for Ubuntu variants which can't be identified as such by Ansible, and is only necessary until Docker officially supports them.
+
+Similarly, `docker_apt_distribution_release` is a workaround for OS releases that are still in development or do not match a Debian/Ubuntu codename, and is only necessary until Docker officially supports them.
 
 You can change `docker_apt_repo_url` if you need to point Debian or Ubuntu systems at an internal mirror or cache.
 You can change `docker_apt_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror.
