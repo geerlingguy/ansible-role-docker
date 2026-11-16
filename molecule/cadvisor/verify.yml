@@ -1,0 +1,97 @@
+---
+- name: Verify cAdvisor Role
+  hosts: all
+  tasks:
+    - name: Verify cAdvisor binary is present and executable
+      ansible.builtin.stat:
+        path: /usr/local/bin/cadvisor
+      register: cadvisor_bin_stat
+
+    - name: Assert cAdvisor binary properties
+      ansible.builtin.assert:
+        that:
+          - cadvisor_bin_stat.stat.exists
+          - cadvisor_bin_stat.stat.executable
+          - cadvisor_bin_stat.stat.pw_name == 'root'
+          - cadvisor_bin_stat.stat.mode == '0755'
+
+    - name: Verify cAdvisor systemd service unit file exists
+      ansible.builtin.stat:
+        path: /etc/systemd/system/cadvisor.service
+      register: cadvisor_unit_stat
+
+    - name: Assert cAdvisor systemd unit exists
+      ansible.builtin.assert:
+        that:
+          - cadvisor_unit_stat.stat.exists
+          - cadvisor_unit_stat.stat.mode == '0644'
+
+    - name: Verify cAdvisor systemd service is active and enabled
+      ansible.builtin.systemd_service:
+        name: cadvisor.service
+      register: cadvisor_service_status
+      failed_when: >-
+        cadvisor_service_status.status.ActiveState != 'active' or
+        cadvisor_service_status.status.UnitFileState != 'enabled'
+
+    - name: Verify Docker service is active
+      ansible.builtin.systemd_service:
+        name: docker.service
+      register: docker_service_status
+      failed_when: docker_service_status.status.ActiveState != 'active'
+
+    - name: Run test container with rootful Docker
+      ansible.builtin.command: docker run -d --name cadvisor-molecule-test busybox sleep 300
+      register: docker_run_result
+      changed_when: true
+      failed_when: docker_run_result.rc != 0
+
+    - name: Query cAdvisor Prometheus metrics endpoint
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8080/metrics"
+        return_content: true
+        status_code: 200
+      register: cadvisor_metrics_response
+      until: "'name=\"cadvisor-molecule-test\"' in cadvisor_metrics_response.content"
+      retries: 15
+      delay: 2
+
+    - name: Assert cAdvisor metrics response contains version and container metrics
+      ansible.builtin.assert:
+        that:
+          - "'cadvisor_version_info' in cadvisor_metrics_response.content"
+          - "'cadvisorVersion=' in cadvisor_metrics_response.content"
+          - "'name=\"cadvisor-molecule-test\"' in cadvisor_metrics_response.content"
+
+    - name: Clean up test container
+      ansible.builtin.command: docker rm -f cadvisor-molecule-test
+      changed_when: true
+      failed_when: false
+
+    # Test backwards-compatible older version installation (v0.52.1 with body SHA256 checksum)
+    - name: Reconverge cAdvisor with explicit older version override (v0.52.1)
+      ansible.builtin.include_role:
+        name: geerlingguy.docker
+      vars:
+        docker_install_cadvisor: true
+        docker_cadvisor_version: "v0.52.1"
+        docker_daemon_options:
+          storage-driver: "vfs"
+
+    - name: Flush handlers to restart cAdvisor service with new binary
+      ansible.builtin.meta: flush_handlers
+
+    - name: Query cAdvisor Prometheus metrics endpoint for older version
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8080/metrics"
+        return_content: true
+        status_code: 200
+      register: cadvisor_metrics_old_response
+      until: "'cadvisorVersion=\"v0.52.1' in cadvisor_metrics_old_response.content"
+      retries: 15
+      delay: 2
+
+    - name: Assert cAdvisor is running version v0.52.1
+      ansible.builtin.assert:
+        that:
+          - "'cadvisorVersion=\"v0.52.1' in cadvisor_metrics_old_response.content"

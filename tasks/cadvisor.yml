@@ -1,0 +1,143 @@
+---
+- name: Validate platform support for cAdvisor.
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.service_mgr == 'systemd'
+    fail_msg: "cAdvisor service management requires systemd init system."
+
+- name: Validate cAdvisor architecture support.
+  ansible.builtin.assert:
+    that:
+      - docker_cadvisor_arch in ['amd64', 'arm64']
+    fail_msg: >-
+      cAdvisor does not publish an official Linux static binary for architecture '{{ docker_cadvisor_arch }}'.
+
+- name: Fetch cAdvisor release metadata from GitHub API.
+  ansible.builtin.uri:
+    url: >-
+      {{ 'https://api.github.com/repos/google/cadvisor/releases/latest'
+         if (docker_cadvisor_version == 'latest')
+         else ('https://api.github.com/repos/google/cadvisor/releases/tags/' ~ docker_cadvisor_version) }}
+    method: GET
+    headers:
+      Accept: "application/vnd.github+json"
+    status_code: 200
+  register: _cadvisor_release_metadata
+  check_mode: false
+
+- name: Set matching cAdvisor release asset.
+  ansible.builtin.set_fact:
+    _cadvisor_matching_assets: >-
+      {{ _cadvisor_release_metadata.json.assets
+         | selectattr('name', 'search', 'linux-' ~ docker_cadvisor_arch ~ '$')
+         | list }}
+
+- name: Validate cAdvisor release asset exists.
+  ansible.builtin.assert:
+    that:
+      - _cadvisor_matching_assets | length > 0
+    fail_msg: >-
+      Could not find a release asset matching architecture '{{ docker_cadvisor_arch }}' in cAdvisor release '{{ _cadvisor_release_metadata.json.tag_name | default(docker_cadvisor_version) }}'.
+
+# Fallback: extract SHA-256 from release notes for older releases with null asset digest.
+- name: Extract release body SHA-256 by exact asset name.
+  ansible.builtin.set_fact:
+    _cadvisor_body_sha256_raw: >-
+      {{ _cadvisor_release_metadata.json.body | default('')
+         | regex_search('(?i)SHA256\s*\([^\)]*' ~ (_cadvisor_matching_assets[0].name | regex_escape) ~ '\)\s*=\s*([a-f0-9]{64})', '\1') }}
+
+- name: Normalize release body SHA-256 by asset name.
+  ansible.builtin.set_fact:
+    _cadvisor_body_sha256: >-
+      {{ (_cadvisor_body_sha256_raw if (_cadvisor_body_sha256_raw is string)
+          else (_cadvisor_body_sha256_raw[0] if (_cadvisor_body_sha256_raw is sequence and _cadvisor_body_sha256_raw | length > 0) else ''))
+         | default('', true) }}
+
+- name: Extract release body SHA-256 fallback by architecture.
+  ansible.builtin.set_fact:
+    _cadvisor_body_sha256_fallback_raw: >-
+      {{ _cadvisor_release_metadata.json.body | default('')
+         | regex_search('(?i)SHA256\s*\([^\)]*linux-' ~ docker_cadvisor_arch ~ '\)\s*=\s*([a-f0-9]{64})', '\1') }}
+  when: _cadvisor_body_sha256 | length == 0
+
+- name: Normalize release body SHA-256 fallback.
+  ansible.builtin.set_fact:
+    _cadvisor_body_sha256: >-
+      {{ (_cadvisor_body_sha256_fallback_raw if (_cadvisor_body_sha256_fallback_raw is string)
+          else (_cadvisor_body_sha256_fallback_raw[0] if (_cadvisor_body_sha256_fallback_raw is sequence and _cadvisor_body_sha256_fallback_raw | length > 0) else ''))
+         | default('', true) }}
+  when: _cadvisor_body_sha256 | length == 0
+
+# Set effective checksum (prefer GitHub asset digest, fallback to release notes SHA-256).
+- name: Set effective cAdvisor version, download URL, and checksum.
+  ansible.builtin.set_fact:
+    docker_cadvisor_effective_version: "{{ _cadvisor_release_metadata.json.tag_name }}"
+    _cadvisor_download_url: "{{ _cadvisor_matching_assets[0].browser_download_url }}"
+    _cadvisor_checksum: >-
+      {{ _cadvisor_matching_assets[0].digest
+         if (_cadvisor_matching_assets[0].digest is defined
+             and _cadvisor_matching_assets[0].digest is not none
+             and (_cadvisor_matching_assets[0].digest | length > 0))
+         else (('sha256:' ~ _cadvisor_body_sha256) if (_cadvisor_body_sha256 | length == 64) else '') }}
+
+- name: Validate cAdvisor checksum was determined.
+  ansible.builtin.assert:
+    that:
+      - _cadvisor_checksum | length > 0
+      - _cadvisor_checksum is match('^sha256:[a-f0-9]{64}$')
+    fail_msg: >-
+      Could not determine a valid SHA-256 checksum for cAdvisor asset
+      '{{ _cadvisor_matching_assets[0].name }}' in release
+      '{{ _cadvisor_release_metadata.json.tag_name | default(docker_cadvisor_version) }}'.
+
+- name: Set effective cAdvisor endpoints.
+  ansible.builtin.set_fact:
+    docker_cadvisor_effective_docker_endpoint: >-
+      {{ docker_rootless_socket if (docker_rootless | bool) else 'unix:///var/run/docker.sock' }}
+    docker_cadvisor_effective_containerd_endpoint: >-
+      {{ (docker_rootless_runtime_dir ~ '/docker/containerd/containerd.sock') if (docker_rootless | bool) else '' }}
+
+- name: Set facts for cAdvisor metrics
+  ansible.builtin.set_fact:
+    docker_cadvisor_effective_listen_ip: "{{ docker_cadvisor_listen_ip }}"
+    docker_cadvisor_effective_port: "{{ docker_cadvisor_port | int }}"
+    docker_cadvisor_effective_metrics_path: "/metrics"
+    docker_cadvisor_effective_metrics_url: "http://{{ docker_cadvisor_listen_ip }}:{{ docker_cadvisor_port }}/metrics"
+    docker_cadvisor_effective_version: "{{ docker_cadvisor_effective_version }}"
+
+- name: Ensure cAdvisor binary installation directory exists.
+  ansible.builtin.file:
+    path: /usr/local/bin
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download cAdvisor release binary.
+  ansible.builtin.get_url:
+    url: "{{ _cadvisor_download_url }}"
+    dest: /usr/local/bin/cadvisor
+    owner: root
+    group: root
+    mode: "0755"
+    checksum: "{{ _cadvisor_checksum }}"
+  notify: restart cadvisor
+
+- name: Ensure cAdvisor systemd service unit is installed.
+  ansible.builtin.template:
+    src: cadvisor.service.j2
+    dest: /etc/systemd/system/cadvisor.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart cadvisor
+
+- name: Manage cAdvisor systemd service.
+  ansible.builtin.systemd_service:
+    name: cadvisor
+    state: "{{ docker_cadvisor_state }}"
+    enabled: "{{ docker_cadvisor_service_enabled }}"
+    daemon_reload: true
+  ignore_errors: "{{ ansible_check_mode }}"
+  when:
+    - docker_cadvisor_service_manage | bool

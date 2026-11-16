@@ -12,3 +12,17 @@ docker_obsolete_packages:
   - podman-docker
   - containerd
   - runc
+
+docker_rootless_prerequisite_packages:
+  - uidmap
+  - dbus-user-session
+
+docker_rootless_capability_packages:
+  - libcap2-bin
+
+docker_rootless_network_packages:
+  slirp4netns:
+    - slirp4netns
+  pasta:
+    - passt
+  gvisor-tap-vsock: []

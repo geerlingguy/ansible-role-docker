@@ -1,0 +1,309 @@
+---
+- name: Validate rootless configuration parameters.
+  ansible.builtin.assert:
+    that:
+      - docker_rootless_user | length > 0
+      - docker_rootless_user != 'root'
+    fail_msg: "docker_rootless_user must be specified and cannot be root."
+
+- name: Validate rootless network driver configuration does not conflict with environment.
+  ansible.builtin.assert:
+    that:
+      - not ((docker_rootless_network_driver | length > 0) and ('DOCKERD_ROOTLESS_ROOTLESSKIT_NET' in docker_rootless_environment))
+    fail_msg: >-
+      Conflicting network driver configuration: docker_rootless_network_driver is set to '{{ docker_rootless_network_driver }}'
+      while DOCKERD_ROOTLESS_ROOTLESSKIT_NET is also supplied in docker_rootless_environment.
+      Configure the network driver using docker_rootless_network_driver or docker_rootless_environment, but not both.
+
+- name: Ensure rootless prerequisite packages are installed.
+  ansible.builtin.package:
+    name: "{{ docker_rootless_prerequisite_packages }}"
+    state: present
+  when:
+    - docker_rootless_prerequisite_packages is defined
+    - docker_rootless_prerequisite_packages | length > 0
+
+- name: Ensure packages for selected rootless network driver are installed.
+  ansible.builtin.package:
+    name: "{{ docker_rootless_network_packages[docker_rootless_network_driver] }}"
+    state: present
+  when:
+    - docker_rootless_network_driver | length > 0
+    - docker_rootless_network_packages is defined
+    - docker_rootless_network_driver in docker_rootless_network_packages
+    - docker_rootless_network_packages[docker_rootless_network_driver] | length > 0
+
+- name: Check if rootless user exists in passwd database.
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ docker_rootless_user }}"
+    split: ":"
+    fail_key: false
+
+- name: Ensure rootless user account is present if missing.
+  ansible.builtin.user:
+    name: "{{ docker_rootless_user }}"
+    create_home: true
+    shell: /bin/bash
+    state: present
+  when: >-
+    (docker_rootless_user not in ansible_facts.getent_passwd) or
+    (ansible_facts.getent_passwd[docker_rootless_user] is none)
+
+- name: Retrieve rootless user passwd database information.
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ docker_rootless_user }}"
+    split: ":"
+
+- name: Validate rootless user exists and is non-root.
+  ansible.builtin.assert:
+    that:
+      - docker_rootless_user in ansible_facts.getent_passwd
+      - ansible_facts.getent_passwd[docker_rootless_user] is not none
+      - ansible_facts.getent_passwd[docker_rootless_user][1] | int != 0
+    fail_msg: "Rootless user {{ docker_rootless_user }} was not found or has UID 0."
+
+- name: Set facts for rootless Docker daemon user.
+  ansible.builtin.set_fact:
+    docker_rootless_uid: "{{ ansible_facts.getent_passwd[docker_rootless_user][1] | int }}"
+    docker_rootless_gid: "{{ ansible_facts.getent_passwd[docker_rootless_user][2] | int }}"
+    docker_rootless_home: "{{ ansible_facts.getent_passwd[docker_rootless_user][4] }}"
+    docker_rootless_runtime_dir: "/run/user/{{ ansible_facts.getent_passwd[docker_rootless_user][1] }}"
+    docker_rootless_socket: "unix:///run/user/{{ ansible_facts.getent_passwd[docker_rootless_user][1] }}/docker.sock"
+
+- name: Ensure rootless user home directory exists with correct ownership.
+  ansible.builtin.file:
+    path: "{{ docker_rootless_home }}"
+    state: directory
+    owner: "{{ docker_rootless_user }}"
+    group: "{{ docker_rootless_gid }}"
+    mode: "0750"
+
+- name: Ensure /etc/subuid and /etc/subgid files exist.
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: touch
+    owner: root
+    group: root
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve
+  loop:
+    - /etc/subuid
+    - /etc/subgid
+
+- name: Read /etc/subuid content.
+  ansible.builtin.slurp:
+    src: /etc/subuid
+  register: docker_rootless_subuid_slurp
+
+- name: Read /etc/subgid content.
+  ansible.builtin.slurp:
+    src: /etc/subgid
+  register: docker_rootless_subgid_slurp
+
+- name: Calculate subordinate ID allocations.
+  ansible.builtin.set_fact:
+    docker_rootless_has_valid_subuid: >-
+      {{ (docker_rootless_subuid_slurp.content | b64decode) is
+         regex('(?m)^(' ~ docker_rootless_user ~ '|' ~ docker_rootless_uid ~ '):[0-9]+:[1-9]') }}
+    docker_rootless_has_valid_subgid: >-
+      {{ (docker_rootless_subgid_slurp.content | b64decode) is
+         regex('(?m)^(' ~ docker_rootless_user ~ '|' ~ docker_rootless_uid ~ '):[0-9]+:[1-9]') }}
+    docker_rootless_next_subid: >-
+      {%- if docker_rootless_subid_start | string | length > 0 -%}
+        {{ docker_rootless_subid_start }}
+      {%- else -%}
+        {%- set max_id = namespace(id=100000) -%}
+        {%- set all_lines = ((docker_rootless_subuid_slurp.content | b64decode) ~ '\n' ~ (docker_rootless_subgid_slurp.content | b64decode)).splitlines() -%}
+        {%- for line in all_lines -%}
+          {%- set p = line.strip().split(':') -%}
+          {%- if p | length >= 3 and p[1] | regex_search('^[0-9]+$') and p[2] | regex_search('^[0-9]+$') -%}
+            {%- set end_id = (p[1] | int) + (p[2] | int) -%}
+            {%- if end_id > max_id.id -%}
+              {%- set max_id.id = end_id -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{ max_id.id }}
+      {%- endif -%}
+
+- name: Ensure rootless user has subordinate UID allocation in /etc/subuid.
+  ansible.builtin.lineinfile:
+    path: /etc/subuid
+    regexp: "^({{ docker_rootless_user }}|{{ docker_rootless_uid }}):"
+    line: "{{ docker_rootless_user }}:{{ docker_rootless_next_subid }}:{{ docker_rootless_subid_count }}"
+    state: present
+  when: not (docker_rootless_has_valid_subuid | bool)
+
+- name: Ensure rootless user has subordinate GID allocation in /etc/subgid.
+  ansible.builtin.lineinfile:
+    path: /etc/subgid
+    regexp: "^({{ docker_rootless_user }}|{{ docker_rootless_uid }}):"
+    line: "{{ docker_rootless_user }}:{{ docker_rootless_next_subid }}:{{ docker_rootless_subid_count }}"
+    state: present
+  when: not (docker_rootless_has_valid_subgid | bool)
+
+- name: Check if systemd linger is enabled for rootless user.
+  ansible.builtin.stat:
+    path: "/var/lib/systemd/linger/{{ docker_rootless_user }}"
+  register: docker_rootless_linger_stat
+
+- name: Enable systemd linger for rootless user.
+  ansible.builtin.command: "loginctl enable-linger {{ docker_rootless_user }}"
+  when:
+    - ansible_facts.service_mgr == 'systemd'
+    - not (docker_rootless_linger_stat.stat.exists | default(false))
+  changed_when: true
+
+- name: Ensure rootless user manager is running.
+  ansible.builtin.systemd_service:
+    name: "user@{{ docker_rootless_uid }}.service"
+    state: started
+  when: ansible_facts.service_mgr == 'systemd'
+
+- name: Wait for rootless user session sockets to be ready.
+  ansible.builtin.wait_for:
+    path: "{{ item }}"
+    timeout: 30
+  loop:
+    - "{{ docker_rootless_runtime_dir }}/systemd/private"
+    - "{{ docker_rootless_runtime_dir }}/bus"
+  when: ansible_facts.service_mgr == 'systemd'
+
+- name: Verify RootlessKit and dockerd-rootless executables are present.
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - /usr/bin/rootlesskit
+    - /usr/bin/dockerd-rootless.sh
+  register: docker_rootless_bin_stat
+
+- name: Assert RootlessKit and dockerd-rootless executables exist and are executable.
+  ansible.builtin.assert:
+    that:
+      - item.stat.exists
+      - item.stat.executable
+    fail_msg: "Required executable {{ item.item }} not found or not executable. Ensure docker rootless packages are installed."
+  loop: "{{ docker_rootless_bin_stat.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Perform RootlessKit preflight smoke check.
+  ansible.builtin.command: /usr/bin/rootlesskit --net=none true
+  become: true
+  become_user: "{{ docker_rootless_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "{{ docker_rootless_runtime_dir }}"
+  changed_when: false
+
+- name: Ensure system Docker service and socket are stopped, disabled, and masked.
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+    masked: true
+  loop:
+    - docker.service
+    - docker.socket
+  when: ansible_facts.service_mgr == 'systemd'
+
+- name: Ensure capability tooling is installed for privileged-port support.
+  ansible.builtin.package:
+    name: "{{ docker_rootless_capability_packages }}"
+    state: present
+  when:
+    - docker_rootless_expose_privileged_ports | bool
+    - docker_rootless_capability_packages is defined
+    - docker_rootless_capability_packages | length > 0
+
+- name: Check current RootlessKit capabilities.
+  ansible.builtin.command: getcap /usr/bin/rootlesskit
+  register: docker_rootless_getcap
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Add RootlessKit capability for privileged host ports.
+  community.general.capabilities:
+    path: /usr/bin/rootlesskit
+    capability: cap_net_bind_service=ep
+    state: present
+  when:
+    - docker_rootless_expose_privileged_ports | bool
+    - "'cap_net_bind_service' not in docker_rootless_getcap.stdout"
+  notify: restart docker
+
+- name: Remove RootlessKit capability when privileged ports are disabled.
+  community.general.capabilities:
+    path: /usr/bin/rootlesskit
+    capability: cap_net_bind_service=ep
+    state: absent
+  when:
+    - not (docker_rootless_expose_privileged_ports | bool)
+    - "'cap_net_bind_service' in docker_rootless_getcap.stdout"
+  notify: restart docker
+
+- name: Ensure rootless user config directory exists.
+  ansible.builtin.file:
+    path: "{{ docker_rootless_home }}/.config/docker"
+    state: directory
+    owner: "{{ docker_rootless_user }}"
+    group: "{{ docker_rootless_gid }}"
+    mode: "0755"
+  when: docker_daemon_options.keys() | length > 0
+
+- name: Configure rootless Docker daemon options.
+  ansible.builtin.copy:
+    content: "{{ docker_daemon_options | to_nice_json }}"
+    dest: "{{ docker_rootless_home }}/.config/docker/daemon.json"
+    owner: "{{ docker_rootless_user }}"
+    group: "{{ docker_rootless_gid }}"
+    mode: "0644"
+  when: docker_daemon_options.keys() | length > 0
+  notify: restart docker
+
+- name: Ensure rootless user systemd configuration directory exists.
+  ansible.builtin.file:
+    path: "{{ docker_rootless_home }}/.config/systemd/user"
+    state: directory
+    owner: "{{ docker_rootless_user }}"
+    group: "{{ docker_rootless_gid }}"
+    mode: "0755"
+
+- name: Render rootless Docker systemd user service unit.
+  ansible.builtin.template:
+    src: docker-rootless.service.j2
+    dest: "{{ docker_rootless_home }}/.config/systemd/user/docker.service"
+    owner: "{{ docker_rootless_user }}"
+    group: "{{ docker_rootless_gid }}"
+    mode: "0644"
+  notify: restart docker
+
+- name: Reload systemd user daemon.
+  ansible.builtin.systemd_service:
+    scope: user
+    daemon_reload: true
+  become: true
+  become_user: "{{ docker_rootless_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "{{ docker_rootless_runtime_dir }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path={{ docker_rootless_runtime_dir }}/bus"
+  when: ansible_facts.service_mgr == 'systemd'
+
+- name: Manage rootless Docker user service.
+  ansible.builtin.systemd_service:
+    name: docker
+    scope: user
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+  become: true
+  become_user: "{{ docker_rootless_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "{{ docker_rootless_runtime_dir }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path={{ docker_rootless_runtime_dir }}/bus"
+  ignore_errors: "{{ ansible_check_mode }}"
+  when:
+    - ansible_facts.service_mgr == 'systemd'
+    - docker_service_manage | bool
