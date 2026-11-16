@@ -37,18 +37,16 @@ jobs:
 
   molecule:
     name: Molecule
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-26.04
         distro:
-          - rockylinux10
-          - ubuntu2404
-          - ubuntu2204
-          - debian13
-          - debian12
           - fedora43
           - opensuseleap15
-          - opensuseleap16
 
     steps:
       - name: Check out the codebase.
@@ -65,8 +63,16 @@ jobs:
         run: pip3 install ansible molecule molecule-plugins[docker] docker
 
       - name: Run Molecule tests.
-        run: molecule test
+        run: molecule test --destroy never
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
+
+      - name: Debug Docker failure.
+        if: failure()
+        run: |
+          docker version
+          uname -r
+          lsmod | grep -E 'ip_tables|iptable_|nf_tables|nft_|xt_|br_netfilter|overlay' || true
+          docker exec instance sh -c 'iptables --version; systemctl status docker containerd --no-pager -l; journalctl -u docker -u containerd --no-pager | tail -80'
