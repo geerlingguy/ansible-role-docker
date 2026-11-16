@@ -12,7 +12,6 @@ docker_obsolete_packages:
   - docker-buildx-plugin
   - docker-ce-rootless-extras
   - containerd.io
-  - runc
 
 # Packages to install on openSUSE / SLES
 # Use 'runc' from repo, not 'docker-runc' (avoids conflicts on Leap 15.6)
