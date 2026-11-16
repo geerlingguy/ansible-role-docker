@@ -12,3 +12,18 @@ docker_obsolete_packages:
   - docker-latest-logrotate
   - docker-logrotate
   - docker-engine
+
+docker_rootless_prerequisite_packages:
+  - shadow-utils
+  - iproute
+  - procps-ng
+
+docker_rootless_capability_packages:
+  - libcap
+
+docker_rootless_network_packages:
+  slirp4netns:
+    - slirp4netns
+  pasta:
+    - passt
+  gvisor-tap-vsock: []

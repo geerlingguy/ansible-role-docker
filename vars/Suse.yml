@@ -41,3 +41,16 @@ docker_zypper_repo_url: >-
 
 # Control whether to add the Docker repository
 docker_add_repo: true
+
+docker_rootless_prerequisite_packages:
+  - docker-rootless-extras
+
+docker_rootless_capability_packages:
+  - libcap-progs
+
+docker_rootless_network_packages:
+  slirp4netns:
+    - slirp4netns
+  pasta:
+    - passt
+  gvisor-tap-vsock: []

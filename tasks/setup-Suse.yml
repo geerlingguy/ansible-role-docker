@@ -4,7 +4,7 @@
   package:
     name: "{{ docker_obsolete_packages }}"
     state: absent
-  check_mode: no
+  check_mode: false
   changed_when: false
 
 # Add Docker repository (openSUSE / SLES)
@@ -13,7 +13,7 @@
     name: "docker-ce"
     repo: "{{ docker_zypper_repo_url }}"
     state: present
-    auto_import_keys: yes
+    auto_import_keys: true
   when: docker_add_repo | bool
 
 # Refresh zypper repositories only if the repo was added
@@ -37,3 +37,4 @@
     state: started
     enabled: true
   changed_when: false  # idempotent for Molecule
+  when: not (docker_rootless | bool)
