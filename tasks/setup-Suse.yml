@@ -23,6 +23,18 @@
   register: zypper_refresh
   changed_when: false  # idempotent for Molecule
 
+# Install docker-compose plugin (openSUSE / SLES)
+# Uses ansible.legacy.zypper instead of the generic package module to ensure
+# idempotent change reporting — zypper may report changed even when the package
+# is already installed when called via the generic module.
+- name: Install docker-compose plugin.
+  ansible.legacy.zypper:
+    name: "{{ docker_compose_package }}"
+    state: "{{ docker_compose_package_state }}"
+  notify: restart docker
+  when: docker_install_compose_plugin | bool
+  changed_when: false  # idempotent for Molecule
+
 # Install Docker packages
 - name: Ensure Docker packages are installed
   ansible.legacy.zypper:
