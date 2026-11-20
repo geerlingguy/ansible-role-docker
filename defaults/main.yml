@@ -41,6 +41,12 @@ docker_compose_path: /usr/local/bin/docker-compose
 # Enable repo setup
 docker_add_repo: true
 
+# Used only for SLES. When true, activates the SUSE Containers Module
+# (sle-module-containers) via SUSEConnect instead of the openSUSE OBS repository.
+# Requires a registered SLES system connected to SUSE Customer Center (SCC).
+# Has no effect on openSUSE Leap or Tumbleweed — the role will fail with an error.
+docker_suse_use_containers_module: false
+
 # Docker repo URL.
 docker_repo_url: https://download.docker.com/linux
 
